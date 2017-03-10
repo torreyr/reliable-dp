@@ -67,7 +67,7 @@ bool createServer() {
 	
 	rcvaddr.sin_family      = AF_INET;
     rcvaddr.sin_addr.s_addr = htonl(INADDR_ANY);
-    rcvaddr.sin_port        = htons(rcv_port);
+    rcvaddr.sin_port        = htons(rcv_port); 
 }
 
 // MAIN
