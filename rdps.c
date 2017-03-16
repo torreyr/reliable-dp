@@ -4,6 +4,7 @@
 #include <unistd.h>
 #include <netdb.h>
 #include <time.h>
+#include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -128,6 +129,9 @@ bool checkArguments(int argc, char* argv[]) {
 
 bool createServer() {
 	struct sockaddr_in sdraddr;
+    const int len = sizeof(sdraddr);
+	
+	printf("creating connection...\n\n");
 	
 	// Create socket.
     int sock = socket(PF_INET, SOCK_DGRAM, IPPROTO_UDP);
@@ -136,14 +140,30 @@ bool createServer() {
 		return false;
 	}
 	
+	// Set socket options.
+	int opt = 1;
+    if (setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, (char*) &opt, sizeof(opt)) == -1) {
+        printf("Problem setting socket options. Closing the socket.");
+        return false;
+    }
+	
+    memset(&sdraddr, 0, len);
+	
 	sdraddr.sin_family      = AF_INET;
-    sdraddr.sin_addr.s_addr = htonl(INADDR_ANY);
+    sdraddr.sin_addr.s_addr = inet_aton(sdr_ip, &sdraddr.sin_addr);
     sdraddr.sin_port        = htons(sdr_port);
-
+	
+	// Bind socket.
+    if ((bind(sock, (struct sockaddr *) &sdraddr, len)) != 0) {
+        printf("Couldn't bind socket. Closing the socket.\n%s\n", strerror(errno));
+        close(sock);
+        return false;
+    }
+	
 }
 
 // MAIN
 int main(int argc, char* argv[]) {	
     if ( !checkArguments(argc, argv) ) return 0;
-    //if ( !createServer(argv) ) return 0;
+    if ( !createServer() ) return 0;
 }

@@ -18,7 +18,7 @@
 
 // Functions
 void howto();
-//void printLogMessage();
+void printLogMessage();
 bool isPort();
 char* getTime();
 bool checkArguments();
@@ -37,12 +37,11 @@ void howto() {
 /*
  *	Prints the sender's log message.
  */
- /*
 void printLogMessage() {
 	char* time = getTime();
-    printf("%s %s:%d %s:%d\n\n", time, sdr_ip, sdr_port, rcv_ip, rcv_port);
+    printf("%s %s:%d\n\n", time, rcv_ip, rcv_port);
 	free(time);
-}*/
+}
 
 
 // ------- PARSING ------- //
@@ -67,7 +66,7 @@ char* getTime() {
 	
 	time(&curtime);
     times = localtime(&curtime);
-    strftime(buffer, 30, "%b %d %T", times);
+    strftime(buffer, 30, "%T", times);
 	return buffer;
 }
 
@@ -106,6 +105,9 @@ bool checkArguments(int argc, char* argv[]) {
     }
 	printf("Expected file:\t%s\n", argv[3]);
     printf("\n");
+	
+	printf("\nSample log message:\n");
+	printLogMessage();
 	
 	return true;
 }
