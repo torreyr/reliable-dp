@@ -120,7 +120,8 @@ bool createServer() {
     fd_set fds;
 	ssize_t recsize;
 	struct sockaddr_in rcvaddr;
-	int len = sizeof(rcvaddr);
+	int len  = sizeof rcvaddr;
+	int rlen = sizeof sdraddr;
     
 	char buffer[1000];
 	memset(buffer, 0, sizeof(buffer));
@@ -157,7 +158,7 @@ bool createServer() {
 			printf("Error with select. Closing the socket.\n");
             close(sock);
             return false;
-		}
+		} else printf("selected...\n");
 		
 		if (FD_ISSET(sock, &fds)) {
 			recsize = recvfrom(sock, (void*) buffer, sizeof(buffer), 0, (struct sockaddr*) &sdraddr, &len);
