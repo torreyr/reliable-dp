@@ -121,7 +121,7 @@ bool createServer() {
 	ssize_t recsize;
 	struct sockaddr_in rcvaddr;
 	int len  = sizeof rcvaddr;
-	int rlen = sizeof sdraddr;
+	int slen = sizeof sdraddr;
     
 	char buffer[1000];
 	memset(buffer, 0, sizeof buffer );
@@ -164,7 +164,7 @@ bool createServer() {
 		} else printf("selected...\n");
 		
 		if (FD_ISSET(sock, &fds)) {
-			recsize = recvfrom(sock, (void*) buffer, sizeof(buffer), 0, (struct sockaddr*) &sdraddr, &len);
+			recsize = recvfrom(sock, (void*) buffer, sizeof(buffer), 0, (struct sockaddr*) &sdraddr, &slen);
 		
 			if (recsize <= 0) {
 				printf("did not receive any data.\n");
@@ -180,7 +180,7 @@ bool createServer() {
 			}
 			
 			memset(buffer, 0, sizeof(buffer));
-		}
+		} else printf("problem\n");
 		
 		memset(buffer, 0, sizeof(buffer));
 	}
