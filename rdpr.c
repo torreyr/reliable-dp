@@ -150,18 +150,29 @@ bool createServer() {
 	
 	while (1) {
 		
-		printf("receiving...");
-		recsize = recvfrom(sock, (void*) buffer, sizeof(buffer), 0, (struct sockaddr*) &sdraddr, &len);
-		
-		if (recsize < 0) {
-			printf("did not receive any data.\n");
-			close(sock);
+		if (select(sock + 1, &fds, NULL, NULL, NULL) < 0) {   
+			printf("Error with select. Closing the socket.\n");
+            close(sock);
+            return false;
 		}
 		
-		if (strcmp(sdr_ip, "") == 0) {
-			sdr_port = ntohs(sdraddr.sin_port);
-			sdr_ip   = inet_ntoa(sdraddr.sin_addr);
+		if (FD_ISSET(sock, &fds)) {
+			recsize = recvfrom(sock, (void*) buffer, sizeof(buffer), 0, (struct sockaddr*) &sdraddr, &len);
+		
+			if (recsize < 0) {
+				printf("did not receive any data.\n");
+				close(sock);
+			}
+			
+			if (strcmp(sdr_ip, "") == 0) {
+				sdr_port = ntohs(sdraddr.sin_port);
+				sdr_ip   = inet_ntoa(sdraddr.sin_addr);
+			}
+			
+			memset(buffer, 0, sizeof(buffer));
 		}
+		
+		memset(buffer, 0, sizeof(buffer));
 	}
 	
 }
