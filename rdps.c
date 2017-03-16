@@ -32,6 +32,7 @@ int rcv_port;
 int portnum;
 char* sdr_ip;
 char* rcv_ip;
+struct sockaddr_in rcvaddr;
 
 // ------- CONSOLE ------- //
 void howto() {
@@ -128,6 +129,7 @@ bool checkArguments(int argc, char* argv[]) {
 }
 
 bool createServer() {
+    fd_set fds;
 	struct sockaddr_in sdraddr;
     const int len = sizeof(sdraddr);
 	
@@ -160,7 +162,45 @@ bool createServer() {
         return false;
     }
 	
+	// Reset file descriptors.
+	FD_ZERO(&fds);
+	FD_SET(sock, &fds);
+	FD_SET(0, &fds);
+	
+	rcvaddr.sin_family 		= AF_INET;
+	rcvaddr.sin_addr.s_addr = inet_addr(rcv_ip);
+	rcvaddr.sin_port 		= htons(rcv_port);
+	
+	char buffer[1024];
+	strcpy("Does this work?", buffer);
+	
+	sendto(sock, buffer, sizeof buffer, 0, (struct sockaddr*) &rcvaddr, sizeof rcvaddr);
 }
+
+/*
+int sendResponse(int sock, char* data) {
+    int d_len = strlen(data);
+	char packet[1024];
+
+    if (d_len > 1024) {
+		int offset = 0;
+		
+		// Create packets.
+        while(offset < d_len) {
+			memset(packet, 0, 1024);
+			strncpy(packet, data + offset, 1024);
+			if (sendto(sock, 
+                       packet, 
+                       1024, 
+                       0, 
+                       (struct sockaddr*) &client_addr, 
+                       sizeof(client_addr)) == -1) return -1;
+			else offset = offset + 1024;
+        }
+		
+        return 0;
+    } else return sendto(sock, data, d_len, 0, (struct sockaddr*) &client_addr, sizeof(client_addr));
+}*/
 
 // MAIN
 int main(int argc, char* argv[]) {	
