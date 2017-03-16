@@ -4,6 +4,7 @@
 #include <unistd.h>
 #include <netdb.h>
 #include <time.h>
+#include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -113,7 +114,13 @@ bool checkArguments(int argc, char* argv[]) {
 }
 
 bool createServer() {
+    fd_set fds;
+	ssize_t recsize;
 	struct sockaddr_in rcvaddr;
+	int len = sizeof(rcvaddr);
+    
+	char buffer[1000];
+	memset(buffer, 0, sizeof(buffer));
 	
 	// Create socket.
     int sock = socket(PF_INET, SOCK_DGRAM, IPPROTO_UDP);
@@ -122,9 +129,28 @@ bool createServer() {
 		return false;
 	}
 	
+	// Set socket options so that the address is reusable.
+	int opt = 1;
+    if (setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, (char*) &opt, sizeof(opt)) == -1) {
+        printf("Problem setting socket options. Closing the socket.\n%s\n", strerror(errno));
+        return false;
+    }
+	
+    memset(&rcvaddr, 0, len);
+	
 	rcvaddr.sin_family      = AF_INET;
-    rcvaddr.sin_addr.s_addr = htonl(INADDR_ANY);
-    rcvaddr.sin_port        = htons(rcv_port); 
+    rcvaddr.sin_addr.s_addr = inet_addr(rcv_ip);
+    rcvaddr.sin_port        = htons(rcv_port);
+	
+	printf("ready...\n");
+	while(1) {
+		recsize = recvfrom(sock, (void*) buffer, sizeof(buffer), 0, (struct sockaddr*) &rcvaddr, &len);
+		if (recsize < 0) {
+			fprintf(stderr, "%s\n", strerror(errno));
+			exit(EXIT_FAILURE);
+		}
+	}
+	
 }
 
 // MAIN

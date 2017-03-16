@@ -140,7 +140,7 @@ bool createServer() {
 		return false;
 	}
 	
-	// Set socket options.
+	// Set socket options so that the address is reusable.
 	int opt = 1;
     if (setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, (char*) &opt, sizeof(opt)) == -1) {
         printf("Problem setting socket options. Closing the socket.");
@@ -150,7 +150,7 @@ bool createServer() {
     memset(&sdraddr, 0, len);
 	
 	sdraddr.sin_family      = AF_INET;
-    sdraddr.sin_addr.s_addr = inet_addr(sdr_ip);//inet_aton(sdr_ip, &sdraddr.sin_addr);
+    sdraddr.sin_addr.s_addr = inet_addr(sdr_ip);
     sdraddr.sin_port        = htons(sdr_port);
 	
 	// Bind socket.
