@@ -147,6 +147,13 @@ bool createServer() {
     rcvaddr.sin_addr.s_addr = inet_addr(rcv_ip);
     rcvaddr.sin_port        = htons(rcv_port);
 	
+	// Bind socket.
+    if ((bind(sock, (struct sockaddr *) &rcvaddr, len)) != 0) {
+        printf("Couldn't bind socket. Closing the socket.\n%s\n", strerror(errno));
+        close(sock);
+        return false;
+    }
+	
 	printf("ready...\n");
 	
 	while (1) {
@@ -166,7 +173,7 @@ bool createServer() {
 		} else printf("selected...\n");
 		
 		if (FD_ISSET(sock, &fds)) {
-			recsize = recvfrom(sock, (void*) buffer, sizeof(buffer), 0, (struct sockaddr*) &rcvaddr, &slen);
+			recsize = recvfrom(sock, (void*) buffer, sizeof(buffer), 0, (struct sockaddr*) &sdraddr, &slen);
 		
 			if (recsize <= 0) {
 				printf("did not receive any data.\n");
