@@ -153,11 +153,13 @@ bool createServer() {
         // Reset file descriptors.
         FD_ZERO(&fds);
         FD_SET(sock, &fds);
+		struct timeval timeout;
+		timeout.tv_sec = 3;
 		
 		printf("hello\n");
 		printf("wazzup\n");
 		
-		if (select(sock + 1, &fds, NULL, NULL, NULL) < 0) {   
+		if (select(sock + 1, &fds, NULL, NULL, &timeout) < 0) {   
 			printf("Error with select. Closing the socket.\n");
             close(sock);
             return false;
