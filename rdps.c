@@ -174,7 +174,11 @@ bool createServer() {
 	char buffer[1024];
 	strcpy(buffer, "Does this work?");
 	
-	sendto(sock, buffer, sizeof buffer, 0, (struct sockaddr*) &rcvaddr, sizeof rcvaddr);
+	printf("trying to send...");
+	
+	if ( sendto(sock, &buffer, sizeof buffer, 0, (struct sockaddr*) &rcvaddr, sizeof rcvaddr) == -1 ) {
+		printf("problem sending\n");
+	}
 }
 
 /*
