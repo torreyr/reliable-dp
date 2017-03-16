@@ -154,7 +154,8 @@ bool createServer() {
         FD_ZERO(&fds);
         FD_SET(sock, &fds);
 		
-		printf("hello");
+		printf("hello\n");
+		printf("wazzup\n");
 		
 		if (select(sock + 1, &fds, NULL, NULL, NULL) < 0) {   
 			printf("Error with select. Closing the socket.\n");
