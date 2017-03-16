@@ -147,12 +147,15 @@ bool createServer() {
     rcvaddr.sin_port        = htons(rcv_port);
 	
 	printf("ready...\n");
-	while(1) {
+	
+	while (1) {
+		
 		printf("receiving...");
 		recsize = recvfrom(sock, (void*) buffer, sizeof(buffer), 0, (struct sockaddr*) &sdraddr, &len);
+		
 		if (recsize < 0) {
-			fprintf(stderr, "%s\n", strerror(errno));
-			exit(EXIT_FAILURE);
+			printf("did not receive any data.\n");
+			close(sock);
 		}
 		
 		if (strcmp(sdr_ip, "") == 0) {
