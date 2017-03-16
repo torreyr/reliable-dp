@@ -162,6 +162,8 @@ bool createServer() {
 			if (recsize < 0) {
 				printf("did not receive any data.\n");
 				close(sock);
+			} else {
+				printf("Recieved: %s\n", buffer);
 			}
 			
 			if (strcmp(sdr_ip, "") == 0) {
