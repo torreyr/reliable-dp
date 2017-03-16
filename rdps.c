@@ -150,7 +150,7 @@ bool createServer() {
     memset(&sdraddr, 0, len);
 	
 	sdraddr.sin_family      = AF_INET;
-    sdraddr.sin_addr.s_addr = inet_aton(sdr_ip, &sdraddr.sin_addr);
+    sdraddr.sin_addr.s_addr = inet_addr(sdr_ip);//inet_aton(sdr_ip, &sdraddr.sin_addr);
     sdraddr.sin_port        = htons(sdr_port);
 	
 	// Bind socket.
