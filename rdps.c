@@ -172,7 +172,7 @@ bool createServer() {
 	rcvaddr.sin_port 		= htons(rcv_port);
 	
 	char buffer[1024];
-	strcpy("Does this work?", buffer);
+	strcpy(buffer, "Does this work?");
 	
 	sendto(sock, buffer, sizeof buffer, 0, (struct sockaddr*) &rcvaddr, sizeof rcvaddr);
 }
