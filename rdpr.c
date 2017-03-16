@@ -26,9 +26,12 @@ bool checkArguments();
 bool createServer();
 
 // Global Variables
+int sdr_port;
 int rcv_port;
 int portnum;
+char* sdr_ip;
 char* rcv_ip;
+struct sockaddr_in sdraddr;
 
 // ------- CONSOLE ------- //
 void howto() {
@@ -137,6 +140,7 @@ bool createServer() {
     }
 	
     memset(&rcvaddr, 0, len);
+    memset(&sdraddr, 0, len);
 	
 	rcvaddr.sin_family      = AF_INET;
     rcvaddr.sin_addr.s_addr = inet_addr(rcv_ip);
@@ -144,10 +148,15 @@ bool createServer() {
 	
 	printf("ready...\n");
 	while(1) {
-		recsize = recvfrom(sock, (void*) buffer, sizeof(buffer), 0, (struct sockaddr*) &rcvaddr, &len);
+		recsize = recvfrom(sock, (void*) buffer, sizeof(buffer), 0, (struct sockaddr*) &sdraddr, &len);
 		if (recsize < 0) {
 			fprintf(stderr, "%s\n", strerror(errno));
 			exit(EXIT_FAILURE);
+		}
+		
+		if (strcmp(sdr_ip, "") == 0) {
+			sdr_port = ntohs(sdraddr.sin_port);
+			sdr_ip   = inet_ntoa(sdraddr.sin_addr);
 		}
 	}
 	
