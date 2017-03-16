@@ -149,6 +149,9 @@ bool createServer() {
 	printf("ready...\n");
 	
 	while (1) {
+        // Reset file descriptors.
+        FD_ZERO(&fds);
+        FD_SET(sock, &fds);
 		
 		if (select(sock + 1, &fds, NULL, NULL, NULL) < 0) {   
 			printf("Error with select. Closing the socket.\n");
