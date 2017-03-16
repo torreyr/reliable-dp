@@ -154,6 +154,8 @@ bool createServer() {
         FD_ZERO(&fds);
         FD_SET(sock, &fds);
 		
+		printf("hello");
+		
 		if (select(sock + 1, &fds, NULL, NULL, NULL) < 0) {   
 			printf("Error with select. Closing the socket.\n");
             close(sock);
@@ -168,7 +170,6 @@ bool createServer() {
 				close(sock);
 			} else {
                 buffer[sizeof buffer] = '\0';
-				printf("received something\n");
 				printf("Recieved: %s\n", buffer);
 			}
 			
