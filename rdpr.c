@@ -124,7 +124,7 @@ bool createServer() {
 	int rlen = sizeof sdraddr;
     
 	char buffer[1000];
-	memset(buffer, 0, sizeof(buffer));
+	memset(buffer, 0, sizeof buffer );
 	
 	// Create socket.
     int sock = socket(PF_INET, SOCK_DGRAM, IPPROTO_UDP);
@@ -168,6 +168,7 @@ bool createServer() {
 				close(sock);
 			} else {
                 buffer[sizeof buffer] = '\0';
+				printf("received something\n");
 				printf("Recieved: %s\n", buffer);
 			}
 			
