@@ -148,6 +148,7 @@ bool createServer() {
 	
 	printf("ready...\n");
 	while(1) {
+		printf("receiving...");
 		recsize = recvfrom(sock, (void*) buffer, sizeof(buffer), 0, (struct sockaddr*) &sdraddr, &len);
 		if (recsize < 0) {
 			fprintf(stderr, "%s\n", strerror(errno));
