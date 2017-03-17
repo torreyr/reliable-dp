@@ -163,14 +163,11 @@ bool createServer() {
 		struct timeval timeout;
 		timeout.tv_sec = 3;
 		
-		printf("hello\n");
-		printf("wazzup\n");
-		
 		if (select(sock + 1, &fds, NULL, NULL, &timeout) < 0) {   
 			printf("Error with select. Closing the socket.\n");
             close(sock);
             return false;
-		} else printf("selected...\n");
+		}
 		
 		if (FD_ISSET(sock, &fds)) {
 			recsize = recvfrom(sock, (void*) buffer, sizeof(buffer), 0, (struct sockaddr*) &sdraddr, &slen);
@@ -183,11 +180,10 @@ bool createServer() {
 				printf("Recieved: %s\n", buffer);
 			}
 			
-			/*
-			if (strcmp(sdr_ip, "") == 0) {
+			if (strcmp(sdr_ip, "\0") == 0) {
 				sdr_port = ntohs(sdraddr.sin_port);
 				sdr_ip   = inet_ntoa(sdraddr.sin_addr);
-			}*/
+			}
 			
 			memset(buffer, 0, sizeof(buffer));
 		} else printf("problem\n");
