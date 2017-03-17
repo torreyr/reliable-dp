@@ -29,8 +29,8 @@ bool createServer();
 int sdr_port;
 int rcv_port;
 int portnum;
-char* sdr_ip;
 char* rcv_ip;
+char* sdr_ip = NULL;
 struct sockaddr_in sdraddr;
 
 // ------- CONSOLE ------- //
@@ -181,7 +181,7 @@ bool createServer() {
 				printf("Recieved: %s\n", buffer);
 			}
 			
-			if (sdr_ip[0] == '\0') {
+			if (sdr_ip == NULL) {
 				sdr_port = ntohs(sdraddr.sin_port);
 				sdr_ip   = inet_ntoa(sdraddr.sin_addr);
 			}
