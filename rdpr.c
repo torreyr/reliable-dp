@@ -154,6 +154,8 @@ bool createServer() {
         return false;
     }
 	
+	struct timeval timeout;
+	timeout.tv_sec = 2;
 	
 	while (1) {
 		printf("ready...\n");
@@ -161,33 +163,30 @@ bool createServer() {
         // Reset file descriptors.
         FD_ZERO(&fds);
         FD_SET(sock, &fds);
-		struct timeval timeout;
-		timeout.tv_sec = 2;
 		
 		if (select(sock + 1, &fds, NULL, NULL, &timeout) < 0) {   
 			printf("Error with select. Closing the socket.\n");
             close(sock);
             return false;
-		} else {
+		}
 		
-			if (FD_ISSET(sock, &fds)) {
-				recsize = recvfrom(sock, (void*) buffer, sizeof(buffer), 0, (struct sockaddr*) &sdraddr, &slen);
-			
-				if (recsize <= 0) {
-					printf("did not receive any data.\n");
-					close(sock);
-				} else {
-					buffer[sizeof buffer] = '\0';
-					printf("Received: %s\n", buffer);
-				}
-				
-				if (sdr_ip == NULL) {
-					sdr_port = ntohs(sdraddr.sin_port);
-					sdr_ip   = inet_ntoa(sdraddr.sin_addr);
-				}
-				
-				memset(buffer, 0, sizeof(buffer));
+		if (FD_ISSET(sock, &fds)) {
+			recsize = recvfrom(sock, (void*) buffer, sizeof(buffer), 0, (struct sockaddr*) &sdraddr, &slen);
+		
+			if (recsize <= 0) {
+				printf("did not receive any data.\n");
+				close(sock);
+			} else {
+                buffer[sizeof buffer] = '\0';
+				printf("Received: %s\n", buffer);
 			}
+			
+			if (sdr_ip == NULL) {
+				sdr_port = ntohs(sdraddr.sin_port);
+				sdr_ip   = inet_ntoa(sdraddr.sin_addr);
+			}
+			
+			memset(buffer, 0, sizeof(buffer));
 		}
 		
 		memset(buffer, 0, sizeof(buffer));
