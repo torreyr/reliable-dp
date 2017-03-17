@@ -181,7 +181,7 @@ bool createServer() {
 				printf("Recieved: %s\n", buffer);
 			}
 			
-			if (sdr_ip == '\0') {
+			if (sdr_ip[0] == '\0') {
 				sdr_port = ntohs(sdraddr.sin_port);
 				sdr_ip   = inet_ntoa(sdraddr.sin_addr);
 			}
