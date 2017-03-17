@@ -178,7 +178,7 @@ bool createServer() {
 				close(sock);
 			} else {
                 buffer[sizeof buffer] = '\0';
-				printf("Recieved: %s\n", buffer);
+				printf("Received: %s\n", buffer);
 			}
 			
 			if (sdr_ip == NULL) {
@@ -187,7 +187,7 @@ bool createServer() {
 			}
 			
 			memset(buffer, 0, sizeof(buffer));
-		} else printf("problem\n");
+		}
 		
 		memset(buffer, 0, sizeof(buffer));
 	}
