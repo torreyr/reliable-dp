@@ -183,10 +183,11 @@ bool createServer() {
 				printf("Recieved: %s\n", buffer);
 			}
 			
+			/*
 			if (strcmp(sdr_ip, "") == 0) {
 				sdr_port = ntohs(sdraddr.sin_port);
 				sdr_ip   = inet_ntoa(sdraddr.sin_addr);
-			}
+			}*/
 			
 			memset(buffer, 0, sizeof(buffer));
 		} else printf("problem\n");
