@@ -168,7 +168,7 @@ bool createServer() {
 			printf("Error with select. Closing the socket.\n");
             close(sock);
             return false;
-		}
+		} else timeout.tv_sec = 2;
 		
 		if (FD_ISSET(sock, &fds)) {
 			recsize = recvfrom(sock, (void*) buffer, sizeof(buffer), 0, (struct sockaddr*) &sdraddr, &slen);
