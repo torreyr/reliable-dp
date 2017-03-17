@@ -168,7 +168,7 @@ bool createServer() {
 			printf("Error with select. Closing the socket.\n");
             close(sock);
             return false;
-		} else timeout.tv_sec = 2;
+		}
 		
 		if (FD_ISSET(sock, &fds)) {
 			recsize = recvfrom(sock, (void*) buffer, sizeof(buffer), 0, (struct sockaddr*) &sdraddr, &slen);
@@ -179,12 +179,13 @@ bool createServer() {
 			} else {
                 buffer[sizeof buffer] = '\0';
 				printf("Received: %s\n", buffer);
+				
+				if (sdr_ip == NULL) {
+					sdr_port = ntohs(sdraddr.sin_port);
+					sdr_ip   = inet_ntoa(sdraddr.sin_addr);
+				}
 			}
 			
-			if (sdr_ip == NULL) {
-				sdr_port = ntohs(sdraddr.sin_port);
-				sdr_ip   = inet_ntoa(sdraddr.sin_addr);
-			}
 			
 			memset(buffer, 0, sizeof(buffer));
 		}
