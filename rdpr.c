@@ -154,9 +154,10 @@ bool createServer() {
         return false;
     }
 	
-	printf("ready...\n");
 	
 	while (1) {
+		printf("ready...\n");
+		
         // Reset file descriptors.
         FD_ZERO(&fds);
         FD_SET(sock, &fds);
@@ -180,7 +181,7 @@ bool createServer() {
 				printf("Recieved: %s\n", buffer);
 			}
 			
-			if (strcmp(sdr_ip, "\0") == 0) {
+			if (sdr_ip == '\0') {
 				sdr_port = ntohs(sdraddr.sin_port);
 				sdr_ip   = inet_ntoa(sdraddr.sin_addr);
 			}
