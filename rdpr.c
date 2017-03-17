@@ -155,14 +155,14 @@ bool createServer() {
     }
 	
 	struct timeval timeout;
-	timeout.tv_sec = 2;
 	
 	while (1) {
 		printf("ready...\n");
 		
-        // Reset file descriptors.
+        // Reset file descriptors and timeout.
         FD_ZERO(&fds);
         FD_SET(sock, &fds);
+		timeout.tv_sec = 2;
 		
 		if (select(sock + 1, &fds, NULL, NULL, &timeout) < 0) {   
 			printf("Error with select. Closing the socket.\n");
