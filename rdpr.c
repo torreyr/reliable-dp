@@ -187,6 +187,7 @@ bool createServer() {
 				close(sock);
 			} else {
                 buffer[sizeof buffer] = '\0';
+				printLogMessage();
 				printf("Received: %s\n", buffer);
 				
 				if (sdr_ip == NULL) {
