@@ -15,6 +15,8 @@
  * tcp_client.c from Lab 2:
  *		https://connex.csc.uvic.ca/access/.../tcp_client.c
  * sws.c from the first programming assignment
+ * Beej's Guide to Network Programming:
+ *      http://beej.us/guide/bgnet
  *---------------------------------------------*/
 
 // Functions
@@ -66,11 +68,18 @@ bool isPort(char* str) {
 char* getTime() {
     char* buffer = malloc(20);
     time_t curtime;
+	struct timeval timenow;
 	struct tm* times;
 	
 	time(&curtime);
     times = localtime(&curtime);
-    strftime(buffer, 30, "%T", times);
+	
+	gettimeofday(&timenow, NULL);
+	int milli = timenow.tv_usec/1000;
+	
+	strftime(buffer, 30, "%T", times);
+	strcat(buffer, ".");
+	sprintf(buffer, "%s%d", buffer, milli);
 	return buffer;
 }
 
@@ -90,7 +99,6 @@ bool checkArguments(int argc, char* argv[]) {
 	rcv_ip = argv[1];
 	printf("Receiver IP:\t%s\n", rcv_ip);
 
-	
 	// Check if valid port number.
     if (!isPort(argv[2])) {
         printf("\nInvalid port number. Exiting the program.\n");
@@ -141,7 +149,7 @@ bool createServer() {
     }
 	
     memset(&rcvaddr, 0, len);
-    memset(&sdraddr, 0, len);
+    memset(&sdraddr, 0, slen);
 	
 	rcvaddr.sin_family      = AF_INET;
     rcvaddr.sin_addr.s_addr = inet_addr(rcv_ip);
@@ -154,6 +162,7 @@ bool createServer() {
         return false;
     }
 	
+	struct timeval timeout;
 	
 	while (1) {
 		printf("ready...\n");
@@ -162,7 +171,6 @@ bool createServer() {
         FD_ZERO(&fds);
         FD_SET(sock, &fds);
 		
-		struct timeval timeout;
 		timeout.tv_sec = 2;
 		
 		if (select(sock + 1, &fds, NULL, NULL, &timeout) < 0) {   

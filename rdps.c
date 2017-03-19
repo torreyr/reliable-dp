@@ -15,6 +15,8 @@
  * tcp_server.c from Lab 2:
  *		https://connex.csc.uvic.ca/access/.../tcp_server.c
  * sws.c from the first programming assignment
+ * Beej's Guide to Network Programming:
+ *      http://beej.us/guide/bgnet
  *---------------------------------------------*/
 
 // Functions
