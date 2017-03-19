@@ -213,4 +213,5 @@ int main(int argc, char* argv[]) {
 
 
 // tc qdisc show
+// tc qdisc add dev br0 root netem drop 10%
 // tc qdisc del dev br0 root netem drop 10%
