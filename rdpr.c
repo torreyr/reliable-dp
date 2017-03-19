@@ -154,7 +154,6 @@ bool createServer() {
         return false;
     }
 	
-	struct timeval timeout;
 	
 	while (1) {
 		printf("ready...\n");
@@ -162,13 +161,15 @@ bool createServer() {
         // Reset file descriptors and timeout.
         FD_ZERO(&fds);
         FD_SET(sock, &fds);
+		
+		struct timeval timeout;
 		timeout.tv_sec = 2;
 		
 		if (select(sock + 1, &fds, NULL, NULL, &timeout) < 0) {   
 			printf("Error with select. Closing the socket.\n");
             close(sock);
             return false;
-		} else printf("selected\n");
+		}
 		
 		if (FD_ISSET(sock, &fds)) {
 			recsize = recvfrom(sock, (void*) buffer, sizeof(buffer), 0, (struct sockaddr*) &sdraddr, &slen);
@@ -185,7 +186,6 @@ bool createServer() {
 					sdr_ip   = inet_ntoa(sdraddr.sin_addr);
 				}
 			}
-			
 			
 			memset(buffer, 0, sizeof(buffer));
 		}
