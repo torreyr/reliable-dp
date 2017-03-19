@@ -45,7 +45,7 @@ void howto() {
  */
 void printLogMessage() {
 	char* time = getTime();
-    printf("%s %s:%d\n\n", time, rcv_ip, rcv_port);
+    printf("%s %s:%d %s:%d\n", time, sdr_ip, sdr_port, rcv_ip, rcv_port);
 	free(time);
 }
 
