@@ -74,10 +74,16 @@ char* getTime() {
     char* buffer = malloc(20);
     time_t curtime;
 	struct tm* times;
+	struct timeval timenow;
 	
 	time(&curtime);
-    times = localtime(&curtime);
-    strftime(buffer, 30, "%T", times);
+    times = localtime(&curtime);	
+	gettimeofday(&timenow, NULL);
+	int milli = timenow.tv_usec/1000;
+	
+	strftime(buffer, 30, "%T", times);
+	strcat(buffer, ".");
+	sprintf(buffer, "%s%d", buffer, milli);
 	return buffer;
 }
 

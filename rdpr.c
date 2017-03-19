@@ -35,6 +35,7 @@ char* rcv_ip;
 char* sdr_ip = NULL;
 struct sockaddr_in sdraddr;
 
+
 // ------- CONSOLE ------- //
 void howto() {
     printf("Correct syntax: ./rdpr <receiver_ip> <receiver_port> <receiver_file_name>\n\n");
@@ -68,18 +69,18 @@ bool isPort(char* str) {
 char* getTime() {
     char* buffer = malloc(20);
     time_t curtime;
-	struct timeval timenow;
 	struct tm* times;
+	struct timeval timenow;
 	
 	time(&curtime);
     times = localtime(&curtime);
 	
 	gettimeofday(&timenow, NULL);
-	int milli = timenow.tv_usec/1000;
+	int micro = timenow.tv_usec;
 	
 	strftime(buffer, 30, "%T", times);
 	strcat(buffer, ".");
-	sprintf(buffer, "%s%d", buffer, milli);
+	sprintf(buffer, "%s%d", buffer, micro);
 	return buffer;
 }
 
@@ -87,13 +88,13 @@ char* getTime() {
  *	Checks command line arguments for correct syntax.
  */
 bool checkArguments(int argc, char* argv[]) {    
+	printf("\n");
+	
 	if (argc < 4) {
-		printf("\nIncorrect syntax.\n");
+		printf("Incorrect syntax.\n");
         howto();
 		return false;
 	}
-    
-	printf("\n");
 
 	// Check if valid IP address.
 	rcv_ip = argv[1];
@@ -118,12 +119,12 @@ bool checkArguments(int argc, char* argv[]) {
 	printf("Expected file:\t%s\n", argv[3]);
     printf("\n");
 	
-	printf("\nSample log message:\n");
-	printLogMessage();
-	
 	return true;
 }
 
+/*
+ *	Creates and binds the socket, and waits to receive packets.
+ */
 bool createServer() {
     fd_set fds;
 	ssize_t recsize;
@@ -132,7 +133,7 @@ bool createServer() {
 	int slen = sizeof sdraddr;
     
 	char buffer[1000];
-	memset(buffer, 0, sizeof buffer );
+	memset(buffer, 0, sizeof buffer);
 	
 	// Create socket.
     int sock = socket(PF_INET, SOCK_DGRAM, IPPROTO_UDP);
@@ -143,7 +144,7 @@ bool createServer() {
 	
 	// Set socket options so that the address is reusable.
 	int opt = 1;
-    if (setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, (char*) &opt, sizeof(opt)) == -1) {
+    if (setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, (char*) &opt, sizeof opt) == -1) {
         printf("Problem setting socket options. Closing the socket.\n%s\n", strerror(errno));
         return false;
     }
@@ -180,7 +181,7 @@ bool createServer() {
 		}
 		
 		if (FD_ISSET(sock, &fds)) {
-			recsize = recvfrom(sock, (void*) buffer, sizeof(buffer), 0, (struct sockaddr*) &sdraddr, &slen);
+			recsize = recvfrom(sock, (void*) buffer, sizeof buffer, 0, (struct sockaddr*) &sdraddr, &slen);
 		
 			if (recsize <= 0) {
 				printf("did not receive any data.\n");
@@ -197,10 +198,10 @@ bool createServer() {
 				printLogMessage();
 			}
 			
-			memset(buffer, 0, sizeof(buffer));
+			memset(buffer, 0, sizeof buffer);
 		}
 		
-		memset(buffer, 0, sizeof(buffer));
+		memset(buffer, 0, sizeof buffer);
 	}
 	
 }
