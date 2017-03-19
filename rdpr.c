@@ -187,13 +187,14 @@ bool createServer() {
 				close(sock);
 			} else {
                 buffer[sizeof buffer] = '\0';
-				printLogMessage();
 				printf("Received: %s\n", buffer);
 				
 				if (sdr_ip == NULL) {
 					sdr_port = ntohs(sdraddr.sin_port);
 					sdr_ip   = inet_ntoa(sdraddr.sin_addr);
 				}
+				
+				printLogMessage();
 			}
 			
 			memset(buffer, 0, sizeof(buffer));
