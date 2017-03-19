@@ -18,3 +18,8 @@
    How to use timer? How many timers do you use?
    How to repond to the events at the sender and receiver side?
    How to ensure reliable data transfer?
+   
+   
+   
+Only support one flag at a time.
+Have an extra field in the header for if the packet is a resent packet.

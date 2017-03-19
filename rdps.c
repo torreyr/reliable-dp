@@ -35,6 +35,14 @@ int portnum;
 char* sdr_ip;
 char* rcv_ip;
 struct sockaddr_in rcvaddr;
+struct Header {
+	char magic[6];
+	char type[3];
+	int seq_num;
+	int ack_num;
+	int data_len;
+	int window_size;
+} header;
 
 // ------- CONSOLE ------- //
 void howto() {
@@ -79,22 +87,22 @@ char* getTime() {
 	time(&curtime);
     times = localtime(&curtime);	
 	gettimeofday(&timenow, NULL);
-	int milli = timenow.tv_usec/1000;
+	int micro = timenow.tv_usec;
 	
 	strftime(buffer, 30, "%T", times);
 	strcat(buffer, ".");
-	sprintf(buffer, "%s%d", buffer, milli);
+	sprintf(buffer, "%s%d", buffer, micro);
 	return buffer;
 }
 
 bool checkArguments(int argc, char* argv[]) {    
+	printf("\n");
+	
 	if (argc < 6) {
-		printf("\nIncorrect syntax.\n");
+		printf("Incorrect syntax.\n");
         howto();
 		return false;
 	}
-	
-	printf("\n");
 
 	// Check if valid IP address.
 	sdr_ip = argv[1];
@@ -179,12 +187,19 @@ bool createServer() {
 	rcvaddr.sin_addr.s_addr = inet_addr(rcv_ip);
 	rcvaddr.sin_port 		= htons(rcv_port);
 	
-	char buffer[1024];
-	strcpy(buffer, "Does this work?");
+	// Set the header.
+	char data[1024];
+	strcpy(data, "Does this work?");
+	strcpy(header.magic, "CSC361");
+	strcpy(header.type, "SYN");
+	header.seq_num = 1;
+	header.ack_num = 0;
+	header.data_len = sizeof data;
+	header.window_size = 10;
 	
 	printf("trying to send...\n");
 	
-	if ( sendto(sock, &buffer, sizeof buffer, 0, (struct sockaddr*) &rcvaddr, sizeof rcvaddr) == -1 ) {
+	if ( sendto(sock, &data, sizeof data, 0, (struct sockaddr*) &rcvaddr, sizeof rcvaddr) == -1 ) {
 		printf("problem sending\n");
 	} else printf("successfully sent\n");
 }

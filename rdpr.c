@@ -34,6 +34,14 @@ int portnum;
 char* rcv_ip;
 char* sdr_ip = NULL;
 struct sockaddr_in sdraddr;
+struct Header {
+	char magic[6];
+	char type[3];
+	int seq_num;
+	int ack_num;
+	int data_len;
+	int window_size;
+} header;
 
 
 // ------- CONSOLE ------- //
@@ -208,7 +216,7 @@ bool createServer() {
 
 // MAIN
 int main(int argc, char* argv[]) {
-    if ( !checkArguments(argc, argv) ) return 0;
+    if ( !checkArguments(argc, argv) ) return 0;	
     if ( !createServer(argv) ) return 0;
 }
 
