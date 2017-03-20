@@ -200,11 +200,11 @@ bool createServer() {
 				
 				// Set header fields.
 				int i = 0;
-				char* tokens[6];
+				char tokens[6][1025];
 				char* token = strtok(buffer, ",");
 				while (token != NULL) {
 					printf("%s", token);
-					strcpy(&tokens[i], token);
+					strcpy(tokens[i], token);
 					token = strtok(NULL, ",");
 					i++;
 				}
