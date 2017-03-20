@@ -198,13 +198,14 @@ bool createServer() {
 	header.window_size = 10;
 	
 	char buffer[1024];
-	strcpy(buffer, header.magic);
-	strcat(buffer, header.type);
-	sprintf(buffer + strlen(buffer), "%d", header.seq_num);
-	sprintf(buffer + strlen(buffer), "%d", header.ack_num);
-	sprintf(buffer + strlen(buffer), "%d", header.data_len);
-	sprintf(buffer + strlen(buffer), "%d", header.window_size);
-	strcat(buffer, data);
+	sprintf(buffer, "%s,%s,%d,%d,%d,%d,%s", 
+		header.magic,
+		header.type,
+		header.seq_num,
+		header.ack_num,
+		header.data_len,
+		header.window_size
+	);
 	
 	printf("trying to send...\n");
 	printf("%s\n", buffer);
