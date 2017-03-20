@@ -204,7 +204,8 @@ bool createServer() {
 		header.seq_num,
 		header.ack_num,
 		header.data_len,
-		header.window_size
+		header.window_size,
+		data
 	);
 	
 	printf("trying to send...\n");
