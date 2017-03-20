@@ -198,10 +198,16 @@ bool createServer() {
 	header.window_size = 10;
 	
 	char buffer[1024];
-	sprintf(buffer, "%s", header);
+	strcpy(buffer, header.magic);
+	strcat(buffer, header.type);
+	sprintf(buffer, "%d", header.seq_num);
+	sprintf(buffer, "%d", header.ack_num);
+	sprintf(buffer, "%d", header.data_len);
+	sprintf(buffer, "%d", header.window_size);
 	strcat(buffer, data);
 	
 	printf("trying to send...\n");
+	printf("%s\n", buffer);
 	
 	if ( sendto(sock, &buffer, sizeof buffer, 0, (struct sockaddr*) &rcvaddr, sizeof rcvaddr) == -1 ) {
 		printf("problem sending\n");
