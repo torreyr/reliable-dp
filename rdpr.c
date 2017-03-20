@@ -209,7 +209,9 @@ bool createServer() {
 				}
 				
 				strncpy(header.magic, tokens[0], 6);
+				header.magic[7] = '\0';
 				strncpy(header.type,  tokens[1], 3);
+				header.type[4] = '\0';
 				header.seq_num     = atoi(tokens[2]);
 				header.ack_num     = atoi(tokens[3]);
 				header.data_len    = atoi(tokens[4]);
