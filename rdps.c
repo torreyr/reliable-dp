@@ -36,8 +36,8 @@ char* sdr_ip;
 char* rcv_ip;
 struct sockaddr_in rcvaddr;
 struct Header {
-	char magic[6];
-	char type[3];
+	char magic[7];
+	char type[4];
 	int seq_num;
 	int ack_num;
 	int data_len;
@@ -196,9 +196,6 @@ bool createServer() {
 	header.ack_num = 0;
 	header.data_len = sizeof data;
 	header.window_size = 10;
-	
-	printf("%s", header.magic);
-	printf("%s", header.type);
 	
 	char buffer[1024];
 	sprintf(buffer, "%s,%s,%d,%d,%d,%d,%s", 
