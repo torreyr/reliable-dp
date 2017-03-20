@@ -204,29 +204,21 @@ bool createServer() {
 				char* token = strtok(buffer, ",");
 				while (token != NULL) {
 					strcpy(tokens[i], token);
-					printf("%s\n", tokens[i]);
+					//printf("%s\n", tokens[i]);
 					token = strtok(NULL, ",");
 					i++;
 				}
 				
-				printf("%s\n", tokens[1]);
-				strcpy(header.type, tokens[1]);
-				//header.type[3] = '\0';
-				printf("%s\n", header.type);
-				
-				printf("%s\n", tokens[0]);
 				strcpy(header.magic, tokens[0]);
-				header.magic[6] = '\0';
-				printf("%s\n", header.magic);
-				
+				//header.magic[6] = '\0';
+				strcpy(header.type, tokens[1]);
+				//header.type[3] = '\0';				
 				header.seq_num     = atoi(tokens[2]);
 				header.ack_num     = atoi(tokens[3]);
 				header.data_len    = atoi(tokens[4]);
 				header.window_size = atoi(tokens[5]);
 				strcpy(buffer, tokens[6]);
 				buffer[header.data_len + 1] = '\0';
-				
-				printf("%s %s\n", header.magic, header.type);
 				
 				printf("Received stuff, split:\n%s %s %d %d %d %d %s\n", 
 					header.magic,
