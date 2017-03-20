@@ -209,17 +209,12 @@ bool createServer() {
 					i++;
 				}
 				
-				for (i = 0; i < sizeof tokens; i ++) {
-					printf("%s ", tokens[i]);
-				}
-				
-				/*
 				strcpy(header.magic, tokens[0]);
 				strcpy(header.type,  tokens[1]);
-				sprintf(header.seq_num,     "%d", tokens[2]);
-				sprintf(header.ack_num,     "%d", tokens[3]);
-				sprintf(header.data_len,    "%d", tokens[4]);
-				sprintf(header.window_size, "%d", tokens[5]);
+				header.seq_num     = atoi(tokens[2]);
+				header.ack_num     = atoi(tokens[3]);
+				header.data_len    = atoi(tokens[4]);
+				header.window_size = atoi(tokens[5]);
 				strcpy(buffer, tokens[6]);
 				buffer[header.data_len + 1] = '\0';
 				
@@ -232,7 +227,6 @@ bool createServer() {
 					header.window_size,
 					buffer
 				);
-				*/
 				
 				if (sdr_ip == NULL) {
 					sdr_port = ntohs(sdraddr.sin_port);
