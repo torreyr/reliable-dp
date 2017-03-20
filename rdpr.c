@@ -204,7 +204,7 @@ bool createServer() {
 				char* token = strtok(buffer, ",");
 				while (token != NULL) {
 					printf("%s", token);
-					strcpy(tokens[i], token);
+					strcpy(&tokens[i], token);
 					token = strtok(NULL, ",");
 					i++;
 				}
