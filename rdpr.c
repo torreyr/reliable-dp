@@ -200,7 +200,7 @@ bool createServer() {
 				
 				// Set header fields.
 				int i = 0;
-				char tokens[6][1025];
+				char tokens[6][1024];
 				char* token = strtok(buffer, ",");
 				while (token != NULL) {
 					strcpy(tokens[i], token);
@@ -208,8 +208,8 @@ bool createServer() {
 					i++;
 				}
 				
-				strcpy(header.magic, tokens[0]);
-				strcpy(header.type,  tokens[1]);
+				strncpy(header.magic, tokens[0], 6);
+				strncpy(header.type,  tokens[1], 3);
 				header.seq_num     = atoi(tokens[2]);
 				header.ack_num     = atoi(tokens[3]);
 				header.data_len    = atoi(tokens[4]);
