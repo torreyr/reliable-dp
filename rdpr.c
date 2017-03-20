@@ -212,7 +212,7 @@ bool createServer() {
 				printf("%s\n", tokens[0]);
 				
 				strcpy(header.magic, tokens[0]);
-				header.magic[7] = '\0';
+				header.magic[6] = '\0';
 				
 				printf("%s\n", header.magic);
 				printf("%s\n", tokens[1]);
@@ -229,7 +229,6 @@ bool createServer() {
 				strcpy(buffer, tokens[6]);
 				buffer[header.data_len + 1] = '\0';
 				
-				printf("%d", sizeof header.magic);
 				printf("%s %s\n", header.magic, header.type);
 				
 				printf("Received stuff, split:\n%s %s %d %d %d %d %s\n", 
