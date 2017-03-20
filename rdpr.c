@@ -210,17 +210,16 @@ bool createServer() {
 				}
 				
 				printf("%s\n", tokens[0]);
-				
 				strcpy(header.magic, tokens[0]);
-				header.magic[6] = '\0';
+				//header.magic[6] = '\0';
+				printf("%s\n", header.magic);
+				
+				printf("%s\n", tokens[1]);
+				strcpy(header.type,  tokens[1]);
+				//header.type[3] = '\0';
+				printf("%s\n", header.type);
 				
 				printf("%s\n", header.magic);
-				printf("%s\n", tokens[1]);
-				
-				strcpy(header.type,  tokens[1]);
-				header.type[3] = '\0';
-				
-				printf("%s\n", header.type);
 				
 				header.seq_num     = atoi(tokens[2]);
 				header.ack_num     = atoi(tokens[3]);
@@ -229,8 +228,6 @@ bool createServer() {
 				strcpy(buffer, tokens[6]);
 				buffer[header.data_len + 1] = '\0';
 				
-				printf("%s\n", header.magic);
-				printf("%s\n", header.type);
 				printf("%s %s\n", header.magic, header.type);
 				
 				printf("Received stuff, split:\n%s %s %d %d %d %d %s\n", 
