@@ -198,6 +198,41 @@ bool createServer() {
                 buffer[sizeof buffer] = '\0';
 				printf("Received: %s\n", buffer);
 				
+				// Set header fields.
+				int i = 0;
+				char* tokens[6];
+				char* token = strtok(buffer, ",");
+				while (token != NULL) {
+					strcpy(tokens[i], token);
+					token = strtok(NULL, ",");
+					i++;
+				}
+				
+				for (i = 0; i < sizeof tokens; i ++) {
+					printf("%s ", tokens[i]);
+				}
+				
+				/*
+				strcpy(header.magic, tokens[0]);
+				strcpy(header.type,  tokens[1]);
+				sprintf(header.seq_num,     "%d", tokens[2]);
+				sprintf(header.ack_num,     "%d", tokens[3]);
+				sprintf(header.data_len,    "%d", tokens[4]);
+				sprintf(header.window_size, "%d", tokens[5]);
+				strcpy(buffer, tokens[6]);
+				buffer[header.data_len + 1] = '\0';
+				
+				printf("Received stuff, split:\n%s,%s,%d,%d,%d,%d,%s", 
+					header.magic,
+					header.type,
+					header.seq_num,
+					header.ack_num,
+					header.data_len,
+					header.window_size,
+					buffer
+				);
+				*/
+				
 				if (sdr_ip == NULL) {
 					sdr_port = ntohs(sdraddr.sin_port);
 					sdr_ip   = inet_ntoa(sdraddr.sin_addr);

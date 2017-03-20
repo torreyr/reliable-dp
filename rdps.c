@@ -194,7 +194,7 @@ bool createServer() {
 	strcpy(header.type, "SYN");
 	header.seq_num = 1;
 	header.ack_num = 0;
-	header.data_len = sizeof data;
+	header.data_len = strlen(data);
 	header.window_size = 10;
 	
 	char buffer[1024];
@@ -209,7 +209,6 @@ bool createServer() {
 	);
 	
 	printf("trying to send...\n");
-	printf("%s\n", buffer);
 	
 	if ( sendto(sock, &buffer, sizeof buffer, 0, (struct sockaddr*) &rcvaddr, sizeof rcvaddr) == -1 ) {
 		printf("problem sending\n");
