@@ -215,9 +215,13 @@ bool createServer() {
 				header.magic[7] = '\0';
 				
 				printf("%s\n", header.magic);
+				printf("%s\n", tokens[1]);
 				
 				strcpy(header.type,  tokens[1]);
 				header.type[4] = '\0';
+				
+				printf("%s\n", header.type);
+				
 				header.seq_num     = atoi(tokens[2]);
 				header.ack_num     = atoi(tokens[3]);
 				header.data_len    = atoi(tokens[4]);
