@@ -209,8 +209,13 @@ bool createServer() {
 					i++;
 				}
 				
+				printf("%s\n", tokens[0]);
+				
 				strcpy(header.magic, tokens[0]);
 				header.magic[7] = '\0';
+				
+				printf("%s\n", header.magic);
+				
 				strcpy(header.type,  tokens[1]);
 				header.type[4] = '\0';
 				header.seq_num     = atoi(tokens[2]);
