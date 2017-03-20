@@ -35,8 +35,8 @@ char* rcv_ip;
 char* sdr_ip = NULL;
 struct sockaddr_in sdraddr;
 struct Header {
-	char magic[6];
-	char type[3];
+	char magic[7];
+	char type[4];
 	int seq_num;
 	int ack_num;
 	int data_len;
@@ -215,8 +215,8 @@ bool createServer() {
 				printf("%s\n", header.type);
 				
 				printf("%s\n", tokens[0]);
-				strncpy(header.magic, tokens[0], 6);
-				//header.magic[6] = '\0';
+				strcpy(header.magic, tokens[0]);
+				header.magic[6] = '\0';
 				printf("%s\n", header.magic);
 				
 				header.seq_num     = atoi(tokens[2]);
