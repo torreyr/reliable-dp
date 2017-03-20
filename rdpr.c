@@ -215,7 +215,7 @@ bool createServer() {
 				printf("%s\n", header.type);
 				
 				printf("%s\n", tokens[0]);
-				strncpy(header.magic, tokens[0], 1);
+				strncpy(header.magic, tokens[0], 6);
 				//header.magic[6] = '\0';
 				printf("%s\n", header.magic);
 				
