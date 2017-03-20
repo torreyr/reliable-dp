@@ -197,6 +197,9 @@ bool createServer() {
 	header.data_len = sizeof data;
 	header.window_size = 10;
 	
+	printf("%s", header.magic);
+	printf("%s", header.type);
+	
 	char buffer[1024];
 	sprintf(buffer, "%s,%s,%d,%d,%d,%d,%s", 
 		header.magic,
