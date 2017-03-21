@@ -23,6 +23,7 @@
 void howto();
 void printLogMessage();
 bool isPort();
+void zeroHeader();
 char* getTime();
 bool checkArguments();
 bool createServer();
@@ -67,6 +68,40 @@ bool isPort(char* str) {
     int portnum = atoi(str);
     if( (portnum > 0) && (portnum < 65535) ) return true;
     return false;
+}
+
+/*
+ *	Validates a port number.
+ */
+void zeroHeader() {
+	memset(header.magic, 0, 7);
+	memset(header.type, 0, 4);
+	header.seq_num     = 0;
+	header.ack_num     = 0;
+	header.data_len    = 0;
+	header.window_size = 0;
+}
+
+void setHeader(char* buffer) {
+	// Tokenize received packet.
+	int i = 0;
+	char tokens[6][1024];
+	char* token = strtok(buffer, ",");
+	while (token != NULL) {
+		if (i == 6) strncpy(tokens[i], token, atoi(tokens[4]));
+		else strcpy(tokens[i], token);
+		token = strtok(NULL, ",");
+		i++;
+	}
+	
+	// Set header values.
+	strcpy(header.magic, tokens[0]);
+	strcpy(header.type, tokens[1]);		
+	header.seq_num     = atoi(tokens[2]);
+	header.ack_num     = atoi(tokens[3]);
+	header.data_len    = atoi(tokens[4]);
+	header.window_size = atoi(tokens[5]);
+	strcpy(buffer, tokens[6]);
 }
 
 
@@ -201,25 +236,9 @@ bool createServer() {
                 buffer[buff_len] = '\0';
 				printf("Received: %s\n", buffer);
 				
-				// Tokenize received packet.
-				int i = 0;
-				char tokens[6][1024];
-				char* token = strtok(buffer, ",");
-				while (token != NULL) {
-					if (i == 6) strncpy(tokens[i], token, atoi(tokens[4]));
-					else strcpy(tokens[i], token);
-					token = strtok(NULL, ",");
-					i++;
-				}
+				zeroHeader();
 				
-				// Set header fields.
-				strcpy(header.magic, tokens[0]);
-				strcpy(header.type, tokens[1]);		
-				header.seq_num     = atoi(tokens[2]);
-				header.ack_num     = atoi(tokens[3]);
-				header.data_len    = atoi(tokens[4]);
-				header.window_size = atoi(tokens[5]);
-				strcpy(buffer, tokens[6]);
+				setHeader(buffer);
 				
 				if (sdr_ip == NULL) {
 					sdr_port = ntohs(sdraddr.sin_port);
