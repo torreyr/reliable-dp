@@ -317,7 +317,7 @@ bool createServer() {
 	char data[1024];
 	strcpy(data, "Does this work?");
 	strcpy(header.magic, "CSC361");
-	strcpy(header.type, "DAT");
+	strcpy(header.type, "SYN");
 	header.seq_num = 1;
 	header.ack_num = 0;
 	header.data_len = strlen(data);
@@ -349,7 +349,7 @@ bool createServer() {
 	while (1) {
 		
 		timeout.tv_sec = 2;
-		printf("waiting for ACK...\n");
+		printf("ready...\n");
 		
 		if (select(sock + 1, &fds, NULL, NULL, &timeout) < 0) {   
 			printf("Error with select. Closing the socket.\n");
