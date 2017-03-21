@@ -141,7 +141,8 @@ bool createServer() {
 	int slen = sizeof sdraddr;
     
 	char buffer[1000];
-	memset(buffer, 0, sizeof buffer);
+	int buff_len = buff_len;
+	memset(buffer, 0, buff_len);
 	
 	// Create socket.
     int sock = socket(PF_INET, SOCK_DGRAM, IPPROTO_UDP);
@@ -189,13 +190,13 @@ bool createServer() {
 		}
 		
 		if (FD_ISSET(sock, &fds)) {
-			recsize = recvfrom(sock, (void*) buffer, sizeof buffer, 0, (struct sockaddr*) &sdraddr, &slen);
+			recsize = recvfrom(sock, (void*) buffer, buff_len, 0, (struct sockaddr*) &sdraddr, &slen);
 		
 			if (recsize <= 0) {
 				printf("did not receive any data.\n");
 				close(sock);
 			} else {
-                buffer[sizeof buffer] = '\0';
+                buffer[buff_len] = '\0';
 				printf("Received: %s\n", buffer);
 				
 				// Tokenize received packet.
@@ -224,12 +225,19 @@ bool createServer() {
 				}
 				
 				printLogMessage();
+				
+				if (strcmp(header.type, "SYN") == 0) {
+					printf("received a SYN packet\n");
+					if ( sendto(sock, &buffer, buff_len, 0, (struct sockaddr*) &rcvaddr, sizeof rcvaddr) == -1 ) {
+						printf("problem sending\n");
+					} else printf("successfully sent\n");
+				}
 			}
 			
-			memset(buffer, 0, sizeof buffer);
+			memset(buffer, 0, buff_len);
 		}
 		
-		memset(buffer, 0, sizeof buffer);
+		memset(buffer, 0, buff_len);
 	}
 	
 }
