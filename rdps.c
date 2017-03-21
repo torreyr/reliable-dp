@@ -205,7 +205,7 @@ bool connection(int sock) {
 		}
 		
 		if (FD_ISSET(sock, &fds)) {
-			recsize = recvfrom(sock, (void*) buffer, buff_len, 0, (struct sockaddr*) &sdraddr, &len);
+			recsize = recvfrom(sock, (void*) buffer, buff_len, 0, (struct sockaddr*) &rcvaddr, &rlen);
 		
 			if (recsize <= 0) {
 				printf("did not receive any data.\n");
