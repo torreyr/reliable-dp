@@ -113,6 +113,8 @@ void setHeader(char* buffer) {
 	
 	if (i == 6) strcpy(buffer, "");
 	else strcpy(buffer, tokens[6]);
+	
+	printf("buffer = %s\n", buffer);
 }
 
 
