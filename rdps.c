@@ -170,10 +170,10 @@ bool connection(int sock) {
 	
 	if ( sendto(sock, &buffer, sizeof buffer, 0, (struct sockaddr*) &rcvaddr, sizeof rcvaddr) == -1 ) {
 		printf("problem sending\n");
-		return true;
+		return false;
 	} else {
 		printf("successfully sent\n");
-		return false;
+		return true;
 	}
 }
 
@@ -187,7 +187,7 @@ bool createServer() {
 	// Create socket.
     int sock = socket(PF_INET, SOCK_DGRAM, IPPROTO_UDP);
 	if (sock == -1) {
-		printf("Couldn't create socket. Exiting the program.");
+		printf("Couldn't create socket. Exiting the program.\n");
 		return false;
 	}
 	
