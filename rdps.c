@@ -39,8 +39,8 @@ fd_set fds;
 ssize_t recsize;
 struct sockaddr_in rcvaddr;
 struct sockaddr_in sdraddr;
-int len  = sizeof(sdraddr);
 int rlen = sizeof(rcvaddr);
+int len  = sizeof(sdraddr);
 struct Header {
 	char magic[7];
 	char type[4];
@@ -213,6 +213,8 @@ bool connection(int sock) {
 				printf("did not receive any data.\n");
 				close(sock);
 			} else {
+				printf("Received beforehand: %s\n", buffer);
+				printf("buff_len: %d\n", buff_len);
                 buffer[buff_len] = '\0';
 				printf("Received: %s\n", buffer);
 				
