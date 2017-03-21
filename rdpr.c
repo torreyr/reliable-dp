@@ -140,7 +140,7 @@ void gotSyn(int sock, char* buffer, int buff_len) {
 		window_size
 	);
 	
-	if ( sendto(sock, &buffer, buff_len, 0, (struct sockaddr*) &sdraddr, sizeof sdraddr) == -1 ) {
+	if ( sendto(sock, &buffer, buff_len, 0, (struct sockaddr*) &sdraddr, slen) == -1 ) {
 		printf("problem sending\n");
 	} else printf("successfully sent this: %s\n", buffer);
 }
