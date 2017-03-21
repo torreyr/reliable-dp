@@ -157,12 +157,16 @@ bool connection(int sock) {
 	
 	// Set the header.
 	char data[1024];
+	memset(data, 0, sizeof data);
+	
 	strcpy(header.magic, "CSC361");
 	strcpy(header.type, "SYN");
 	header.seq_num = rand() & 0xffff;
 	header.ack_num = 0;
-	header.data_len = strlen(data);
 	header.window_size = 10;
+	
+	if (strcmp(data, "") == 0) header.data_len = 0;
+	else header.data_len = strlen(data);
 	
 	// String to send.
 	char buffer[1024];
