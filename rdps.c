@@ -164,7 +164,7 @@ int sendResponse(int sock) {
     char data[4];
     
     // Walk through the file.
-    while (fp != NULL) {
+    while (!feof(fp)) {
         printf("fp is not NULL.\n");
         fread(data, sizeof data, 1, fp);
         data[3] = '\0';
