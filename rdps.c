@@ -205,6 +205,7 @@ bool connection(int sock) {
 		}
 		
 		if (FD_ISSET(sock, &fds)) {
+			printf("buffer before receive: %s\n", buffer);
 			recsize = recvfrom(sock, (void*) buffer, buff_len, 0, (struct sockaddr*) &rcvaddr, &rlen);
 		
 			if (recsize <= 0) {

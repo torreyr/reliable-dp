@@ -286,7 +286,6 @@ bool createServer() {
 				if (strcmp(header.type, "SYN") == 0) {
 					gotSyn(sock, buffer, buff_len);
 				}
-				printf("buffer after sending: %s\n", buffer);
 				
 			}
 			
