@@ -228,6 +228,7 @@ bool createServer() {
 				
 				if (strcmp(header.type, "SYN") == 0) {
 					printf("received a SYN packet\n");
+					printf("buffer: %s\n", buffer);
 					if ( sendto(sock, &buffer, buff_len, 0, (struct sockaddr*) &rcvaddr, sizeof rcvaddr) == -1 ) {
 						printf("problem sending\n");
 					} else printf("successfully sent\n");
