@@ -156,10 +156,7 @@ bool checkArguments(int argc, char* argv[]) {
  */
 bool connection(int sock) {
 	
-	// Set the header.
-	char data[1024];
-	memset(data, 0, sizeof data);
-	
+	// Set the header.	
 	strcpy(header.magic, "CSC361");
 	strcpy(header.type, "SYN");
 	header.seq_num = rand() & 0xffff;
@@ -252,7 +249,7 @@ bool connection(int sock) {
 					printf("RECEIVED AN ACK!\n");
 					return true;
 				} else {
-					printf("Received something other than an ACK.");
+					printf("Received something other than an ACK.\n");
 				}
 				
 				//printLogMessage();
@@ -314,6 +311,7 @@ bool createServer() {
 	
 	// Set the header.
 	char data[1024];
+    memset(data, 0, sizeof data);
 	strcpy(data, "Does this work?");
 	strcpy(header.magic, "CSC361");
 	strcpy(header.type, "DAT");
