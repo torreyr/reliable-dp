@@ -170,7 +170,6 @@ int sendResponse(int sock) {
         data[3] = '\0';
         printf("%s\n", data);
         memset(data, 0, sizeof data);
-        //break;
     }
     
 }
@@ -227,7 +226,7 @@ bool connection(int sock) {
 		}
 		
 		if (FD_ISSET(sock, &fds)) {
-			recsize = recvfrom(sock, (void*) buffer, buff_len, 0, (struct sockaddr*) &rcvaddr, &rlen);
+			recsize = recvfrom(sock, (void*) buffer, buff_len, 0, (struct sockaddr*) &sdraddr, &len);
 		
 			if (recsize <= 0) {
 				printf("did not receive any data.\n");
@@ -329,10 +328,10 @@ bool createServer() {
 	rcvaddr.sin_port 		= htons(rcv_port);
 	
 	// Create initial connection (SYN/ACK).
-	// if ( !connection(sock) ) {
-		// printf("ERROR: could not make initial connection. exiting program.");
-		// return false;
-	// }
+	if ( !connection(sock) ) {
+		printf("ERROR: could not make initial connection. exiting program.");
+		return false;
+	}
 	
 	// Set the header.
 	char data[1024];
@@ -362,7 +361,7 @@ bool createServer() {
 		printf("problem sending\n");
 	} else printf("successfully sent\n");
     
-    sendResponse(sock);
+    //sendResponse(sock);
 }
 
 
