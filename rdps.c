@@ -200,12 +200,12 @@ bool connection(int sock) {
 		
 		if (select(sock + 1, &fds, NULL, NULL, &timeout) < 0) {   
 			printf("Error with select. Closing the socket.\n");
-            close(sock);
-            return false;
+			close(sock);
+			return false;
 		}
 		
 		if (FD_ISSET(sock, &fds)) {
-			recsize = recvfrom(sock, (void*) buffer, buff_len, 0, (struct sockaddr*) &rcvaddr, &rlen);
+			recsize = recvfrom(sock, (void*) buffer, buff_len, 0, (struct sockaddr*) &sdraddr, &len);
 		
 			if (recsize <= 0) {
 				printf("did not receive any data.\n");
