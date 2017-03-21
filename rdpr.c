@@ -268,6 +268,9 @@ bool createServer() {
 						0,
 						window_size
 					);
+					
+					printf("%s\n", buffer);
+					
 					setHeader(buffer);
 					if ( sendto(sock, &buffer, buff_len, 0, (struct sockaddr*) &rcvaddr, sizeof rcvaddr) == -1 ) {
 						printf("problem sending\n");
