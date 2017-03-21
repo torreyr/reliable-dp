@@ -95,7 +95,9 @@ void setHeader(char* buffer) {
 	int i = 0;
 	char tokens[6][1024];
 	char* start = buffer;
-	char* token = strtok(start, ",");
+	char buf2[1000];
+	strcpy(buf2, buffer);
+	char* token = strtok(buf2, ",");
 	while (token != NULL) {
 		if (i == 6) {
 			strncpy(tokens[i], token, atoi(tokens[4]));
