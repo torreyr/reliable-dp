@@ -83,6 +83,8 @@ void zeroHeader() {
 }
 
 void setHeader(char* buffer) {
+	printf("%s\n", buffer);
+	
 	// Tokenize received packet.
 	int i = 0;
 	char tokens[6][1024];
@@ -237,7 +239,6 @@ bool createServer() {
 				printf("Received: %s\n", buffer);
 				
 				zeroHeader();
-				
 				setHeader(buffer);
 				
 				if (sdr_ip == NULL) {
