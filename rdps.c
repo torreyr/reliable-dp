@@ -196,6 +196,7 @@ bool connection(int sock) {
 		
 		timeout.tv_sec = 2;
 		printf("waiting for ACK...\n");
+		memset(buffer, 0, buff_len);
 		
 		if (select(sock + 1, &fds, NULL, NULL, &timeout) < 0) {   
 			printf("Error with select. Closing the socket.\n");
@@ -203,19 +204,15 @@ bool connection(int sock) {
             return false;
 		}
 		
-		char recbuffer[1024];
-		int rec_buff_len = sizeof recbuffer;
-		memset(recbuffer, 0, rec_buff_len);
-		
 		if (FD_ISSET(sock, &fds)) {
-			recsize = recvfrom(sock, (void*) recbuffer, rec_buff_len, 0, (struct sockaddr*) &rcvaddr, &rlen);
+			recsize = recvfrom(sock, (void*) buffer, buff_len, 0, (struct sockaddr*) &rcvaddr, &rlen);
 		
 			if (recsize <= 0) {
 				printf("did not receive any data.\n");
 				close(sock);
 			} else {
-                recbuffer[rec_buff_len] = '\0';
-				printf("Received: %s\n", recbuffer);
+                buffer[buff_len] = '\0';
+				printf("Received: %s\n", buffer);
 				
 				// Tokenize received packet.
 				int i = 0;
