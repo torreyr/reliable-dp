@@ -113,8 +113,6 @@ void setHeader(char* buffer) {
 	
 	if (i == 6) strcpy(buffer, "");
 	else strcpy(buffer, tokens[6]);
-	
-	printf("buffer should be = %s\n", buffer);
 }
 
 
@@ -254,7 +252,7 @@ bool createServer() {
 				
 				setHeader(buffer);
 				
-				printf("here2\n");
+				printf("here as well\n");
 				
 				if (sdr_ip == NULL) {
 					sdr_port = ntohs(sdraddr.sin_port);
