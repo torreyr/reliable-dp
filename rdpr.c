@@ -28,6 +28,9 @@ char* getTime();
 bool checkArguments();
 bool createServer();
 
+// Global Constants
+#define MAX_WINDOW_SIZE 1000;
+
 // Global Variables
 int sdr_port;
 int rcv_port;
@@ -35,6 +38,8 @@ int portnum;
 char* rcv_ip;
 char* sdr_ip = NULL;
 struct sockaddr_in sdraddr;
+
+int window_size;
 struct Header {
 	char magic[7];
 	char type[4];
@@ -82,9 +87,7 @@ void zeroHeader() {
 	header.window_size = 0;
 }
 
-void setHeader(char* buffer) {
-	printf("this buffer: %s\n", buffer);
-	
+void setHeader(char* buffer) {	
 	// Tokenize received packet.
 	int i = 0;
 	char tokens[6][1024];
@@ -110,7 +113,6 @@ void setHeader(char* buffer) {
 	
 	if (i == 6) strcpy(buffer, "");
 	else strcpy(buffer, tokens[6]);
-	printf("%s\n", buffer);
 }
 
 
@@ -216,6 +218,7 @@ bool createServer() {
         return false;
     }
 	
+	window_size = MAX_WINDOW_SIZE;
 	struct timeval timeout;
 	
 	while (1) {
@@ -257,7 +260,15 @@ bool createServer() {
 				
 				if (strcmp(header.type, "SYN") == 0) {
 					printf("received a SYN packet\n");
-					printf("buffer: %s\n", buffer);
+					sprintf(buffer, "%s,%s,%d,%d,%d,%d",
+						header.magic,
+						"ACK",
+						header.seq_num + 1,
+						header.ack_num + 1,
+						0,
+						window_size
+					);
+					setHeader(buffer);
 					if ( sendto(sock, &buffer, buff_len, 0, (struct sockaddr*) &rcvaddr, sizeof rcvaddr) == -1 ) {
 						printf("problem sending\n");
 					} else printf("successfully sent\n");
