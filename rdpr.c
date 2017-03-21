@@ -92,6 +92,8 @@ void setHeader(char* buffer) {
 	while (token != NULL) {
 		if (i == 6) strncpy(tokens[i], token, atoi(tokens[4]));
 		else strcpy(tokens[i], token);
+		printf("token: %s\n", token);
+		printf("tokens[i]: %s\n", tokens[i]);
 		token = strtok(NULL, ",");
 		i++;
 	}
