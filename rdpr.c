@@ -196,6 +196,7 @@ bool createServer() {
 				printf("did not receive any data.\n");
 				close(sock);
 			} else {
+				printf("%d\n", buff_len);
                 buffer[buff_len] = '\0';
 				printf("Received: %s\n", buffer);
 				
