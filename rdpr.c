@@ -89,14 +89,14 @@ void zeroHeader() {
 	header.window_size = 0;
 }
 
-void setHeader(char* buffer) {	
+void setHeader(char* buffer) {
 	printf("buffer is %s\n", buffer);
 	// Tokenize received packet.
 	int i = 0;
 	char tokens[6][1024];
-	char* start = buffer;
 	char buf2[1000];
 	strcpy(buf2, buffer);
+	
 	char* token = strtok(buf2, ",");
 	while (token != NULL) {
 		if (i == 6) {
@@ -117,8 +117,8 @@ void setHeader(char* buffer) {
 	header.data_len    = atoi(tokens[4]);
 	header.window_size = atoi(tokens[5]);
 	
-	//if (i == 6) strcpy(buffer, "");
-	//else strcpy(buffer, tokens[6]);
+	if (i == 6) strcpy(buffer, "");
+	else strcpy(buffer, tokens[6]);
 	
 	printf("buffer = %s\n", buffer);
 }
