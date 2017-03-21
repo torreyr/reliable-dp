@@ -171,6 +171,7 @@ bool connection(int sock) {
 	
 	// String to send.
 	char buffer[1024];
+	int buff_len = sizeof buffer;
 	sprintf(buffer, "%s,%s,%d,%d,%d,%d", 
 		header.magic,
 		header.type,
@@ -181,7 +182,7 @@ bool connection(int sock) {
 	);
 	
 	// Send packet.
-	if ( sendto(sock, &buffer, sizeof buffer, 0, (struct sockaddr*) &rcvaddr, sizeof rcvaddr) == -1 ) {
+	if ( sendto(sock, &buffer, buff_len, 0, (struct sockaddr*) &rcvaddr, sizeof rcvaddr) == -1 ) {
 		printf("problem sending\n");
 		return false;
 	} else {
@@ -204,13 +205,13 @@ bool connection(int sock) {
 		}
 		
 		if (FD_ISSET(sock, &fds)) {
-			recsize = recvfrom(sock, (void*) buffer, sizeof buffer, 0, (struct sockaddr*) &rcvaddr, &rlen);
+			recsize = recvfrom(sock, (void*) buffer, buff_len, 0, (struct sockaddr*) &rcvaddr, &rlen);
 		
 			if (recsize <= 0) {
 				printf("did not receive any data.\n");
 				close(sock);
 			} else {
-                buffer[sizeof buffer] = '\0';
+                buffer[buff_len] = '\0';
 				printf("Received: %s\n", buffer);
 				
 				// Tokenize received packet.
@@ -257,10 +258,10 @@ bool connection(int sock) {
 				//printLogMessage();
 			}
 			
-			memset(buffer, 0, sizeof buffer);
+			memset(buffer, 0, buff_len);
 		}
 		
-		memset(buffer, 0, sizeof buffer);
+		memset(buffer, 0, buff_len);
 	}
 	
 	return false;
