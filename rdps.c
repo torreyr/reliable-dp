@@ -167,7 +167,7 @@ int sendResponse(int sock) {
     while (fp != NULL) {
         printf("fp is not NULL.\n");
         fread(data, sizeof data, 1, fp);
-        data[4] = '\0';
+        data[3] = '\0';
         printf("%s\n", data);
         memset(data, 0, sizeof data);
         break;
