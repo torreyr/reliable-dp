@@ -90,20 +90,12 @@ void setHeader(char* buffer) {
 	char tokens[6][1024];
 	char* token = strtok(buffer, ",");
 	while (token != NULL) {
-		printf("i = %d", i);
 		if (i == 6) {
-			printf("%d\n", atoi(tokens[4]));
-			if (atoi(tokens[4]) == 0) {
-				printf("here\n");
-				strcpy(tokens[i], ""); 
-			} else {
-				strncpy(tokens[i], token, atoi(tokens[4]));
-				tokens[i][atoi(tokens[4])] = '\0';
-			}
+			strncpy(tokens[i], token, atoi(tokens[4]));
+			tokens[i][atoi(tokens[4])] = '\0';
 		} else {
 			strcpy(tokens[i], token);
 		}
-		printf("tokens[i]: %s\n", tokens[i]);
 		token = strtok(NULL, ",");
 		i++;
 	}
@@ -116,8 +108,8 @@ void setHeader(char* buffer) {
 	header.data_len    = atoi(tokens[4]);
 	header.window_size = atoi(tokens[5]);
 	
-	printf("tokens[6]: %s\n", tokens[6]);
-	strcpy(buffer, tokens[6]);
+	if (i == 6) strcpy(buffer, "");
+	else strcpy(buffer, tokens[6]);
 	printf("%s\n", buffer);
 }
 
