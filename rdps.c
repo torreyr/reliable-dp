@@ -188,16 +188,13 @@ bool connection(int sock) {
 		printf("successfully sent\n");
 	}
 	
-	printf("buffer before memset: %s\n", buffer);
-	struct timeval timeout;
+	//printf("buffer before memset: %s\n", buffer);
 	//memset(buffer, 0, buff_len);
+	struct timeval timeout;
 	
 	// Wait for ACK response.
 	// NOTE: Can I put this while loop in its own function called waitToReceive()?
 	while (1) {
-		
-		char recbuff[1024];
-		memset(recbuff, 0, sizeof recbuff);
 		
 		timeout.tv_sec = 2;
 		printf("waiting for ACK...\n");
@@ -209,17 +206,14 @@ bool connection(int sock) {
 		}
 		
 		if (FD_ISSET(sock, &fds)) {
-			//printf("buffer before receive: %s\n", buffer);
-			recsize = recvfrom(sock, (void*) recbuff, sizeof recbuff, 0, (struct sockaddr*) &rcvaddr, &rlen);
+			recsize = recvfrom(sock, (void*) buffer, buff_len, 0, (struct sockaddr*) &rcvaddr, &rlen);
 		
 			if (recsize <= 0) {
 				printf("did not receive any data.\n");
 				close(sock);
 			} else {
-				//printf("Received beforehand: %s\n", buffer);
-				//printf("buff_len: %d\n", buff_len);
-                buffer[buff_len] = '\0';
-				printf("Received: %s\n", recbuff);
+				buffer[buff_len] = '\0';
+				printf("Received: %s\n", buffer);
 				
 				// Tokenize received packet.
 				int i = 0;
@@ -314,10 +308,10 @@ bool createServer() {
 	rcvaddr.sin_port 		= htons(rcv_port);
 	
 	// Create initial connection (SYN/ACK).
-	if ( !connection(sock) ) {
-		printf("ERROR: could not make initial connection. exiting program.");
-		return false;
-	}
+	// if ( !connection(sock) ) {
+		// printf("ERROR: could not make initial connection. exiting program.");
+		// return false;
+	// }
 	
 	// Set the header.
 	char data[1024];
@@ -330,6 +324,8 @@ bool createServer() {
 	header.window_size = 10;
 	
 	char buffer[1024];
+	int buff_len = sizeof buffer;
+	memset(buffer, 0, buff_len);
 	sprintf(buffer, "%s,%s,%d,%d,%d,%d,%s", 
 		header.magic,
 		header.type,
@@ -345,6 +341,82 @@ bool createServer() {
 	if ( sendto(sock, &buffer, sizeof buffer, 0, (struct sockaddr*) &rcvaddr, sizeof rcvaddr) == -1 ) {
 		printf("problem sending\n");
 	} else printf("successfully sent\n");
+	
+	struct timeval timeout;
+	
+	// Wait for ACK response.
+	// NOTE: Can I put this while loop in its own function called waitToReceive()?
+	while (1) {
+		
+		timeout.tv_sec = 2;
+		printf("waiting for ACK...\n");
+		
+		if (select(sock + 1, &fds, NULL, NULL, &timeout) < 0) {   
+			printf("Error with select. Closing the socket.\n");
+			close(sock);
+			return false;
+		}
+		
+		if (FD_ISSET(sock, &fds)) {
+			recsize = recvfrom(sock, (void*) buffer, buff_len, 0, (struct sockaddr*) &rcvaddr, &rlen);
+		
+			if (recsize <= 0) {
+				printf("did not receive any data.\n");
+				close(sock);
+			} else {
+				buffer[buff_len] = '\0';
+				printf("Received: %s\n", buffer);
+				
+				// Tokenize received packet.
+				int i = 0;
+				char tokens[6][1024];
+				char buf2[1000];
+				strcpy(buf2, buffer);
+				
+				char* token = strtok(buf2, ",");
+				while (token != NULL) {
+					if (i == 6) {
+						strncpy(tokens[i], token, atoi(tokens[4]));
+						tokens[i][atoi(tokens[4])] = '\0';
+					} else {
+						strcpy(tokens[i], token);
+					}
+					token = strtok(NULL, ",");
+					i++;
+				}
+				
+				// Set header values.
+				strcpy(header.magic, tokens[0]);
+				strcpy(header.type, tokens[1]);		
+				header.seq_num     = atoi(tokens[2]);
+				header.ack_num     = atoi(tokens[3]);
+				header.data_len    = atoi(tokens[4]);
+				header.window_size = atoi(tokens[5]);
+				
+				if (i == 6) strcpy(buffer, "");
+				else strcpy(buffer, tokens[6]);
+				
+				if (sdr_ip == NULL) {
+					sdr_port = ntohs(sdraddr.sin_port);
+					sdr_ip   = inet_ntoa(sdraddr.sin_addr);
+				}
+				
+				if (strcmp(header.type, "ACK") == 0) {
+					printf("RECEIVED AN ACK!\n");
+					return true;
+				} else {
+					printf("Received something other than an ACK.");
+				}
+				
+				//printLogMessage();
+			}
+			
+			memset(buffer, 0, buff_len);
+		}
+		
+		memset(buffer, 0, buff_len);
+	}
+	
 }
 
 /*
