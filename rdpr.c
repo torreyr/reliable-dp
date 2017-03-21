@@ -190,7 +190,7 @@ bool createServer() {
 		}
 		
 		if (FD_ISSET(sock, &fds)) {
-			recsize = recvfrom(sock, (void*) buffer, buff_len, 0, (struct sockaddr*) &sdraddr, &slen);
+			recsize = recvfrom(sock, (void*) buffer, sizeof buffer, 0, (struct sockaddr*) &sdraddr, &slen);
 		
 			if (recsize <= 0) {
 				printf("did not receive any data.\n");
