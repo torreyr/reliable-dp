@@ -172,6 +172,7 @@ bool connection(int sock) {
 	// String to send.
 	char buffer[1024];
 	int buff_len = sizeof buffer;
+	memset(buffer, 0, buff_len);
 	sprintf(buffer, "%s,%s,%d,%d,%d,%d", 
 		header.magic,
 		header.type,
@@ -182,7 +183,7 @@ bool connection(int sock) {
 	);
 	
 	// Send packet.
-	if ( sendto(sock, &buffer, buff_len, 0, (struct sockaddr*) &rcvaddr, sizeof rcvaddr) == -1 ) {
+	if ( sendto(sock, &buffer, buff_len, 0, (struct sockaddr*) &rcvaddr, rlen) == -1 ) {
 		printf("problem sending\n");
 		return false;
 	} else {
