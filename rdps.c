@@ -296,10 +296,10 @@ bool createServer() {
 	rcvaddr.sin_port 		= htons(rcv_port);
 	
 	// Create initial connection (SYN/ACK).
-	if ( !connection(sock) ) {
-		printf("ERROR: could not make initial connection. exiting program.");
-		return false;
-	}
+	// if ( !connection(sock) ) {
+		// printf("ERROR: could not make initial connection. exiting program.");
+		// return false;
+	// }
 	
 	// Set the header.
 	char data[1024];

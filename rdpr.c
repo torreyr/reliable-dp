@@ -180,7 +180,6 @@ bool checkArguments(int argc, char* argv[]) {
 	return true;
 }
 
-char buffer[1000];
 /*
  *	Creates and binds the socket, and waits to receive packets.
  */
@@ -191,6 +190,7 @@ bool createServer() {
 	int len  = sizeof rcvaddr;
 	int slen = sizeof sdraddr;
     
+	char buffer[1000];
 	int buff_len = sizeof buffer;
 	memset(buffer, 0, buff_len);
 	
