@@ -164,10 +164,8 @@ bool connection(int sock) {
 	strcpy(header.type, "SYN");
 	header.seq_num = rand() & 0xffff;
 	header.ack_num = 0;
+	header.data_len = 0;
 	header.window_size = 10;
-	
-	if (strcmp(data, "") == 0) header.data_len = 0;
-	else header.data_len = strlen(data);
 	
 	// String to send.
 	char buffer[1024];
@@ -205,15 +203,19 @@ bool connection(int sock) {
             return false;
 		}
 		
+		char recbuffer[1024];
+		int rec_buff_len = sizeof recbuffer;
+		memset(recbuffer, 0, rec_buff_len);
+		
 		if (FD_ISSET(sock, &fds)) {
-			recsize = recvfrom(sock, (void*) buffer, buff_len, 0, (struct sockaddr*) &rcvaddr, &rlen);
+			recsize = recvfrom(sock, (void*) recbuffer, rec_buff_len, 0, (struct sockaddr*) &rcvaddr, &rlen);
 		
 			if (recsize <= 0) {
 				printf("did not receive any data.\n");
 				close(sock);
 			} else {
-                buffer[buff_len] = '\0';
-				printf("Received: %s\n", buffer);
+                recbuffer[rec_buff_len] = '\0';
+				printf("Received: %s\n", recbuffer);
 				
 				// Tokenize received packet.
 				int i = 0;
