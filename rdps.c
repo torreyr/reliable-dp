@@ -166,7 +166,7 @@ int sendResponse(int sock) {
     // Walk through the file.
     while (!feof(fp)) {
         printf("fp is not NULL.\n");
-        fread(data, 1, sizeof data, fp);
+        fread(data, 1, sizeof data - 1, fp);
         data[3] = '\0';
         printf("%s\n", data);
         memset(data, 0, sizeof data);
