@@ -83,7 +83,7 @@ void zeroHeader() {
 }
 
 void setHeader(char* buffer) {
-	printf("%s\n", buffer);
+	printf("this buffer: %s\n", buffer);
 	
 	// Tokenize received packet.
 	int i = 0;
