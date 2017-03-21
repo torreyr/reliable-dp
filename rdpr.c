@@ -222,6 +222,16 @@ bool createServer() {
 				// 		 zeros in them and strcpy will think that's the end of the str.
 				strcpy(buffer, tokens[6]);
 				
+				printf("%s,%s,%d,%d,%d,%d,%s", 
+					header.magic,
+					header.type,
+					header.seq_num,
+					header.ack_num,
+					header.data_len,
+					header.window_size,
+					buffer
+				);
+				
 				if (sdr_ip == NULL) {
 					sdr_port = ntohs(sdraddr.sin_port);
 					sdr_ip   = inet_ntoa(sdraddr.sin_addr);
