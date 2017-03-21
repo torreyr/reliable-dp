@@ -170,7 +170,7 @@ int sendResponse(int sock) {
         data[3] = '\0';
         printf("%s\n", data);
         memset(data, 0, sizeof data);
-        break;
+        //break;
     }
     
 }
