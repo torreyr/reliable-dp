@@ -188,6 +188,7 @@ bool connection(int sock) {
 		printf("successfully sent\n");
 	}
 	
+	printf("buffer before memset: %s\n", buffer);
 	struct timeval timeout;
 	memset(buffer, 0, buff_len);
 	
