@@ -90,7 +90,6 @@ void setHeader(char* buffer) {
 	char tokens[6][1024];
 	char* token = strtok(buffer, ",");
 	while (token != NULL) {
-		printf("tokens[i]: %s\n", tokens[i]);
 		if (i == 6) {
 			if (atoi(tokens[4]) == 0) strcpy(tokens[i], ""); 
 			else {
@@ -100,6 +99,7 @@ void setHeader(char* buffer) {
 		} else {
 			strcpy(tokens[i], token);
 		}
+		printf("tokens[i]: %s\n", tokens[i]);
 		token = strtok(NULL, ",");
 		i++;
 	}
