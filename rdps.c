@@ -149,7 +149,6 @@ bool checkArguments(int argc, char* argv[]) {
 bool connection(int sock) {
 	// Set the header.
 	char data[1024];
-	strcpy(data, "Does this work?");
 	strcpy(header.magic, "CSC361");
 	strcpy(header.type, "SYN");
 	header.seq_num = rand() & 0xffff;
@@ -158,14 +157,13 @@ bool connection(int sock) {
 	header.window_size = 10;
 	
 	char buffer[1024];
-	sprintf(buffer, "%s,%s,%d,%d,%d,%d,%s", 
+	sprintf(buffer, "%s,%s,%d,%d,%d,%d", 
 		header.magic,
 		header.type,
 		header.seq_num,
 		header.ack_num,
 		header.data_len,
-		header.window_size,
-		data
+		header.window_size
 	);
 	
 	if ( sendto(sock, &buffer, sizeof buffer, 0, (struct sockaddr*) &rcvaddr, sizeof rcvaddr) == -1 ) {
@@ -230,7 +228,7 @@ bool createServer() {
 	char data[1024];
 	strcpy(data, "Does this work?");
 	strcpy(header.magic, "CSC361");
-	strcpy(header.type, "SYN");
+	strcpy(header.type, "DAT");
 	header.seq_num = 1;
 	header.ack_num = 0;
 	header.data_len = strlen(data);
@@ -284,5 +282,3 @@ int main(int argc, char* argv[]) {
     if ( !checkArguments(argc, argv) ) return 0;
     if ( !createServer() ) return 0;
 }
-
-// <initial seq number> = <initial seq number> & 0xffff;
