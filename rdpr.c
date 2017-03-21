@@ -10,6 +10,10 @@
 #include <string.h>
 #include <stdbool.h>
 
+int debug_step = 1;
+
+#define STEP printf("%d\n", debug_step++); fflush(stdout);
+
 /*----------------------------------------------/
  * CODE REFERENCES/HELP:
  * tcp_client.c from Lab 2:
@@ -114,7 +118,9 @@ void setHeader(char* buffer) {
 	if (i == 6) strcpy(buffer, "");
 	else strcpy(buffer, tokens[6]);
 	
+	STEP;
 	printf("buffer = %s\n", buffer);
+	STEP;
 }
 
 
@@ -251,9 +257,9 @@ bool createServer() {
 				zeroHeader();
 				
 				printf("here\n");
-				
+				STEP;
 				setHeader(buffer);
-				
+				STEP;
 				printf("here as well\n");
 				
 				if (sdr_ip == NULL) {
