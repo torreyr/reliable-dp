@@ -189,6 +189,7 @@ bool connection(int sock) {
 	}
 	
 	struct timeval timeout;
+	memset(buffer, 0, buff_len);
 	
 	// Wait for ACK response.
 	// NOTE: Can I put this while loop in its own function called waitToReceive()?
@@ -196,7 +197,6 @@ bool connection(int sock) {
 		
 		timeout.tv_sec = 2;
 		printf("waiting for ACK...\n");
-		//memset(buffer, 0, buff_len);
 		
 		if (select(sock + 1, &fds, NULL, NULL, &timeout) < 0) {   
 			printf("Error with select. Closing the socket.\n");
