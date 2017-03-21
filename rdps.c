@@ -190,7 +190,7 @@ bool connection(int sock) {
 	
 	printf("buffer before memset: %s\n", buffer);
 	struct timeval timeout;
-	memset(buffer, 0, buff_len);
+	//memset(buffer, 0, buff_len);
 	
 	// Wait for ACK response.
 	// NOTE: Can I put this while loop in its own function called waitToReceive()?
