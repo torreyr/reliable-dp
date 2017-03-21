@@ -90,6 +90,7 @@ void setHeader(char* buffer) {
 	char tokens[6][1024];
 	char* token = strtok(buffer, ",");
 	while (token != NULL) {
+		printf("i = %d", i);
 		if (i == 6) {
 			printf("%d\n", atoi(tokens[4]));
 			if (atoi(tokens[4]) == 0) {
