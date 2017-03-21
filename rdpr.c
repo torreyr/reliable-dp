@@ -270,7 +270,7 @@ bool createServer() {
 						window_size
 					);
 					
-					if ( sendto(sock, &buffer, buff_len, 0, (struct sockaddr*) &rcvaddr, sizeof rcvaddr) == -1 ) {
+					if ( sendto(sock, &buffer, buff_len, 0, (struct sockaddr*) &sdraddr, sizeof sdraddr) == -1 ) {
 						printf("problem sending\n");
 					} else printf("successfully sent this: %s\n", buffer);
 				}
