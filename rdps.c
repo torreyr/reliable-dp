@@ -170,7 +170,7 @@ bool connection(int sock) {
 	// String to send.
 	char buffer[1024];
 	int buff_len = sizeof buffer;
-	memset(buffer, 0, buff_len);
+	//memset(buffer, 0, buff_len);
 	sprintf(buffer, "%s,%s,%d,%d,%d,%d", 
 		header.magic,
 		header.type,
@@ -196,7 +196,7 @@ bool connection(int sock) {
 		
 		timeout.tv_sec = 2;
 		printf("waiting for ACK...\n");
-		memset(buffer, 0, buff_len);
+		//memset(buffer, 0, buff_len);
 		
 		if (select(sock + 1, &fds, NULL, NULL, &timeout) < 0) {   
 			printf("Error with select. Closing the socket.\n");

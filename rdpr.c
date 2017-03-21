@@ -41,6 +41,9 @@ int portnum;
 char* rcv_ip;
 char* sdr_ip = NULL;
 struct sockaddr_in sdraddr;
+struct sockaddr_in rcvaddr;
+int len  = sizeof rcvaddr;
+int slen = sizeof sdraddr;
 
 int window_size;
 struct Header {
@@ -137,7 +140,7 @@ void gotSyn(int sock, char* buffer, int buff_len) {
 		window_size
 	);
 	
-	if ( sendto(sock, &buffer, buff_len, 0, (struct sockaddr*) &sdraddr, sizeof sdraddr) == -1 ) {
+	if ( sendto(sock, &buffer, buff_len, 0, (struct sockaddr*) &rcvaddr, sizeof rcvaddr) == -1 ) {
 		printf("problem sending\n");
 	} else printf("successfully sent this: %s\n", buffer);
 }
@@ -208,9 +211,6 @@ bool checkArguments(int argc, char* argv[]) {
 bool createServer() {
     fd_set fds;
 	ssize_t recsize;
-	struct sockaddr_in rcvaddr;
-	int len  = sizeof rcvaddr;
-	int slen = sizeof sdraddr;
     
 	char buffer[1000];
 	int buff_len = sizeof buffer;
