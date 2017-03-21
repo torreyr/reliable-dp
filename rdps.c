@@ -26,6 +26,7 @@ void printLogMessage();
 bool isPort();
 char* getTime();
 bool checkArguments();
+bool connection();
 bool createServer();
 
 // Global Variables
@@ -43,6 +44,7 @@ struct Header {
 	int data_len;
 	int window_size;
 } header;
+
 
 // ------- CONSOLE ------- //
 void howto() {
@@ -144,6 +146,37 @@ bool checkArguments(int argc, char* argv[]) {
 	return true;
 }
 
+bool connection(int sock) {
+	// Set the header.
+	char data[1024];
+	strcpy(data, "Does this work?");
+	strcpy(header.magic, "CSC361");
+	strcpy(header.type, "SYN");
+	header.seq_num = rand() & 0xffff;
+	header.ack_num = 0;
+	header.data_len = strlen(data);
+	header.window_size = 10;
+	
+	char buffer[1024];
+	sprintf(buffer, "%s,%s,%d,%d,%d,%d,%s", 
+		header.magic,
+		header.type,
+		header.seq_num,
+		header.ack_num,
+		header.data_len,
+		header.window_size,
+		data
+	);
+	
+	if ( sendto(sock, &buffer, sizeof buffer, 0, (struct sockaddr*) &rcvaddr, sizeof rcvaddr) == -1 ) {
+		printf("problem sending\n");
+		return true;
+	} else {
+		printf("successfully sent\n");
+		return false;
+	}
+}
+
 bool createServer() {
     fd_set fds;
 	struct sockaddr_in sdraddr;
@@ -186,6 +219,12 @@ bool createServer() {
 	rcvaddr.sin_family 		= AF_INET;
 	rcvaddr.sin_addr.s_addr = inet_addr(rcv_ip);
 	rcvaddr.sin_port 		= htons(rcv_port);
+	
+	// Create initial connection (SYN/ACK).
+	if ( !connection(sock) ) {
+		printf("ERROR: could not make initial connection. exiting program.");
+		return false;
+	}
 	
 	// Set the header.
 	char data[1024];
@@ -245,3 +284,5 @@ int main(int argc, char* argv[]) {
     if ( !checkArguments(argc, argv) ) return 0;
     if ( !createServer() ) return 0;
 }
+
+// <initial seq number> = <initial seq number> & 0xffff;

@@ -198,39 +198,25 @@ bool createServer() {
                 buffer[sizeof buffer] = '\0';
 				printf("Received: %s\n", buffer);
 				
-				// Set header fields.
+				// Tokenize received packet.
 				int i = 0;
 				char tokens[6][1024];
 				char* token = strtok(buffer, ",");
 				while (token != NULL) {
-					if (i == 6) {
-						strncpy(tokens[i], token, atoi(tokens[4]));
-					} else {
-						strcpy(tokens[i], token);
-					}
+					if (i == 6) strncpy(tokens[i], token, atoi(tokens[4]));
+					else strcpy(tokens[i], token);
 					token = strtok(NULL, ",");
 					i++;
 				}
 				
+				// Set header fields.
 				strcpy(header.magic, tokens[0]);
 				strcpy(header.type, tokens[1]);		
 				header.seq_num     = atoi(tokens[2]);
 				header.ack_num     = atoi(tokens[3]);
 				header.data_len    = atoi(tokens[4]);
 				header.window_size = atoi(tokens[5]);
-				// NOTE: This will not work in the future. Some data might have
-				// 		 zeros in them and strcpy will think that's the end of the str.
 				strcpy(buffer, tokens[6]);
-				
-				printf("%s,%s,%d,%d,%d,%d,%s", 
-					header.magic,
-					header.type,
-					header.seq_num,
-					header.ack_num,
-					header.data_len,
-					header.window_size,
-					buffer
-				);
 				
 				if (sdr_ip == NULL) {
 					sdr_port = ntohs(sdraddr.sin_port);
