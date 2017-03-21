@@ -236,8 +236,6 @@ bool createServer() {
             return false;
 		}
 		
-		printf("%d\n", buff_len);
-		
 		if (FD_ISSET(sock, &fds)) {
 			recsize = recvfrom(sock, (void*) buffer, buff_len, 0, (struct sockaddr*) &sdraddr, &slen);
 		
@@ -249,7 +247,12 @@ bool createServer() {
 				printf("Received: %s\n", buffer);
 				
 				zeroHeader();
+				
+				printf("here\n");
+				
 				setHeader(buffer);
+				
+				printf("here2\n");
 				
 				if (sdr_ip == NULL) {
 					sdr_port = ntohs(sdraddr.sin_port);
