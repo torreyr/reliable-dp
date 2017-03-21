@@ -215,7 +215,9 @@ bool connection(int sock) {
 				// Tokenize received packet.
 				int i = 0;
 				char tokens[6][1024];
-				char* token = strtok(buffer, ",");
+				char* buf2;
+				strcpy(buf2, buffer);
+				char* token = strtok(buf2, ",");
 				while (token != NULL) {
 					if (i == 6) strncpy(tokens[i], token, atoi(tokens[4]));
 					else strcpy(tokens[i], token);
