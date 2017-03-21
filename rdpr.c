@@ -141,7 +141,7 @@ bool createServer() {
 	int slen = sizeof sdraddr;
     
 	char buffer[1000];
-	int buff_len = buff_len;
+	int buff_len = sizeof buffer;
 	memset(buffer, 0, buff_len);
 	
 	// Create socket.
@@ -190,13 +190,12 @@ bool createServer() {
 		}
 		
 		if (FD_ISSET(sock, &fds)) {
-			recsize = recvfrom(sock, (void*) buffer, sizeof buffer, 0, (struct sockaddr*) &sdraddr, &slen);
+			recsize = recvfrom(sock, (void*) buffer, buff_len, 0, (struct sockaddr*) &sdraddr, &slen);
 		
 			if (recsize <= 0) {
 				printf("did not receive any data.\n");
 				close(sock);
 			} else {
-				printf("%d\n", buff_len);
                 buffer[buff_len] = '\0';
 				printf("Received: %s\n", buffer);
 				
