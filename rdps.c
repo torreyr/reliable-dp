@@ -164,14 +164,14 @@ int sendResponse(int sock) {
     char data[4];
     
     // Walk through the file.
-    do {
+    while (!feof(fp)) {
         printf("fp is not NULL.\n");
-        fread(data, sizeof data, 1, fp);
+        fread(data, 1, sizeof data, fp);
         data[3] = '\0';
         printf("%s\n", data);
         memset(data, 0, sizeof data);
         //break;
-    } while (!feof(fp));
+    }
     
 }
 
