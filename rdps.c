@@ -217,22 +217,29 @@ bool connection(int sock) {
 				char tokens[6][1024];
 				char buf2[1000];
 				strcpy(buf2, buffer);
+				
 				char* token = strtok(buf2, ",");
 				while (token != NULL) {
-					if (i == 6) strncpy(tokens[i], token, atoi(tokens[4]));
-					else strcpy(tokens[i], token);
+					if (i == 6) {
+						strncpy(tokens[i], token, atoi(tokens[4]));
+						tokens[i][atoi(tokens[4])] = '\0';
+					} else {
+						strcpy(tokens[i], token);
+					}
 					token = strtok(NULL, ",");
 					i++;
 				}
 				
-				// Set header fields.
+				// Set header values.
 				strcpy(header.magic, tokens[0]);
 				strcpy(header.type, tokens[1]);		
 				header.seq_num     = atoi(tokens[2]);
 				header.ack_num     = atoi(tokens[3]);
 				header.data_len    = atoi(tokens[4]);
 				header.window_size = atoi(tokens[5]);
-				strcpy(buffer, tokens[6]);
+				
+				if (i == 6) strcpy(buffer, "");
+				else strcpy(buffer, tokens[6]);
 				
 				if (sdr_ip == NULL) {
 					sdr_port = ntohs(sdraddr.sin_port);
