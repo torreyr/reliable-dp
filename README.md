@@ -20,6 +20,20 @@
    How to ensure reliable data transfer?
    
    
-   
 Only support one flag at a time.
-Have an extra field in the header for if the packet is a resent packet.
+TODO (?): Have an extra field in the header for if the packet is a resent packet.
+TODO:
+ - set the receiver's initial sequence number.
+ - make global variables to save the current sequence number on both sides.
+
+RECEIVER
+
+Every time a SYN is seen, send an ACK.
+	Because the only reason another SYN will be sent is if the sender times out,
+	which means they didn't get your ACK.
+Whenever a timeout occurs, send an ACK.
+	
+SENDER
+
+Send a SYN.
+Wait for an ACK with the right ack_num before anything else.

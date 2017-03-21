@@ -27,6 +27,7 @@ void printLogMessage();
 bool isPort();
 void zeroHeader();
 char* getTime();
+void gotSyn();
 bool checkArguments();
 bool createServer();
 
@@ -50,7 +51,6 @@ struct Header {
 	int data_len;
 	int window_size;
 } header;
-
 
 // ------- CONSOLE ------- //
 void howto() {
@@ -120,6 +120,27 @@ void setHeader(char* buffer) {
 	else strcpy(buffer, tokens[6]);
 }
 
+
+// ------- RESPONSES ------- //
+/*
+ *	Called if we've received a SYN packet.
+ *	Returns an ACK packet.
+ */
+void gotSyn(int sock, char* buffer, int buff_len) {
+	printf("received a SYN packet\n");
+	sprintf(buffer, "%s,%s,%d,%d,%d,%d",
+		header.magic,
+		"ACK",
+		header.seq_num + 1,
+		header.ack_num + 1,
+		0,
+		window_size
+	);
+	
+	if ( sendto(sock, &buffer, buff_len, 0, (struct sockaddr*) &sdraddr, sizeof sdraddr) == -1 ) {
+		printf("problem sending\n");
+	} else printf("successfully sent this: %s\n", buffer);
+}
 
 // ------- SERVER ------- //
 /*
@@ -263,19 +284,7 @@ bool createServer() {
 				
 				// If we received a SYN, send an ACK.
 				if (strcmp(header.type, "SYN") == 0) {
-					printf("received a SYN packet\n");
-					sprintf(buffer, "%s,%s,%d,%d,%d,%d",
-						header.magic,
-						"ACK",
-						header.seq_num + 1,
-						header.ack_num + 1,
-						0,
-						window_size
-					);
-					
-					if ( sendto(sock, &buffer, buff_len, 0, (struct sockaddr*) &sdraddr, sizeof sdraddr) == -1 ) {
-						printf("problem sending\n");
-					} else printf("successfully sent this: %s\n", buffer);
+					gotSyn(sock, buffer, buff_len);
 				}
 				
 			}
