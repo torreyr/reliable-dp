@@ -26,21 +26,25 @@ void printLogMessage();
 bool isPort();
 char* getTime();
 bool checkArguments();
+int sendResponse();
 bool connection();
 bool createServer();
 
 // Global Variables
+FILE* fp;
 int sdr_port;
 int rcv_port;
 int portnum;
 char* sdr_ip;
 char* rcv_ip;
+
 fd_set fds;
 ssize_t recsize;
 struct sockaddr_in rcvaddr;
 struct sockaddr_in sdraddr;
 int rlen = sizeof(rcvaddr);
 int len  = sizeof(sdraddr);
+
 struct Header {
 	char magic[7];
 	char type[4];
@@ -136,7 +140,7 @@ bool checkArguments(int argc, char* argv[]) {
 	printf("Receiver Port:\t%d\n", rcv_port);
 	
 	// Last argument is the file to send.
-	FILE* fp = fopen(argv[5], "r");
+    fp = fopen(argv[5], "r");
     
 	if (fp == NULL) {
 		printf("\nCould not open file. Exiting the program.\n");
@@ -150,6 +154,24 @@ bool checkArguments(int argc, char* argv[]) {
 	
 	return true;
 }
+
+int sendResponse(int sock) {
+    // Read in the file.
+    fseek(fp, 0, SEEK_END);
+    int file_size = ftell(fp);
+    fseek(fp, 0, SEEK_SET);
+    
+    char data[3];
+    
+    // Walk through the file.
+    while (fp != NULL) {
+        fread(data, sizeof data, 1, fp);
+        printf("%s\n", data);
+        memset(data, 0, sizeof data);
+    }
+    
+}
+
 
 /*
  *	Makes the initial connection between sender and receiver.
@@ -304,10 +326,10 @@ bool createServer() {
 	rcvaddr.sin_port 		= htons(rcv_port);
 	
 	// Create initial connection (SYN/ACK).
-	if ( !connection(sock) ) {
-		printf("ERROR: could not make initial connection. exiting program.");
-		return false;
-	}
+	// if ( !connection(sock) ) {
+		// printf("ERROR: could not make initial connection. exiting program.");
+		// return false;
+	// }
 	
 	// Set the header.
 	char data[1024];
@@ -336,32 +358,10 @@ bool createServer() {
 	if ( sendto(sock, &buffer, sizeof buffer, 0, (struct sockaddr*) &rcvaddr, sizeof rcvaddr) == -1 ) {
 		printf("problem sending\n");
 	} else printf("successfully sent\n");
+    
+    sendResponse(sock);
 }
 
-/*
-int sendResponse(int sock, char* data) {
-    int d_len = strlen(data);
-	char packet[1024];
-
-    if (d_len > 1024) {
-		int offset = 0;
-		
-		// Create packets.
-        while(offset < d_len) {
-			memset(packet, 0, 1024);
-			strncpy(packet, data + offset, 1024);
-			if (sendto(sock, 
-                       packet, 
-                       1024, 
-                       0, 
-                       (struct sockaddr*) &client_addr, 
-                       sizeof(client_addr)) == -1) return -1;
-			else offset = offset + 1024;
-        }
-		
-        return 0;
-    } else return sendto(sock, data, d_len, 0, (struct sockaddr*) &client_addr, sizeof(client_addr));
-}*/
 
 // MAIN
 int main(int argc, char* argv[]) {	
