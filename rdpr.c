@@ -90,7 +90,6 @@ void zeroHeader() {
 }
 
 void setHeader(char* buffer) {
-	printf("buffer is %s\n", buffer);
 	// Tokenize received packet.
 	int i = 0;
 	char tokens[6][1024];
@@ -119,8 +118,6 @@ void setHeader(char* buffer) {
 	
 	if (i == 6) strcpy(buffer, "");
 	else strcpy(buffer, tokens[6]);
-	
-	printf("buffer = %s\n", buffer);
 }
 
 
@@ -255,10 +252,7 @@ bool createServer() {
 				printf("Received: %s\n", buffer);
 				
 				zeroHeader();
-				
-				printf("here\n");
 				setHeader(buffer);
-				printf("here as well\n");
 				
 				if (sdr_ip == NULL) {
 					sdr_port = ntohs(sdraddr.sin_port);
