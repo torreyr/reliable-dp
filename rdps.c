@@ -196,6 +196,9 @@ bool connection(int sock) {
 	// NOTE: Can I put this while loop in its own function called waitToReceive()?
 	while (1) {
 		
+		char recbuff[1024];
+		memset(recbuff, 0, sizeof recbuff);
+		
 		timeout.tv_sec = 2;
 		printf("waiting for ACK...\n");
 		
@@ -206,17 +209,17 @@ bool connection(int sock) {
 		}
 		
 		if (FD_ISSET(sock, &fds)) {
-			printf("buffer before receive: %s\n", buffer);
-			recsize = recvfrom(sock, (void*) buffer, buff_len, 0, (struct sockaddr*) &sdraddr, &len);
+			//printf("buffer before receive: %s\n", buffer);
+			recsize = recvfrom(sock, (void*) recbuff, sizeof recbuff, 0, (struct sockaddr*) &rcvaddr, &rlen);
 		
 			if (recsize <= 0) {
 				printf("did not receive any data.\n");
 				close(sock);
 			} else {
-				printf("Received beforehand: %s\n", buffer);
-				printf("buff_len: %d\n", buff_len);
+				//printf("Received beforehand: %s\n", buffer);
+				//printf("buff_len: %d\n", buff_len);
                 buffer[buff_len] = '\0';
-				printf("Received: %s\n", buffer);
+				printf("Received: %s\n", recbuff);
 				
 				// Tokenize received packet.
 				int i = 0;
