@@ -255,6 +255,8 @@ bool createServer() {
 						printf("problem sending\n");
 					} else printf("successfully sent\n");
 				}
+				
+				break;
 			}
 			
 			memset(buffer, 0, buff_len);
