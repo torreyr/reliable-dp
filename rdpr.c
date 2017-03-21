@@ -114,8 +114,8 @@ void setHeader(char* buffer) {
 	header.data_len    = atoi(tokens[4]);
 	header.window_size = atoi(tokens[5]);
 	
-	if (i == 6) strcpy(buffer, "");
-	else strcpy(buffer, tokens[6]);
+	//if (i == 6) strcpy(buffer, "");
+	//else strcpy(buffer, tokens[6]);
 	
 	printf("buffer = %s\n", buffer);
 }
