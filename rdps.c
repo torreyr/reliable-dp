@@ -181,7 +181,6 @@ bool connection(int sock) {
 		return false;
 	} else {
 		printf("successfully sent\n");
-		return true;
 	}
 	
 	struct timeval timeout;
@@ -236,6 +235,7 @@ bool connection(int sock) {
 				
 				if (strcmp(header.type, "ACK") == 0) {
 					printf("RECEIVED AN ACK!\n");
+					return true;
 				} else {
 					printf("Received something other than an ACK.");
 				}
@@ -248,6 +248,8 @@ bool connection(int sock) {
 		
 		memset(buffer, 0, sizeof buffer);
 	}
+	
+	return false;
 }
 
 bool createServer() {	
