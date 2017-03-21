@@ -103,7 +103,10 @@ void setHeader(char* buffer) {
 	header.ack_num     = atoi(tokens[3]);
 	header.data_len    = atoi(tokens[4]);
 	header.window_size = atoi(tokens[5]);
+	printf("tokens[6]: %s\n", tokens[6]);
 	strcpy(buffer, tokens[6]);
+	
+	printf("%s\n", buffer);
 }
 
 
