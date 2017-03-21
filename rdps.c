@@ -39,7 +39,8 @@ fd_set fds;
 ssize_t recsize;
 struct sockaddr_in rcvaddr;
 struct sockaddr_in sdraddr;
-int len = sizeof(sdraddr);
+int len  = sizeof(sdraddr);
+int rlen = sizeof(rcvaddr);
 struct Header {
 	char magic[7];
 	char type[4];
@@ -203,7 +204,7 @@ bool connection(int sock) {
 		}
 		
 		if (FD_ISSET(sock, &fds)) {
-			recsize = recvfrom(sock, (void*) buffer, sizeof buffer, 0, (struct sockaddr*) &rcvaddr, &len);
+			recsize = recvfrom(sock, (void*) buffer, sizeof buffer, 0, (struct sockaddr*) &rcvaddr, &rlen);
 		
 			if (recsize <= 0) {
 				printf("did not receive any data.\n");
