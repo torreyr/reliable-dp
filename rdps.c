@@ -35,7 +35,11 @@ int rcv_port;
 int portnum;
 char* sdr_ip;
 char* rcv_ip;
+fd_set fds;
+ssize_t recsize;
 struct sockaddr_in rcvaddr;
+struct sockaddr_in sdraddr;
+int len = sizeof(sdraddr);
 struct Header {
 	char magic[7];
 	char type[4];
@@ -146,7 +150,11 @@ bool checkArguments(int argc, char* argv[]) {
 	return true;
 }
 
+/*
+ *	Makes the initial connection between sender and receiver.
+ */
 bool connection(int sock) {
+	
 	// Set the header.
 	char data[1024];
 	strcpy(header.magic, "CSC361");
@@ -156,6 +164,7 @@ bool connection(int sock) {
 	header.data_len = strlen(data);
 	header.window_size = 10;
 	
+	// String to send.
 	char buffer[1024];
 	sprintf(buffer, "%s,%s,%d,%d,%d,%d", 
 		header.magic,
@@ -166,6 +175,7 @@ bool connection(int sock) {
 		header.window_size
 	);
 	
+	// Send packet.
 	if ( sendto(sock, &buffer, sizeof buffer, 0, (struct sockaddr*) &rcvaddr, sizeof rcvaddr) == -1 ) {
 		printf("problem sending\n");
 		return false;
@@ -173,13 +183,74 @@ bool connection(int sock) {
 		printf("successfully sent\n");
 		return true;
 	}
+	
+	struct timeval timeout;
+	
+	// Wait for ACK response.
+	// NOTE: Can I put this while loop in its own function called waitToReceive()?
+	while (1) {
+		
+		timeout.tv_sec = 2;
+		printf("waiting for ACK...\n");
+		
+		if (select(sock + 1, &fds, NULL, NULL, &timeout) < 0) {   
+			printf("Error with select. Closing the socket.\n");
+            close(sock);
+            return false;
+		}
+		
+		if (FD_ISSET(sock, &fds)) {
+			recsize = recvfrom(sock, (void*) buffer, sizeof buffer, 0, (struct sockaddr*) &sdraddr, &len);
+		
+			if (recsize <= 0) {
+				printf("did not receive any data.\n");
+				close(sock);
+			} else {
+                buffer[sizeof buffer] = '\0';
+				printf("Received: %s\n", buffer);
+				
+				// Tokenize received packet.
+				int i = 0;
+				char tokens[6][1024];
+				char* token = strtok(buffer, ",");
+				while (token != NULL) {
+					if (i == 6) strncpy(tokens[i], token, atoi(tokens[4]));
+					else strcpy(tokens[i], token);
+					token = strtok(NULL, ",");
+					i++;
+				}
+				
+				// Set header fields.
+				strcpy(header.magic, tokens[0]);
+				strcpy(header.type, tokens[1]);		
+				header.seq_num     = atoi(tokens[2]);
+				header.ack_num     = atoi(tokens[3]);
+				header.data_len    = atoi(tokens[4]);
+				header.window_size = atoi(tokens[5]);
+				strcpy(buffer, tokens[6]);
+				
+				if (sdr_ip == NULL) {
+					sdr_port = ntohs(sdraddr.sin_port);
+					sdr_ip   = inet_ntoa(sdraddr.sin_addr);
+				}
+				
+				if (strcmp(header.type, "ACK") == 0) {
+					printf("RECEIVED AN ACK!\n");
+				} else {
+					printf("Received something other than an ACK.");
+				}
+				
+				//printLogMessage();
+			}
+			
+			memset(buffer, 0, sizeof buffer);
+		}
+		
+		memset(buffer, 0, sizeof buffer);
+	}
 }
 
-bool createServer() {
-    fd_set fds;
-	struct sockaddr_in sdraddr;
-    const int len = sizeof(sdraddr);
-	
+bool createServer() {	
 	printf("creating connection...\n\n");
 	
 	// Create socket.
