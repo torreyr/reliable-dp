@@ -23,8 +23,7 @@
 Only support one flag at a time.
 TODO (?): Have an extra field in the header for if the packet is a resent packet.
 TODO:
- - set the receiver's initial sequence number.
- - make global variables to save the current sequence number on both sides.
+ - deal with duplicate packets.
  
 Send 10(WINDOW_SIZE) packets, drop any that are out of order, ACK the highest one we have, send the next 10.
 Sequence numbers are packet numbers with an offset. Not the next byte that it's expecting. The next packet it's expecting.
@@ -36,6 +35,7 @@ Every time a SYN is seen, send an ACK.
 	Because the only reason another SYN will be sent is if the sender times out,
 	which means they didn't get your ACK.
 Whenever a timeout occurs, send an ACK.
+Deals with duplicate packets by dropping anything that is not the sequence number it expects.
 	
 SENDER
 
