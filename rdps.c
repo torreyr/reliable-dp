@@ -40,7 +40,7 @@ bool createServer();
 
 #define MAX_SYN_TIMEOUTS 150
 #define TIMEOUT_SEC	     0
-#define TIMEOUT_USEC     500000
+#define TIMEOUT_USEC     50000
 
 // Global Variables
 FILE* fp;
