@@ -1,9 +1,9 @@
 all:
 	gcc -o rdpr rdpr.c
 	gcc -o rdps rdps.c
+	rm receive.txt
 
 clean:
-	rm receive.txt
 	rm *.exe
 	rm *.bin
 	rm *.o
