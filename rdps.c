@@ -232,7 +232,6 @@ int sendResponse(int sock) {
         printf("data: %s\n", data);
         
         // Send the packet.
-        header.seq_num += 1;
         sprintf(buffer, "%s,%s,%d,%d,%d,%d,%s", 
             header.magic,
             "DAT",
