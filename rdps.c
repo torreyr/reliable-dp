@@ -39,7 +39,7 @@ bool createServer();
                                 // out of order and/or not in time. Also, doesn't like commas.
 
 #define MAX_SYN_TIMEOUTS 150
-#define TIMEOUT_SEC		 1
+#define TIMEOUT_SEC		 2
 
 // Global Variables
 FILE* fp;
