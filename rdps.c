@@ -235,7 +235,7 @@ int sendResponse(int sock) {
             "DAT",
             0,
             0,
-            strlen(data),
+            (int) strlen(data),
             window_size,
             data
         );
