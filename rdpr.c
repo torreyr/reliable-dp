@@ -108,7 +108,7 @@ void zeroHeader() {
 void setHeader(char* buffer) {
 	// Tokenize received packet.
 	int i = 0;
-	char tokens[6][1024];
+	char tokens[7][1024];
 	char buf2[1000];
 	strcpy(buf2, buffer);
 	
@@ -135,7 +135,7 @@ void setHeader(char* buffer) {
 	if (i == 6) strcpy(buffer, "");
 	else {
         char buf3[1000];
-        sprintf(buf3, "%s,%s,%s,%s,%s,",
+        sprintf(buf3, "%s,%s,%s,%s,%s,%s",
             tokens[0],
             tokens[1],
             tokens[2],

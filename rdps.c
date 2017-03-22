@@ -114,7 +114,7 @@ void zeroHeader() {
 void setHeader(char* buffer) {
     // Tokenize received packet.
     int i = 0;
-    char tokens[6][MAX_BUFFER_SIZE];
+    char tokens[7][MAX_BUFFER_SIZE];
     char buf2[MAX_BUFFER_SIZE];
     strcpy(buf2, buffer);
     
