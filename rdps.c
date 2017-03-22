@@ -239,10 +239,7 @@ bool sendResponse(int sock, int seq) {
         return false;
     } else printf("successfully sent\n");
     
-    memset(data, 0, MAX_DATA_SIZE);
-    memset(buffer, 0, MAX_BUFFER_SIZE);
-    
-    if ((strlen(data) + 1) < MAX_DATA_SIZE) return false;   // reached end of file
+    if (strlen(data) < MAX_DATA_SIZE) return false;   // reached end of file
     else return true;
 }
 
