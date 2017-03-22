@@ -277,7 +277,7 @@ bool createServer() {
         FD_ZERO(&fds);
         FD_SET(sock, &fds);
 		
-		timeout.tv_sec = 2;
+		timeout.tv_sec = 1;
         timeout.tv_usec = 0;
 		
 		int select_return = select(sock + 1, &fds, NULL, NULL, &timeout);

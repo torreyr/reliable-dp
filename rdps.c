@@ -382,6 +382,10 @@ bool connection(int sock) {
 	// Wait for ACK response.
 	// NOTE: Can I put this while loop in its own function called waitToReceive()?
 	while (1) {
+		// Reset file descriptors.
+		FD_ZERO(&fds);
+		FD_SET(sock, &fds);
+		FD_SET(0, &fds);
 		
 		timeout.tv_sec = 2;
         timeout.tv_usec = 0;
