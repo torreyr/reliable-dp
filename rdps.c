@@ -33,7 +33,7 @@ bool createServer();
 // Global Constants
 #define MAX_DATA_SIZE   4
 #define MAX_BUFFER_SIZE 1024
-#define WINDOW_SIZE 10
+#define WINDOW_SIZE 15
 
 #define MAX_SYN_TIMEOUTS 150
 
@@ -220,10 +220,6 @@ bool sendResponse(int sock, int seq) {
     memset(data, 0, MAX_DATA_SIZE);
     memset(buffer, 0, MAX_BUFFER_SIZE);
     
-    // Walk through the file.
-    //int i, b;
-    //for(b = 0; b < file_size; b += MAX_DATA_SIZE - 1) {
-    printf("fp is not NULL.\n");
     fread(data, 1, MAX_DATA_SIZE - 1, fp);
     printf("data: %s\n", data);
     
@@ -244,9 +240,7 @@ bool sendResponse(int sock, int seq) {
     
     memset(data, 0, MAX_DATA_SIZE);
     memset(buffer, 0, MAX_BUFFER_SIZE);
-    //}
     
-    printf("here\n");
     if (fp + MAX_DATA_SIZE == NULL) return false;   // reached end of file
     else return true;
 }
