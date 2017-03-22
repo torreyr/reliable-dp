@@ -33,7 +33,8 @@ bool createServer();
 // Global Constants
 #define MAX_DATA_SIZE   4
 #define MAX_BUFFER_SIZE 1024
-#define WINDOW_SIZE 400         // NOTE: 300 works fine. With 400, the last few packets come out of order and/or not in time.
+#define WINDOW_SIZE 400         // NOTE: 300 works fine. With 400, the last few packets come
+                                // out of order and/or not in time. Also, doesn't like commas.
 
 #define MAX_SYN_TIMEOUTS 150
 
