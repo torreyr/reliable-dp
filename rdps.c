@@ -64,6 +64,7 @@ struct Header {
 	int data_len;
 	int window_size;
 } header;
+bool sent_entire_file = false;
 
 
 // ------- CONSOLE ------- //
@@ -282,12 +283,14 @@ bool sendResponse(int sock, int seq) {
 }
 
 bool sendData(int sock) {
-    // while () {   // have not reached end of file or have not received ack for last packet or something
     printf("trying to send...\n");
     
     int i;
     for (i = 0; i < WINDOW_SIZE; i ++) {
-        if ( sendResponse(sock, header.seq_num) == false ) break;
+        if ( sendResponse(sock, header.seq_num) == false ) {
+            sent_entire_file = true;
+            break;
+        }
         header.seq_num += 1;
     }
             
@@ -325,6 +328,7 @@ bool sendData(int sock) {
                 
                 if (strcmp(header.type, "ACK") == 0) {
                     printf("RECEIVED AN ACK!\n");
+                    return true;
                 } else {
                     printf("Received something other than an ACK.\n");
                 }
@@ -463,7 +467,10 @@ bool createServer() {
 		return false;
 	}
     
-    sendData(sock);
+    // Send the data.
+    while (sent_entire_file == false) {
+        if ( sendData(sock) == false ) return false;
+    }
 }
 
 
