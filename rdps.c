@@ -246,6 +246,8 @@ int sendResponse(int sock) {
         memset(data, 0, sizeof data);
         memset(buffer, 0, MAX_BUFFER_SIZE);
     }
+    
+    printf("here\n");
 }
 
 
@@ -426,6 +428,7 @@ bool createServer() {
 	// } else printf("successfully sent\n");
     
     sendResponse(sock);
+    printf("here2\n");
 }
 
 
