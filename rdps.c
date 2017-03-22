@@ -241,7 +241,7 @@ bool sendResponse(int sock, int seq) {
     
     printf("%d\n", strlen(data));
     
-    if ((strlen(data) < MAX_DATA_SIZE) return false;   // reached end of file
+    if (strlen(data) < MAX_DATA_SIZE) return false;   // reached end of file
     else return true;
 }
 
