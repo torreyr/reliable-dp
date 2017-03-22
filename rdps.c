@@ -26,14 +26,14 @@ void printLogMessage();
 bool isPort();
 char* getTime();
 bool checkArguments();
-int sendResponse();
+bool sendResponse();
 bool connection();
 bool createServer();
 
 // Global Constants
 #define MAX_DATA_SIZE   4
 #define MAX_BUFFER_SIZE 1024
-#define MAX_WINDOW_SIZE 10
+#define WINDOW_SIZE 10
 
 #define MAX_SYN_TIMEOUTS 150
 
@@ -53,7 +53,6 @@ int len  = sizeof(sdraddr);
 int rlen = sizeof(rcvaddr);
 
 int init_seq_num;
-int window_size = MAX_WINDOW_SIZE;
 struct Header {
 	char magic[7];
 	char type[4];
@@ -112,6 +111,7 @@ void zeroHeader() {
  *  Creates a new random sequence number each time.
  */
 bool sendSyn (int sock) {
+    srand(time(NULL));
     init_seq_num = rand() & 0xffff;
     // Set the header.	
 	strcpy(header.magic, "CSC361");
@@ -213,11 +213,11 @@ bool checkArguments(int argc, char* argv[]) {
 	return true;
 }
 
-int sendResponse(int sock) {
+bool sendResponse(int sock, int seq) {
     // Read in the file.
     fseek(fp, 0, SEEK_END);
     int file_size = ftell(fp);
-    fseek(fp, 0, SEEK_SET);
+    fseek(fp, 0, seq);
     
     char data[MAX_DATA_SIZE];
     char buffer[MAX_BUFFER_SIZE];
@@ -225,29 +225,29 @@ int sendResponse(int sock) {
     memset(buffer, 0, MAX_BUFFER_SIZE);
     
     // Walk through the file.
-    int b;
-    for(b = 0; b < file_size; b += MAX_DATA_SIZE - 1) {
-        printf("fp is not NULL.\n");
-        fread(data, 1, MAX_DATA_SIZE - 1, fp);
-        printf("data: %s\n", data);
-        
-        // Send the packet.
-        sprintf(buffer, "%s,%s,%d,%d,%d,%d,%s", 
-            header.magic,
-            "DAT",
-            header.seq_num,
-            0,
-            (int) strlen(data),
-            window_size,
-            data
-        );
-        if ( sendto(sock, &buffer, sizeof buffer, 0, (struct sockaddr*) &rcvaddr, sizeof rcvaddr) == -1 ) {
-            printf("Problem sending packet.\n");
-        } else printf("successfully sent\n");
-        
-        memset(data, 0, MAX_DATA_SIZE);
-        memset(buffer, 0, MAX_BUFFER_SIZE);
-    }
+    //int i, b;
+    //for(b = 0; b < file_size; b += MAX_DATA_SIZE - 1) {
+    printf("fp is not NULL.\n");
+    fread(data, 1, MAX_DATA_SIZE - 1, fp);
+    printf("data: %s\n", data);
+    
+    // Send the packet.
+    sprintf(buffer, "%s,%s,%d,%d,%d,%d,%s", 
+        header.magic,
+        "DAT",
+        header.seq_num,
+        0,
+        (int) strlen(data),
+        WINDOW_SIZE,
+        data
+    );
+    if ( sendto(sock, &buffer, sizeof buffer, 0, (struct sockaddr*) &rcvaddr, sizeof rcvaddr) == -1 ) {
+        printf("Problem sending packet.\n");
+    } else printf("successfully sent\n");
+    
+    memset(data, 0, MAX_DATA_SIZE);
+    memset(buffer, 0, MAX_BUFFER_SIZE);
+    //}
     
     printf("here\n");
 }
@@ -407,8 +407,10 @@ bool createServer() {
 		// printf("Problem sending packet.\n");
 	// } else printf("successfully sent\n");
     
-    sendResponse(sock);
-    printf("here2\n");
+    // int i;
+    // for (i = 0; i < WINDOW_SIZE; i ++) {
+        // if ( sendResponse(sock) == false ) break;
+    // }
 }
 
 
