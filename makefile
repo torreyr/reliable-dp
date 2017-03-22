@@ -3,6 +3,7 @@ all:
 	gcc -o rdps rdps.c
 
 clean:
-	rm *.exe
+	rm receive.txt
+    rm *.exe
 	rm *.bin
 	rm *.o
