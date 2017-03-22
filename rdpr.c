@@ -278,7 +278,7 @@ bool createServer() {
             // }
         // }
 		
-        
+        printf("before select\n");
         if (select(sock + 1, &fds, NULL, NULL, &timeout) < 0) {
 			printf("Error with select. Closing the socket.\n");
             close(sock);
