@@ -215,6 +215,10 @@ bool sendResponse(int sock, int seq) {
     // Read in the file.
     fseek(fp, 0, SEEK_END);
     int file_size = ftell(fp);
+    
+    int place = ((seq - (init_seq_num + 1))*(MAX_DATA_SIZE - 1));
+    printf("I think the position in the file is %d\n", place);
+    
     fseek(fp, 0, ((seq - (init_seq_num + 1))*(MAX_DATA_SIZE - 1)));
     
     char data[MAX_DATA_SIZE];
