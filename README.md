@@ -25,6 +25,7 @@ TODO (?): Have an extra field in the header for if the packet is a resent packet
 TODO:
  - figure out how to overwrite the file.
  - fix end of file flag.
+ - make sure sender gets the final ack before exiting.
  
 Send 10(WINDOW_SIZE) packets, drop any that are out of order, ACK the highest one we have, send the next 10.
 Sequence numbers are packet numbers with an offset. Not the next byte that it's expecting. The next packet it's expecting.

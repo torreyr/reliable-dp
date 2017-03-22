@@ -39,7 +39,8 @@ bool createServer();
                                 // out of order and/or not in time. Also, doesn't like commas.
 
 #define MAX_SYN_TIMEOUTS 150
-#define TIMEOUT_SEC		 1
+#define TIMEOUT_SEC	     0
+#define TIMEOUT_USEC     500000
 
 // Global Variables
 FILE* fp;
@@ -320,7 +321,7 @@ bool sendData(int sock) {
 		FD_SET(0, &fds);
 		
 		timeout.tv_sec = TIMEOUT_SEC;
-        timeout.tv_usec = 0;
+        timeout.tv_usec = TIMEOUT_USEC;
         printf("waiting for ACK...\n");
         
         select_return = select(sock + 1, &fds, NULL, NULL, &timeout);
@@ -389,7 +390,7 @@ bool connection(int sock) {
 		FD_SET(0, &fds);
 		
 		timeout.tv_sec = TIMEOUT_SEC;
-        timeout.tv_usec = 0;
+        timeout.tv_usec = TIMEOUT_USEC;
 		printf("waiting for ACK...\n");
 		
         int select_return = select(sock + 1, &fds, NULL, NULL, &timeout);
