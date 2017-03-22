@@ -36,6 +36,8 @@ bool createServer();
 #define MAX_BUFFER_SIZE 2048
 #define MAX_WINDOW_SIZE 10
 
+#define MAX_TIMEOUTS 3
+
 // Global Variables
 int sdr_port;
 int rcv_port;
@@ -248,6 +250,7 @@ bool createServer() {
     }
 	
 	window_size = MAX_WINDOW_SIZE;
+    int timeouts = 0;
 	struct timeval timeout;
 	
 	while (1) {
@@ -259,11 +262,20 @@ bool createServer() {
 		
 		timeout.tv_sec = 2;
 		
-		if (select(sock + 1, &fds, NULL, NULL, &timeout) < 0) {   
+		int select_return = select(sock + 1, &fds, NULL, NULL, &timeout);
+		if (select_return < 0) {   
 			printf("Error with select. Closing the socket.\n");
-            close(sock);
-            return false;
-		}
+			close(sock);
+			return false;
+		} else if (select_return == 0) {
+            printf("timeout occured\n");
+            timeouts++;
+            if (timeouts == MAX_TIMEOUTS) {
+                printf("ERROR: Timed out too many times. Exiting program.\n");
+                close(sock);
+                return false;
+            }
+        }
 		
 		if (FD_ISSET(sock, &fds)) {
 			recsize = recvfrom(sock, (void*) buffer, buff_len, 0, (struct sockaddr*) &sdraddr, &slen);

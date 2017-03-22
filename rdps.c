@@ -400,5 +400,5 @@ bool createServer() {
 // MAIN
 int main(int argc, char* argv[]) {	
     if ( !checkArguments(argc, argv) ) return 0;
-    if ( !createServer() ) return 0;
+    //if ( !createServer() ) return 0;
 }
