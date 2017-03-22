@@ -294,10 +294,12 @@ bool sendData(int sock) {
     printf("trying to send...\n");
     
     int i;
+    bool resp;
     for (i = 0; i < WINDOW_SIZE; i ++) {
-        if (( sendResponse(sock, header.seq_num) == false ) && (sent_entire_file == true)) {
+        resp = sendResponse(sock, header.seq_num) 
+        if ((resp == false) && (sent_entire_file == true)) {
             return false;
-        } else if ( sendResponse(sock, header.seq_num) == false ) {
+        } else if ( resp == false ) {
             break;
         }
         header.seq_num += 1;
