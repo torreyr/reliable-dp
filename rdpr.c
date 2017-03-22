@@ -328,6 +328,7 @@ bool createServer() {
                         
                         if (num_received == MAX_WINDOW_SIZE) {
                             sendAck(sock, buffer, buff_len);
+                            num_received = 0;
                         }
                     }
                 }
