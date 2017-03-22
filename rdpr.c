@@ -299,6 +299,8 @@ bool createServer() {
 				
 				printLogMessage();
                 connected = true;
+                timeouts = 0;
+                printf("timeout count: %d\n", timeouts);
 				
 				// If we received a SYN, send an ACK.
 				if (strcmp(header.type, "SYN") == 0) {
