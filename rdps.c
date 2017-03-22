@@ -357,7 +357,7 @@ bool createServer() {
 	
 	printf("trying to send...\n");
 	
-	if ( sendto(sock, &buffer, sizeof buffer, 0, (struct sockaddr*) &rcvaddr, sizeof rcvaddr) == -1 ) {
+	if ( sendto(sock, buffer, sizeof buffer, 0, (struct sockaddr*) &rcvaddr, sizeof rcvaddr) == -1 ) {
 		printf("problem sending\n");
 	} else printf("successfully sent\n");
     

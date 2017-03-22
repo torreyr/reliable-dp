@@ -131,6 +131,7 @@ void setHeader(char* buffer) {
  */
 void gotSyn(int sock, char* buffer, int buff_len) {
 	printf("received a SYN packet\n");
+    
     memset(buffer, 0, buff_len);
 	sprintf(buffer, "%s,%s,%d,%d,%d,%d",
 		header.magic,
@@ -141,10 +142,6 @@ void gotSyn(int sock, char* buffer, int buff_len) {
 		window_size
 	);
     
-    //buffer[strlen(buffer) + 1] = '\0';
-    
-	printf("I have a buff len of: %d\n", buff_len);
-    printf("this is what i think my buffer is: %s\n", buffer);
 	if ( sendto(sock, buffer, buff_len, 0, (struct sockaddr*) &sdraddr, slen) == -1 ) {
 		printf("problem sending\n");
 	} else printf("successfully sent this: %s\n", buffer);
