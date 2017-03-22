@@ -322,7 +322,7 @@ bool sendData(int sock) {
             close(sock);
             return false;
         } else if (select_return == 0) {
-            printf("timeout occurred\n");
+            printf("timeout occurred in sendData\n");
             // TODO: if max number of timeouts, give up, exit the program.
         }
         
