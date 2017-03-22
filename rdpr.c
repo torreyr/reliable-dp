@@ -263,6 +263,7 @@ bool createServer() {
 		timeout.tv_sec = 2;
 		
 		int select_return = select(sock + 1, &fds, NULL, NULL, &timeout);
+        printf("select_return: %d\n", select_return);
 		if (select_return < 0) {   
 			printf("Error with select. Closing the socket.\n");
 			close(sock);
