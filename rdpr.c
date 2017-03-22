@@ -251,7 +251,6 @@ bool createServer() {
 	
 	window_size = MAX_WINDOW_SIZE;
     int timeouts = 0;
-	struct timeval timeout;
 	
 	while (1) {
 		printf("ready...\n");
@@ -260,7 +259,9 @@ bool createServer() {
         FD_ZERO(&fds);
         FD_SET(sock, &fds);
 		
+        struct timeval timeout;
 		timeout.tv_sec = 2;
+        timeout.tv_usec = 0;
 		
 		// int select_return = select(sock + 1, &fds, NULL, NULL, &timeout);
         // printf("select_return: %d\n", select_return);
