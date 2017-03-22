@@ -59,6 +59,7 @@ struct Header {
 	int data_len;
 	int window_size;
 } header;
+bool connected = false;
 
 // ------- CONSOLE ------- //
 void howto() {
@@ -269,7 +270,7 @@ bool createServer() {
 			printf("Error with select. Closing the socket.\n");
 			close(sock);
 			return false;
-		} else if (select_return == 0) {
+		} else if (select_return == 0 && connected) {
             printf("timeout occured\n");
             timeouts++;
             if (timeouts == MAX_TIMEOUTS) {
@@ -298,6 +299,7 @@ bool createServer() {
 				}
 				
 				printLogMessage();
+                connected = true;
 				
 				// If we received a SYN, send an ACK.
 				if (strcmp(header.type, "SYN") == 0) {
