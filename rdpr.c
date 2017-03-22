@@ -320,13 +320,13 @@ bool createServer() {
 		memset(buffer, 0, buff_len);
 	}
 	
-    fclose(fp);
 }
 
 // MAIN
 int main(int argc, char* argv[]) {
     if ( !checkArguments(argc, argv) ) return 0;	
     if ( !createServer(argv) ) return 0;
+    fclose(fp);
 }
 
 // draw.io

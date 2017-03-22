@@ -25,6 +25,8 @@ TODO (?): Have an extra field in the header for if the packet is a resent packet
 TODO:
  - set the receiver's initial sequence number.
  - make global variables to save the current sequence number on both sides.
+ 
+Send 10(WINDOW_SIZE) packets, drop any that are out of order, ACK the highest one we have, send the next 10.
 
 RECEIVER
 

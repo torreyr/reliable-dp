@@ -52,6 +52,7 @@ struct sockaddr_in rcvaddr;
 int len  = sizeof(sdraddr);
 int rlen = sizeof(rcvaddr);
 
+int init_seq_num;
 int window_size = MAX_WINDOW_SIZE;
 struct Header {
 	char magic[7];
@@ -111,10 +112,11 @@ void zeroHeader() {
  *  Creates a new random sequence number each time.
  */
 bool sendSyn (int sock) {
+    init_seq_num = rand() & 0xffff;
     // Set the header.	
 	strcpy(header.magic, "CSC361");
 	strcpy(header.type, "SYN");
-	header.seq_num = rand() & 0xffff;
+	header.seq_num = init_seq_num;
 	header.ack_num = 0;
 	header.data_len = 0;
 	header.window_size = 10;
@@ -230,10 +232,11 @@ int sendResponse(int sock) {
         printf("data: %s\n", data);
         
         // Send the packet.
+        header.seq_num += 1;
         sprintf(buffer, "%s,%s,%d,%d,%d,%d,%s", 
             header.magic,
             "DAT",
-            0,
+            header.seq_num,
             0,
             (int) strlen(data),
             window_size,
@@ -399,28 +402,6 @@ bool createServer() {
 		return false;
 	}
 	
-	// Set the header.
-	char data[MAX_DATA_SIZE];
-    memset(data, 0, sizeof data);
-	strcpy(data, "Does this work?");
-	strcpy(header.magic, "CSC361");
-	strcpy(header.type, "DAT");
-	header.seq_num = 1;
-	header.ack_num = 0;
-	header.data_len = strlen(data);
-	header.window_size = 10;
-	
-	char buffer[MAX_BUFFER_SIZE];
-	sprintf(buffer, "%s,%s,%d,%d,%d,%d,%s", 
-		header.magic,
-		header.type,
-		header.seq_num,
-		header.ack_num,
-		header.data_len,
-		header.window_size,
-		data
-	);
-	
 	printf("trying to send...\n");
 	
 	// if ( sendto(sock, &buffer, sizeof buffer, 0, (struct sockaddr*) &rcvaddr, sizeof rcvaddr) == -1 ) {
@@ -436,4 +417,5 @@ bool createServer() {
 int main(int argc, char* argv[]) {	
     if ( !checkArguments(argc, argv) ) return 0;
     if ( !createServer() ) return 0;
+    fclose(fp);
 }
