@@ -288,7 +288,7 @@ bool createServer() {
 				// If we received a SYN, send an ACK.
 				if (strcmp(header.type, "SYN") == 0) {
                     printf("received a SYN packet\n");
-					sendAck(sock, buffer, buff_len);
+					//sendAck(sock, buffer, buff_len);
 				}
 				
 			}
