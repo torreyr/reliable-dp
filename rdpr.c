@@ -63,6 +63,7 @@ struct Header {
 	int window_size;
 } header;
 bool connected = false;
+int num_received = 0;
 
 // ------- CONSOLE ------- //
 void howto() {
@@ -275,6 +276,7 @@ bool createServer() {
 			return false;
 		} else if ((select_return == 0) && (connected == true)) {
             printf("timeout occurred\n");
+            //sendAck();
             timeouts++;
             if (timeouts == MAX_TIMEOUTS) {
                 printf("ERROR: Timed out too many times. Exiting program.\n");
@@ -321,7 +323,12 @@ bool createServer() {
                         ack_num = header.seq_num + 1;
                         expected_seq_num = ack_num;
                         printToFile(buffer);
-                        sendAck(sock, buffer, buff_len);
+                        
+                        num_received++;
+                        
+                        if (num_received == MAX_WINDOW_SIZE) {
+                            sendAck(sock, buffer, buff_len);
+                        } // or timeout.
                     }
                 }
 				
