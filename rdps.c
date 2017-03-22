@@ -248,10 +248,10 @@ bool connection(int sock) {
 		} else if (select_return == 0) {
             printf("timeout occured\n");
             syn_timeouts++;
-            if ( sendSyn(sock) == false) {
-                return false;
-            } else if (syn_timeouts == MAX_SYN_TIMEOUTS) {
+            if (syn_timeouts == MAX_SYN_TIMEOUTS) {
                 printf("ERROR: Connection request timed out too many times.\n");
+                return false;
+            } else if ( sendSyn(sock) == false) {
                 return false;
             }
         }
@@ -361,7 +361,7 @@ bool createServer() {
 	
 	// Create initial connection (SYN/ACK).
 	if ( !connection(sock) ) {
-		printf("ERROR: Could not make initial connection. Exiting program.");
+		printf("ERROR: Could not make initial connection. Exiting program.\n");
 		return false;
 	}
 	
