@@ -222,7 +222,6 @@ bool sendResponse(int sock, int seq) {
     
     fread(data, 1, MAX_DATA_SIZE - 1, fp);
     printf("data: %s\n", data);
-    if (strcmp(data, "") == 0) return false;
     
     // Send the packet.
     sprintf(buffer, "%s,%s,%d,%d,%d,%d,%s", 
