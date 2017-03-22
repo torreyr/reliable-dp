@@ -223,6 +223,11 @@ int sendResponse(int sock) {
  */
 bool connection(int sock) {
 
+    // Send initial SYN packet.
+    if ( sendSyn(sock) == false ) {
+        return false;
+    }
+
     int syn_timeouts = 0;
 	struct timeval timeout;
 	char buffer[MAX_BUFFER_SIZE];
@@ -243,8 +248,9 @@ bool connection(int sock) {
 		} else if (select_return == 0) {
             printf("timeout occured\n");
             syn_timeouts++;
-            sendSyn(sock);
-            if (syn_timeouts == MAX_SYN_TIMEOUTS) {
+            if ( sendSyn(sock) == false) {
+                return false;
+            } else if (syn_timeouts == MAX_SYN_TIMEOUTS) {
                 printf("ERROR: Connection request timed out too many times.\n");
                 return false;
             }
