@@ -149,7 +149,7 @@ void sendAck(int sock, char* buffer, int buff_len) {
 	sprintf(buffer, "%s,%s,%d,%d,%d,%d",
 		header.magic,
 		"ACK",
-		header.seq_num,
+		0,
 		ack_num,
 		0,
 		window_size
