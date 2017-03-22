@@ -31,9 +31,11 @@ bool connection();
 bool createServer();
 
 // Global Constants
-#define MAX_DATA_SIZE   1024
-#define MAX_BUFFER_SIZE 2048
+#define MAX_DATA_SIZE   1000
+#define MAX_BUFFER_SIZE 1024
 #define MAX_WINDOW_SIZE 10
+
+#define MAX_SYN_TIMEOUTS 150
 
 // Global Variables
 FILE* fp;
@@ -90,6 +92,43 @@ bool isPort(char* str) {
     return false;
 }
 
+
+// ------- RESPONSES ------- //
+/*
+ *  Simply sends a SYN packet.
+ *  Creates a new random sequence number each time.
+ */
+bool sendSyn (int sock) {
+    // Set the header.	
+	strcpy(header.magic, "CSC361");
+	strcpy(header.type, "SYN");
+	header.seq_num = rand() & 0xffff;
+	header.ack_num = 0;
+	header.data_len = 0;
+	header.window_size = 10;
+	
+	// String to send.
+	char buffer[MAX_BUFFER_SIZE];
+	memset(buffer, 0, MAX_BUFFER_SIZE);
+	sprintf(buffer, "%s,%s,%d,%d,%d,%d", 
+		header.magic,
+		header.type,
+		header.seq_num,
+		header.ack_num,
+		header.data_len,
+		header.window_size
+	);
+	
+	// Send packet until one sends successfully.
+    int syn_timeouts = 0;
+	while ( sendto(sock, &buffer, MAX_BUFFER_SIZE, 0, (struct sockaddr*) &rcvaddr, rlen) == -1 ) {
+		printf("problem sending\n");
+        syn_timeouts++;
+        if (syn_timeouts == MAX_SYN_TIMEOUTS) return false;
+	}
+    printf("successfully sent\n");
+    return true;
+}
 
 // ------- SERVER ------- //
 /*
@@ -177,7 +216,6 @@ int sendResponse(int sock) {
         printf("%s\n", data);
         memset(data, 0, sizeof data);
     }
-    
 }
 
 
@@ -186,37 +224,15 @@ int sendResponse(int sock) {
  */
 bool connection(int sock) {
 	
-	// Set the header.	
-	strcpy(header.magic, "CSC361");
-	strcpy(header.type, "SYN");
-	header.seq_num = rand() & 0xffff;
-	header.ack_num = 0;
-	header.data_len = 0;
-	header.window_size = 10;
-	
-	// String to send.
-	char buffer[MAX_BUFFER_SIZE];
-	int buff_len = sizeof buffer;
-	//memset(buffer, 0, buff_len);
-	sprintf(buffer, "%s,%s,%d,%d,%d,%d", 
-		header.magic,
-		header.type,
-		header.seq_num,
-		header.ack_num,
-		header.data_len,
-		header.window_size
-	);
-	
-	// Send packet.
-	if ( sendto(sock, &buffer, buff_len, 0, (struct sockaddr*) &rcvaddr, rlen) == -1 ) {
-		printf("problem sending\n");
-		return false;
-	} else {
-		printf("successfully sent\n");
-	}
+    // Send a SYN packet.    
+    if ( sendSyn(sock) == false) {
+        printf("ERROR: Connection request timed out too many times.\n");
+        return false;
+    }
 	
 	struct timeval timeout;
-	memset(buffer, 0, buff_len);
+	char buffer[MAX_BUFFER_SIZE];
+	memset(buffer, 0, MAX_BUFFER_SIZE);
 	
 	// Wait for ACK response.
 	// NOTE: Can I put this while loop in its own function called waitToReceive()?
@@ -225,20 +241,24 @@ bool connection(int sock) {
 		timeout.tv_sec = 2;
 		printf("waiting for ACK...\n");
 		
-		if (select(sock + 1, &fds, NULL, NULL, &timeout) < 0) {   
+        int select_return = select(sock + 1, &fds, NULL, NULL, &timeout);
+		if (select_return < 0) {   
 			printf("Error with select. Closing the socket.\n");
 			close(sock);
 			return false;
-		}
+		} else if (select_return == 0) {
+            printf("timeout occured\n");
+            sendSyn(sock);
+        }
 		
 		if (FD_ISSET(sock, &fds)) {
-			recsize = recvfrom(sock, (void*) buffer, buff_len, 0, (struct sockaddr*) &sdraddr, &len);
+			recsize = recvfrom(sock, (void*) buffer, MAX_BUFFER_SIZE, 0, (struct sockaddr*) &sdraddr, &len);
 		
 			if (recsize <= 0) {
 				printf("did not receive any data.\n");
 				close(sock);
 			} else {
-				buffer[buff_len] = '\0';
+				buffer[MAX_BUFFER_SIZE] = '\0';
 				printf("Received: %s\n", buffer);
 				
 				// Tokenize received packet.
@@ -285,10 +305,10 @@ bool connection(int sock) {
 				//printLogMessage();
 			}
 			
-			memset(buffer, 0, buff_len);
+			memset(buffer, 0, MAX_BUFFER_SIZE);
 		}
 		
-		memset(buffer, 0, buff_len);
+		memset(buffer, 0, MAX_BUFFER_SIZE);
 	}
 	
 	return false;
@@ -335,7 +355,7 @@ bool createServer() {
 	
 	// Create initial connection (SYN/ACK).
 	if ( !connection(sock) ) {
-		printf("ERROR: could not make initial connection. exiting program.");
+		printf("ERROR: Could not make initial connection. Exiting program.");
 		return false;
 	}
 	

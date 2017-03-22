@@ -36,4 +36,5 @@ Whenever a timeout occurs, send an ACK.
 SENDER
 
 Send a SYN.
-Wait for an ACK with the right ack_num before anything else.
+    Wait for an ACK.
+    If timeout occurs and no ACK received, send another SYN with a new sequence number.

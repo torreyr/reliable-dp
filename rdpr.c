@@ -129,28 +129,6 @@ void setHeader(char* buffer) {
 
 // ------- RESPONSES ------- //
 /*
- *	Called if we've received a SYN packet.
- *	Returns an ACK packet.
- */
-/*void gotSyn(int sock, char* buffer, int buff_len) {
-	printf("received a SYN packet\n");
-    
-    memset(buffer, 0, buff_len);
-	sprintf(buffer, "%s,%s,%d,%d,%d,%d",
-		header.magic,
-		"ACK",
-		header.seq_num + 1,
-		header.ack_num + 1,
-		0,
-		window_size
-	);
-    
-	if ( sendto(sock, buffer, buff_len, 0, (struct sockaddr*) &sdraddr, slen) == -1 ) {
-		printf("problem sending\n");
-	} else printf("successfully sent\n");
-}/*
-
-/*
  *	Simply sends an ACK packet.
  */
 void sendAck(int sock, char* buffer, int buff_len) {
@@ -168,6 +146,7 @@ void sendAck(int sock, char* buffer, int buff_len) {
 		printf("problem sending\n");
 	} else printf("successfully sent\n");
 }
+
 
 // ------- SERVER ------- //
 /*
