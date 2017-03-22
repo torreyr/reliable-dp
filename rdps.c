@@ -31,7 +31,7 @@ bool connection();
 bool createServer();
 
 // Global Constants
-#define MAX_DATA_SIZE   1000
+#define MAX_DATA_SIZE   4
 #define MAX_BUFFER_SIZE 1024
 #define MAX_WINDOW_SIZE 10
 
@@ -217,15 +217,16 @@ int sendResponse(int sock) {
     int file_size = ftell(fp);
     fseek(fp, 0, SEEK_SET);
     
-    char data[4];
+    char data[MAX_DATA_SIZE];
     char buffer[MAX_BUFFER_SIZE];
+    memset(data, 0, MAX_DATA_SIZE);
     memset(buffer, 0, MAX_BUFFER_SIZE);
     
     // Walk through the file.
     while (!feof(fp)) {
         printf("fp is not NULL.\n");
-        fread(data, 1, sizeof data - 1, fp);
-        data[3] = '\0';
+        fread(data, 1, MAX_DATA_SIZE, fp);
+        //data[strlen(data)] = '\0';
         printf("data: %s\n", data);
         
         // Send the packet.
