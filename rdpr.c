@@ -39,6 +39,7 @@ bool createServer();
 #define MAX_TIMEOUTS 3
 
 // Global Variables
+FILE* fp;
 int sdr_port;
 int rcv_port;
 int portnum;
@@ -132,6 +133,10 @@ void setHeader(char* buffer) {
 	else strcpy(buffer, tokens[6]);
 }
 
+void printToFile(char* buffer) {
+    fwrite(buffer, 1, header.data_len, fp);
+}
+
 
 // ------- RESPONSES ------- //
 /*
@@ -201,13 +206,7 @@ bool checkArguments(int argc, char* argv[]) {
 	printf("Receiver Port:\t%d\n", rcv_port);
 	
 	// Last argument is the file to be received.
-	FILE* fp = fopen(argv[3], "r");
-    
-	if (fp == NULL) {
-		printf("\nCould not open file. Exiting the program.\n");
-        fclose(fp);
-        return false;
-    }
+	fp = fopen(argv[3], "a");
 	printf("Expected file:\t%s\n", argv[3]);
     printf("\n");
 	
@@ -308,7 +307,10 @@ bool createServer() {
 				if (strcmp(header.type, "SYN") == 0) {
                     printf("received a SYN packet\n");
 					sendAck(sock, buffer, buff_len);
-				}
+				} else if (strcmp(header.type, "DAT") == 0) {
+                    printf("received a DAT packet\n");
+                    printToFile(buffer);
+                }
 				
 			}
 			
@@ -318,6 +320,7 @@ bool createServer() {
 		memset(buffer, 0, buff_len);
 	}
 	
+    fclose(fp);
 }
 
 // MAIN
