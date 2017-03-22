@@ -33,6 +33,7 @@ bool createServer();
 // Global Constants
 #define MAX_DATA_SIZE   1024
 #define MAX_BUFFER_SIZE 2048
+#define MAX_WINDOW_SIZE 10
 
 // Global Variables
 FILE* fp;
@@ -44,11 +45,12 @@ char* rcv_ip;
 
 fd_set fds;
 ssize_t recsize;
-struct sockaddr_in rcvaddr;
 struct sockaddr_in sdraddr;
-int rlen = sizeof(rcvaddr);
+struct sockaddr_in rcvaddr;
 int len  = sizeof(sdraddr);
+int rlen = sizeof(rcvaddr);
 
+int window_size;
 struct Header {
 	char magic[7];
 	char type[4];

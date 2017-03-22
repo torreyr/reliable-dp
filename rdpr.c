@@ -32,7 +32,9 @@ bool checkArguments();
 bool createServer();
 
 // Global Constants
-#define MAX_WINDOW_SIZE 1000
+#define MAX_DATA_SIZE   1024
+#define MAX_BUFFER_SIZE 2048
+#define MAX_WINDOW_SIZE 10
 
 // Global Variables
 int sdr_port;
@@ -40,8 +42,9 @@ int rcv_port;
 int portnum;
 char* rcv_ip;
 char* sdr_ip = NULL;
-struct sockaddr_in sdraddr;
+
 struct sockaddr_in rcvaddr;
+struct sockaddr_in sdraddr;
 int len  = sizeof rcvaddr;
 int slen = sizeof sdraddr;
 
@@ -129,7 +132,7 @@ void setHeader(char* buffer) {
  *	Called if we've received a SYN packet.
  *	Returns an ACK packet.
  */
-void gotSyn(int sock, char* buffer, int buff_len) {
+/*void gotSyn(int sock, char* buffer, int buff_len) {
 	printf("received a SYN packet\n");
     
     memset(buffer, 0, buff_len);
@@ -144,7 +147,26 @@ void gotSyn(int sock, char* buffer, int buff_len) {
     
 	if ( sendto(sock, buffer, buff_len, 0, (struct sockaddr*) &sdraddr, slen) == -1 ) {
 		printf("problem sending\n");
-	} else printf("successfully sent this: %s\n", buffer);
+	} else printf("successfully sent\n");
+}/*
+
+/*
+ *	Simply sends an ACK packet.
+ */
+void sendAck(int sock, char* buffer, int buff_len) {
+    memset(buffer, 0, buff_len);
+	sprintf(buffer, "%s,%s,%d,%d,%d,%d",
+		header.magic,
+		"ACK",
+		header.seq_num + 1,
+		header.ack_num + 1,
+		0,
+		window_size
+	);
+    
+	if ( sendto(sock, buffer, buff_len, 0, (struct sockaddr*) &sdraddr, slen) == -1 ) {
+		printf("problem sending\n");
+	} else printf("successfully sent\n");
 }
 
 // ------- SERVER ------- //
@@ -286,7 +308,8 @@ bool createServer() {
 				
 				// If we received a SYN, send an ACK.
 				if (strcmp(header.type, "SYN") == 0) {
-					gotSyn(sock, buffer, buff_len);
+                    printf("received a SYN packet\n");
+					sendAck(sock, buffer, buff_len);
 				}
 				
 			}
