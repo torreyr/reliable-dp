@@ -281,6 +281,65 @@ bool sendResponse(int sock, int seq) {
     else return true;
 }
 
+bool sendData(int sock) {
+    // while () {   // have not reached end of file or have not received ack for last packet or something
+    printf("trying to send...\n");
+    
+    int i;
+    for (i = 0; i < WINDOW_SIZE; i ++) {
+        if ( sendResponse(sock, header.seq_num) == false ) break;
+        header.seq_num += 1;
+    }
+            
+    struct timeval timeout;
+    char buffer[MAX_BUFFER_SIZE];
+    memset(buffer, 0, MAX_BUFFER_SIZE);
+    
+    while (1) {
+        timeout.tv_sec = 2;
+        timeout.tv_usec = 0;
+        printf("waiting for ACK...\n");
+        
+        int select_return = select(sock + 1, &fds, NULL, NULL, &timeout);
+        if (select_return < 0) {   
+            printf("Error with select. Closing the socket.\n");
+            close(sock);
+            return false;
+        } else if (select_return == 0) {
+            printf("timeout occurred\n");
+            // TODO: if max number of timeouts, give up, exit the program.
+        }
+        
+        if (FD_ISSET(sock, &fds)) {
+            recsize = recvfrom(sock, (void*) buffer, MAX_BUFFER_SIZE, 0, (struct sockaddr*) &sdraddr, &len);
+        
+            if (recsize <= 0) {
+                printf("did not receive any data.\n");
+                close(sock);
+            } else {
+                buffer[MAX_BUFFER_SIZE] = '\0';
+                printf("Received: %s\n", buffer);
+                
+                zeroHeader();
+                setHeader(buffer);
+                
+                if (strcmp(header.type, "ACK") == 0) {
+                    printf("RECEIVED AN ACK!\n");
+                } else {
+                    printf("Received something other than an ACK.\n");
+                }
+                
+                printLogMessage();
+            }
+            
+            memset(buffer, 0, MAX_BUFFER_SIZE);
+        }
+        
+        memset(buffer, 0, MAX_BUFFER_SIZE);
+    }
+    
+    return true;
+}
 
 /*
  *	Makes the initial connection between sender and receiver.
@@ -403,62 +462,8 @@ bool createServer() {
 		printf("ERROR: Could not make initial connection. Exiting program.\n");
 		return false;
 	}
-
-    // while () {   // have not reached end of file or have not received ack for last packet or something
-        printf("trying to send...\n");
-        
-        int i;
-        for (i = 0; i < WINDOW_SIZE; i ++) {
-            if ( sendResponse(sock, header.seq_num) == false ) break;
-            header.seq_num += 1;
-        }
-                
-        struct timeval timeout;
-        char buffer[MAX_BUFFER_SIZE];
-        memset(buffer, 0, MAX_BUFFER_SIZE);
-        
-        while (1) {
-            timeout.tv_sec = 2;
-            timeout.tv_usec = 0;
-            printf("waiting for ACK...\n");
-            
-            int select_return = select(sock + 1, &fds, NULL, NULL, &timeout);
-            if (select_return < 0) {   
-                printf("Error with select. Closing the socket.\n");
-                close(sock);
-                return false;
-            } else if (select_return == 0) {
-                printf("timeout occurred\n");
-                // TODO: if max number of timeouts, give up, exit the program.
-            }
-            
-            if (FD_ISSET(sock, &fds)) {
-                recsize = recvfrom(sock, (void*) buffer, MAX_BUFFER_SIZE, 0, (struct sockaddr*) &sdraddr, &len);
-            
-                if (recsize <= 0) {
-                    printf("did not receive any data.\n");
-                    close(sock);
-                } else {
-                    buffer[MAX_BUFFER_SIZE] = '\0';
-                    printf("Received: %s\n", buffer);
-                    
-                    zeroHeader();
-                    setHeader(buffer);
-                    
-                    if (strcmp(header.type, "ACK") == 0) {
-                        printf("RECEIVED AN ACK!\n");
-                    } else {
-                        printf("Received something other than an ACK.\n");
-                    }
-                    
-                    printLogMessage();
-                }
-                
-                memset(buffer, 0, MAX_BUFFER_SIZE);
-            }
-            
-            memset(buffer, 0, MAX_BUFFER_SIZE);
-        }
+    
+    sendData(sock);
 }
 
 
