@@ -313,12 +313,7 @@ bool sendData(int sock) {
     memset(buffer, 0, MAX_BUFFER_SIZE);
     
     while (1) {
-		// Reset file descriptors.
-		FD_ZERO(&fds);
-		FD_SET(sock, &fds);
-		FD_SET(0, &fds);
-		
-        timeout.tv_sec = 2;
+		timeout.tv_sec = 2;
         timeout.tv_usec = 0;
         printf("waiting for ACK...\n");
         
