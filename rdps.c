@@ -221,7 +221,7 @@ int sendResponse(int sock) {
     char buffer[MAX_BUFFER_SIZE];
     memset(data, 0, MAX_DATA_SIZE);
     memset(buffer, 0, MAX_BUFFER_SIZE);
-    
+    buffer[0] = 'N';
     // Walk through the file.
     int b;
     for(b = 0; b < file_size; b += MAX_DATA_SIZE) {
@@ -232,7 +232,6 @@ int sendResponse(int sock) {
         printf("data: %s\n", data);
         
         // Send the packet.
-        zeroHeader();
         sprintf(buffer, "%s,%s,%d,%d,%d,%d,%s", 
             header.magic,
             "DAT",
