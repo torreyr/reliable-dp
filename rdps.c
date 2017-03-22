@@ -35,7 +35,7 @@ bool createServer();
 #define MAX_BUFFER_SIZE 1024
 #define MAX_WINDOW_SIZE 10
 
-#define MAX_SYN_TIMEOUTS 150
+#define MAX_SYN_TIMEOUTS 3
 
 // Global Variables
 FILE* fp;
@@ -119,15 +119,14 @@ bool sendSyn (int sock) {
 		header.window_size
 	);
 	
-	// Send packet until one sends successfully.
-    int syn_timeouts = 0;
-	while ( sendto(sock, &buffer, MAX_BUFFER_SIZE, 0, (struct sockaddr*) &rcvaddr, rlen) == -1 ) {
-		printf("problem sending\n");
-        syn_timeouts++;
-        if (syn_timeouts == MAX_SYN_TIMEOUTS) return false;
-	}
-    printf("successfully sent\n");
-    return true;
+	// Send packet.    
+    if ( sendto(sock, &buffer, MAX_BUFFER_SIZE, 0, (struct sockaddr*) &rcvaddr, rlen) == -1 ) {
+		printf("Problem sending packet.\n");
+        return false;
+    } else {
+        printf("successfully sent\n");
+        return true;
+    }
 }
 
 // ------- SERVER ------- //
@@ -223,13 +222,8 @@ int sendResponse(int sock) {
  *	Makes the initial connection between sender and receiver.
  */
 bool connection(int sock) {
-	
-    // Send a SYN packet.    
-    if ( sendSyn(sock) == false) {
-        printf("ERROR: Connection request timed out too many times.\n");
-        return false;
-    }
-	
+
+    int syn_timeouts = 0;
 	struct timeval timeout;
 	char buffer[MAX_BUFFER_SIZE];
 	memset(buffer, 0, MAX_BUFFER_SIZE);
@@ -248,7 +242,12 @@ bool connection(int sock) {
 			return false;
 		} else if (select_return == 0) {
             printf("timeout occured\n");
+            syn_timeouts++;
             sendSyn(sock);
+            if (syn_timeouts == MAX_SYN_TIMEOUTS) {
+                printf("ERROR: Connection request timed out too many times.\n");
+                return false;
+            }
         }
 		
 		if (FD_ISSET(sock, &fds)) {
@@ -321,6 +320,7 @@ bool createServer() {
     int sock = socket(PF_INET, SOCK_DGRAM, IPPROTO_UDP);
 	if (sock == -1) {
 		printf("Couldn't create socket. Exiting the program.\n");
+        close(sock);
 		return false;
 	}
 	
@@ -384,7 +384,7 @@ bool createServer() {
 	printf("trying to send...\n");
 	
 	if ( sendto(sock, &buffer, sizeof buffer, 0, (struct sockaddr*) &rcvaddr, sizeof rcvaddr) == -1 ) {
-		printf("problem sending\n");
+		printf("Problem sending packet.\n");
 	} else printf("successfully sent\n");
     
     //sendResponse(sock);
