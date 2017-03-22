@@ -170,7 +170,7 @@ void sendAck(int sock, char* buffer) {
     
 	if ( sendto(sock, buffer, MAX_BUFFER_SIZE, 0, (struct sockaddr*) &sdraddr, slen) == -1 ) {
 		printf("problem sending\n");
-	} else printf("successfully sent\n");
+	} else printf("successfully sent ACK %d\n", ack_num);
 }
 
 
