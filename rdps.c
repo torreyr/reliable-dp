@@ -226,7 +226,7 @@ int sendResponse(int sock) {
         printf("fp is not NULL.\n");
         fread(data, 1, sizeof data - 1, fp);
         data[3] = '\0';
-        printf("%s\n", data);
+        printf("data: %s\n", data);
         
         // Send the packet.
         zeroHeader();
