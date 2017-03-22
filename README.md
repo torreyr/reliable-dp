@@ -28,6 +28,7 @@ TODO:
  
 Send 10(WINDOW_SIZE) packets, drop any that are out of order, ACK the highest one we have, send the next 10.
 Sequence numbers are packet numbers with an offset. Not the next byte that it's expecting. The next packet it's expecting.
+Did not implement RST flags. Mostly, when things go wrong, the program exits.
 
 RECEIVER
 
