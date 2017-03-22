@@ -285,6 +285,8 @@ bool createServer() {
             return false;
         }
         
+        printf("here\n");
+        
 		if (FD_ISSET(sock, &fds)) {
 			recsize = recvfrom(sock, (void*) buffer, buff_len, 0, (struct sockaddr*) &sdraddr, &slen);
 		
