@@ -210,6 +210,8 @@ bool checkArguments(int argc, char* argv[]) {
 }
 
 bool sendResponse(int sock, int seq) {
+    printf("sequence number passed in is: %d\n", seq);
+    
     // Read in the file.
     fseek(fp, 0, SEEK_END);
     int file_size = ftell(fp);
@@ -281,7 +283,7 @@ bool connection(int sock) {
 			close(sock);
 			return false;
 		} else if (select_return == 0) {
-            printf("timeout occured\n");
+            printf("timeout occurred\n");
             syn_timeouts++;
             if (syn_timeouts == MAX_SYN_TIMEOUTS) {
                 printf("ERROR: Connection request timed out too many times.\n");

@@ -272,7 +272,7 @@ bool createServer() {
 			close(sock);
 			return false;
 		} else if ((select_return == 0) && (connected == true)) {
-            printf("timeout occured\n");
+            printf("timeout occurred\n");
             timeouts++;
             if (timeouts == MAX_TIMEOUTS) {
                 printf("ERROR: Timed out too many times. Exiting program.\n");
