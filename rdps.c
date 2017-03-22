@@ -218,6 +218,11 @@ bool sendResponse(int sock, int seq) {
     
     int place = ((seq - (init_seq_num + 1))*(MAX_DATA_SIZE - 1));
     printf("I think the position in the file is %d\n", place);
+    printf("%d\n", seq);
+    printf("%d\n", init_seq_num + 1);
+    printf("%d\n", seq - (init_seq_num + 1));
+    printf("%d\n", MAX_DATA_SIZE - 1);
+    printf("%d\n", place);
     
     fseek(fp, 0, ((seq - (init_seq_num + 1))*(MAX_DATA_SIZE - 1)));
     
