@@ -222,6 +222,7 @@ bool sendResponse(int sock, int seq) {
     
     fread(data, 1, MAX_DATA_SIZE - 1, fp);
     printf("data: %s\n", data);
+    if (strcmp(data, "") == 0) return false;
     
     // Send the packet.
     sprintf(buffer, "%s,%s,%d,%d,%d,%d,%s", 
@@ -241,7 +242,7 @@ bool sendResponse(int sock, int seq) {
     memset(data, 0, MAX_DATA_SIZE);
     memset(buffer, 0, MAX_BUFFER_SIZE);
     
-    if (feof(fp + MAX_DATA_SIZE)) return false;   // reached end of file
+    if (strlen(data) < MAX_DATA_SIZE) return false;   // reached end of file
     else return true;
 }
 
