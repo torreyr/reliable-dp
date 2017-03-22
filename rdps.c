@@ -113,24 +113,20 @@ void zeroHeader() {
 bool sendSyn (int sock) {
     srand(time(NULL));
     init_seq_num = rand() & 0xffff;
-    // Set the header.	
-	strcpy(header.magic, "CSC361");
-	strcpy(header.type, "SYN");
+    // Set the header.
+    zeroHeader();
 	header.seq_num = init_seq_num;
-	header.ack_num = 0;
-	header.data_len = 0;
-	header.window_size = 10;
 	
 	// String to send.
 	char buffer[MAX_BUFFER_SIZE];
 	memset(buffer, 0, MAX_BUFFER_SIZE);
 	sprintf(buffer, "%s,%s,%d,%d,%d,%d", 
-		header.magic,
-		header.type,
+		"CSC361",
+		"SYN",
 		header.seq_num,
-		header.ack_num,
-		header.data_len,
-		header.window_size
+		0,
+		0,
+		WINDOW_SIZE
 	);
 	
 	// Send packet.    
@@ -321,6 +317,7 @@ bool connection(int sock) {
 				}
 				
 				// Set header values.
+                zeroHeader();
 				strcpy(header.magic, tokens[0]);
 				strcpy(header.type, tokens[1]);		
 				header.seq_num     = atoi(tokens[2]);
@@ -402,15 +399,11 @@ bool createServer() {
 	}
 	
 	printf("trying to send...\n");
-	
-	// if ( sendto(sock, &buffer, sizeof buffer, 0, (struct sockaddr*) &rcvaddr, sizeof rcvaddr) == -1 ) {
-		// printf("Problem sending packet.\n");
-	// } else printf("successfully sent\n");
     
-    // int i;
-    // for (i = 0; i < WINDOW_SIZE; i ++) {
-        // if ( sendResponse(sock) == false ) break;
-    // }
+    int i;
+    for (i = 0; i < WINDOW_SIZE; i ++) {
+        if ( sendResponse(sock, header.seq_num) == false ) break;
+    }
 }
 
 
