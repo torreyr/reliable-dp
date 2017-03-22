@@ -360,10 +360,10 @@ bool createServer() {
 	rcvaddr.sin_port 		= htons(rcv_port);
 	
 	// Create initial connection (SYN/ACK).
-	if ( !connection(sock) ) {
-		printf("ERROR: Could not make initial connection. Exiting program.\n");
-		return false;
-	}
+	// if ( !connection(sock) ) {
+		// printf("ERROR: Could not make initial connection. Exiting program.\n");
+		// return false;
+	// }
 	
 	// Set the header.
 	char data[MAX_DATA_SIZE];
@@ -389,9 +389,9 @@ bool createServer() {
 	
 	printf("trying to send...\n");
 	
-	if ( sendto(sock, &buffer, sizeof buffer, 0, (struct sockaddr*) &rcvaddr, sizeof rcvaddr) == -1 ) {
-		printf("Problem sending packet.\n");
-	} else printf("successfully sent\n");
+	// if ( sendto(sock, &buffer, sizeof buffer, 0, (struct sockaddr*) &rcvaddr, sizeof rcvaddr) == -1 ) {
+		// printf("Problem sending packet.\n");
+	// } else printf("successfully sent\n");
     
     //sendResponse(sock);
 }
@@ -400,5 +400,5 @@ bool createServer() {
 // MAIN
 int main(int argc, char* argv[]) {	
     if ( !checkArguments(argc, argv) ) return 0;
-    //if ( !createServer() ) return 0;
+    if ( !createServer() ) return 0;
 }
