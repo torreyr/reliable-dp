@@ -223,7 +223,9 @@ int sendResponse(int sock) {
     memset(buffer, 0, MAX_BUFFER_SIZE);
     
     // Walk through the file.
-    while (!feof(fp)) {
+    int b;
+    for(b = 0; b < file_size; b += MAX_DATA_SIZE) {
+    //while (!feof(fp)) {
         printf("fp is not NULL.\n");
         fread(data, 1, MAX_DATA_SIZE, fp);
         //data[strlen(data)] = '\0';
@@ -244,7 +246,7 @@ int sendResponse(int sock) {
             printf("Problem sending packet.\n");
         } else printf("successfully sent\n");
         
-        memset(data, 0, sizeof data);
+        memset(data, 0, MAX_DATA_SIZE);
         memset(buffer, 0, MAX_BUFFER_SIZE);
     }
     
