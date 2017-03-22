@@ -238,6 +238,7 @@ bool connection(int sock) {
 	while (1) {
 		
 		timeout.tv_sec = 2;
+        timeout.tv_usec = 0;
 		printf("waiting for ACK...\n");
 		
         int select_return = select(sock + 1, &fds, NULL, NULL, &timeout);
