@@ -170,7 +170,7 @@ void sendAck(int sock, char* buffer) {
     
 	if ( sendto(sock, buffer, MAX_BUFFER_SIZE, 0, (struct sockaddr*) &sdraddr, slen) == -1 ) {
 		printf("problem sending\n");
-	} else printf("successfully sent ACK %d\n", ack_num);
+	} else printf("successfully sent\n");
 }
 
 
@@ -316,7 +316,6 @@ bool createServer() {
 				}
 				
 				printLogMessage();
-                connected = true;
                 timeouts = 0;
 				
 				// If we received a SYN, send an ACK.
@@ -325,6 +324,7 @@ bool createServer() {
                     ack_num = header.seq_num + 1;
                     expected_seq_num = ack_num;
 					sendAck(sock, buffer);
+					connected = true;
 				} else if (strcmp(header.type, "DAT") == 0) {
                     printf("received a DAT packet\n");
                     

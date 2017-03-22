@@ -305,7 +305,7 @@ bool sendData(int sock) {
         header.seq_num += 1;
     }
     
-    printf("sent_entire_file = %d\n", sent_entire_file);
+    printf("sent_entire_file = %s\n", sent_entire_file ? "true" : "false");
             
     struct timeval timeout;
     char buffer[MAX_BUFFER_SIZE];
