@@ -306,7 +306,8 @@ bool sendData(int sock) {
     }
     
     printf("sent_entire_file = %s\n", sent_entire_file ? "true" : "false");
-            
+	
+	int select_return;
     struct timeval timeout;
     char buffer[MAX_BUFFER_SIZE];
     memset(buffer, 0, MAX_BUFFER_SIZE);
@@ -316,7 +317,7 @@ bool sendData(int sock) {
         timeout.tv_usec = 0;
         printf("waiting for ACK...\n");
         
-        int select_return = select(sock + 1, &fds, NULL, NULL, &timeout);
+        select_return = select(sock + 1, &fds, NULL, NULL, &timeout);
         if (select_return < 0) {   
             printf("Error with select. Closing the socket.\n");
             close(sock);
