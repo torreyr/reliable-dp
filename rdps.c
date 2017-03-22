@@ -221,14 +221,12 @@ int sendResponse(int sock) {
     char buffer[MAX_BUFFER_SIZE];
     memset(data, 0, MAX_DATA_SIZE);
     memset(buffer, 0, MAX_BUFFER_SIZE);
-    //buffer[0] = 'N';
+    
     // Walk through the file.
     int b;
-    for(b = 0; b < file_size; b += MAX_DATA_SIZE) {
-    //while (!feof(fp)) {
+    for(b = 0; b < file_size; b += MAX_DATA_SIZE - 1) {
         printf("fp is not NULL.\n");
         fread(data, 1, MAX_DATA_SIZE - 1, fp);
-        //data[strlen(data)] = '\0';
         printf("data: %s\n", data);
         
         // Send the packet.
