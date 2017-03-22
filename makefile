@@ -4,6 +4,6 @@ all:
 
 clean:
 	rm receive.txt
-    rm *.exe
+	rm *.exe
 	rm *.bin
 	rm *.o
