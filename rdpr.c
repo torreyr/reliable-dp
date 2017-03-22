@@ -263,30 +263,21 @@ bool createServer() {
 		timeout.tv_sec = 2;
         timeout.tv_usec = 0;
 		
-		// int select_return = select(sock + 1, &fds, NULL, NULL, &timeout);
-        // printf("select_return: %d\n", select_return);
-		// if (select_return < 0) {   
-			// printf("Error with select. Closing the socket.\n");
-			// close(sock);
-			// return false;
-		// } else if (select_return == 0) {
-            // printf("timeout occured\n");
-            // timeouts++;
-            // if (timeouts == MAX_TIMEOUTS) {
-                // printf("ERROR: Timed out too many times. Exiting program.\n");
-                // close(sock);
-                // return false;
-            // }
-        // }
-		
-        printf("before select\n");
-        if (select(sock + 1, &fds, NULL, NULL, &timeout) < 0) {
+		int select_return = select(sock + 1, &fds, NULL, NULL, &timeout);
+        printf("select_return: %d\n", select_return);
+		if (select_return < 0) {   
 			printf("Error with select. Closing the socket.\n");
-            close(sock);
-            return false;
+			close(sock);
+			return false;
+		} else if (select_return == 0) {
+            printf("timeout occured\n");
+            timeouts++;
+            if (timeouts == MAX_TIMEOUTS) {
+                printf("ERROR: Timed out too many times. Exiting program.\n");
+                close(sock);
+                return false;
+            }
         }
-        
-        printf("here\n");
         
 		if (FD_ISSET(sock, &fds)) {
 			recsize = recvfrom(sock, (void*) buffer, buff_len, 0, (struct sockaddr*) &sdraddr, &slen);
