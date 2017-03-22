@@ -407,12 +407,6 @@ bool createServer() {
     // while () {   // have not reached end of file or have not received ack for last packet or something
         printf("trying to send...\n");
         
-        int i;
-        for (i = 0; i < WINDOW_SIZE; i ++) {
-            if ( sendResponse(sock, header.seq_num) == false ) break;
-            header.seq_num += 1;
-        }
-                
         struct timeval timeout;
         char buffer[MAX_BUFFER_SIZE];
         memset(buffer, 0, MAX_BUFFER_SIZE);
@@ -455,6 +449,12 @@ bool createServer() {
                 }
                 
                 memset(buffer, 0, MAX_BUFFER_SIZE);
+            }
+            
+            int i;
+            for (i = 0; i < WINDOW_SIZE; i ++) {
+                if ( sendResponse(sock, header.seq_num) == false ) break;
+                header.seq_num += 1;
             }
             
             memset(buffer, 0, MAX_BUFFER_SIZE);
