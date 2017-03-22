@@ -87,7 +87,7 @@ bool isPort(char* str) {
 }
 
 /*
- *	Validates a port number.
+ *	Zeros all the header values.
  */
 void zeroHeader() {
 	memset(header.magic, 0, 7);
@@ -98,6 +98,9 @@ void zeroHeader() {
 	header.window_size = 0;
 }
 
+/*
+ *	Obtains the header values from a string.
+ */
 void setHeader(char* buffer) {
 	// Tokenize received packet.
 	int i = 0;
@@ -300,7 +303,6 @@ bool createServer() {
 				printLogMessage();
                 connected = true;
                 timeouts = 0;
-                printf("timeout count: %d\n", timeouts);
 				
 				// If we received a SYN, send an ACK.
 				if (strcmp(header.type, "SYN") == 0) {
@@ -324,7 +326,7 @@ int main(int argc, char* argv[]) {
     if ( !createServer(argv) ) return 0;
 }
 
-
+// draw.io
 // tc qdisc show
 // tc qdisc add dev br0 root netem drop 10%
 // tc qdisc del dev br0 root netem drop 10%

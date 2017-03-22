@@ -92,6 +92,18 @@ bool isPort(char* str) {
     return false;
 }
 
+/*
+ *	Zeros all the header values.
+ */
+void zeroHeader() {
+	memset(header.magic, 0, 7);
+	memset(header.type, 0, 4);
+	header.seq_num     = 0;
+	header.ack_num     = 0;
+	header.data_len    = 0;
+	header.window_size = 0;
+}
+
 
 // ------- RESPONSES ------- //
 /*
@@ -206,6 +218,8 @@ int sendResponse(int sock) {
     fseek(fp, 0, SEEK_SET);
     
     char data[4];
+    char buffer[MAX_BUFFER_SIZE];
+    memset(buffer, 0, MAX_BUFFER_SIZE);
     
     // Walk through the file.
     while (!feof(fp)) {
@@ -213,7 +227,24 @@ int sendResponse(int sock) {
         fread(data, 1, sizeof data - 1, fp);
         data[3] = '\0';
         printf("%s\n", data);
+        
+        // Send the packet.
+        zeroHeader();
+        sprintf(buffer, "%s,%s,%d,%d,%d,%d,%s", 
+            header.magic,
+            "DAT",
+            0,
+            0,
+            strlen(data),
+            window_size,
+            data
+        );
+        if ( sendto(sock, &buffer, sizeof buffer, 0, (struct sockaddr*) &rcvaddr, sizeof rcvaddr) == -1 ) {
+            printf("Problem sending packet.\n");
+        } else printf("successfully sent\n");
+        
         memset(data, 0, sizeof data);
+        memset(buffer, 0, MAX_BUFFER_SIZE);
     }
 }
 
