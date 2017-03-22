@@ -241,7 +241,7 @@ bool sendResponse(int sock, int seq) {
     memset(data, 0, MAX_DATA_SIZE);
     memset(buffer, 0, MAX_BUFFER_SIZE);
     
-    if (fp + MAX_DATA_SIZE == NULL) return false;   // reached end of file
+    if (feof(fp + MAX_DATA_SIZE)) return false;   // reached end of file
     else return true;
 }
 
