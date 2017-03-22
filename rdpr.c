@@ -51,7 +51,9 @@ struct sockaddr_in sdraddr;
 int len  = sizeof rcvaddr;
 int slen = sizeof sdraddr;
 
+int ack_num;
 int window_size;
+int expected_seq_num;
 struct Header {
 	char magic[7];
 	char type[4];
@@ -148,7 +150,7 @@ void sendAck(int sock, char* buffer, int buff_len) {
 		header.magic,
 		"ACK",
 		header.seq_num,
-		header.ack_num + 1,
+		ack_num,
 		0,
 		window_size
 	);
@@ -309,7 +311,16 @@ bool createServer() {
 					sendAck(sock, buffer, buff_len);
 				} else if (strcmp(header.type, "DAT") == 0) {
                     printf("received a DAT packet\n");
-                    printToFile(buffer);
+                    if (header.seq_num == expected_seq_num) {
+                        // packet is the next expected seq_num.
+                        ack_num = header.seq_num + 1;
+                        expected_seq_num = ack_num;
+                        printToFile(buffer);
+                        sendAck(sock, buffer, buff_len);
+                    } // else {
+                        // drop the packet.
+                        // don't have to do anything.
+                    // }
                 }
 				
 			}
