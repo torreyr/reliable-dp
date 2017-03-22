@@ -35,7 +35,7 @@ bool createServer();
 #define MAX_BUFFER_SIZE 1024
 #define MAX_WINDOW_SIZE 10
 
-#define MAX_SYN_TIMEOUTS 3
+#define MAX_SYN_TIMEOUTS 150
 
 // Global Variables
 FILE* fp;
