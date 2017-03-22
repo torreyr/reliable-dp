@@ -133,7 +133,19 @@ void setHeader(char* buffer) {
 	header.window_size = atoi(tokens[5]);
 	
 	if (i == 6) strcpy(buffer, "");
-	else strcpy(buffer, tokens[6]);
+	else {
+        char buf3[1000];
+        sprintf(buf3, "%s,%s,%s,%s,%s,",
+            tokens[0],
+            tokens[1],
+            tokens[2],
+            tokens[3],
+            tokens[4],
+            tokens[5]
+        );
+        int offset = strlen(buf3);
+        strcpy(buffer, buffer + offset);
+    }
 }
 
 void printToFile(char* buffer) {
