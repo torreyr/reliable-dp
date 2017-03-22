@@ -36,7 +36,7 @@ bool createServer();
 #define MAX_BUFFER_SIZE 1024
 #define MAX_WINDOW_SIZE 10
 
-#define MAX_TIMEOUTS 3
+#define MAX_TIMEOUTS 100
 
 // Global Variables
 FILE* fp;
@@ -277,7 +277,7 @@ bool createServer() {
         FD_ZERO(&fds);
         FD_SET(sock, &fds);
 		
-		timeout.tv_sec = 1;
+		timeout.tv_sec = 0.001;
         timeout.tv_usec = 0;
 		
 		int select_return = select(sock + 1, &fds, NULL, NULL, &timeout);
@@ -364,5 +364,5 @@ int main(int argc, char* argv[]) {
 
 // draw.io
 // tc qdisc show
-// tc qdisc add dev br0 root netem drop 10%
+// tc qdisc add dev br0 root netem drop 10%		// br0 blocks ACKs from the receiver.
 // tc qdisc del dev br0 root netem drop 10%
