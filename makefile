@@ -1,5 +1,6 @@
 all:
-	gcc -o rdpr rdpr.c
+	rm receive.txt
+    gcc -o rdpr rdpr.c
 	gcc -o rdps rdps.c
 
 clean:
