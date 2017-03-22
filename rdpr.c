@@ -308,6 +308,7 @@ bool createServer() {
 				// If we received a SYN, send an ACK.
 				if (strcmp(header.type, "SYN") == 0) {
                     printf("received a SYN packet\n");
+                    ack_num = header.seq_num + 1;
 					sendAck(sock, buffer, buff_len);
 				} else if (strcmp(header.type, "DAT") == 0) {
                     printf("received a DAT packet\n");
