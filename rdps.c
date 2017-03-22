@@ -52,7 +52,7 @@ struct sockaddr_in rcvaddr;
 int len  = sizeof(sdraddr);
 int rlen = sizeof(rcvaddr);
 
-int window_size;
+int window_size = MAX_WINDOW_SIZE;
 struct Header {
 	char magic[7];
 	char type[4];
@@ -239,7 +239,7 @@ int sendResponse(int sock) {
             window_size,
             data
         );
-        if ( sendto(sock, buffer, sizeof buffer, 0, (struct sockaddr*) &rcvaddr, sizeof rcvaddr) == -1 ) {
+        if ( sendto(sock, &buffer, sizeof buffer, 0, (struct sockaddr*) &rcvaddr, sizeof rcvaddr) == -1 ) {
             printf("Problem sending packet.\n");
         } else printf("successfully sent\n");
         
