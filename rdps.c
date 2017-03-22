@@ -484,6 +484,8 @@ bool createServer() {
     while (sent_entire_file == false) {
         if ( sendData(sock) == false ) return false;
     }
+    
+    printf("sent_entire_file = %d\n", sent_entire_file);
 }
 
 
