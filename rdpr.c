@@ -276,7 +276,7 @@ bool createServer() {
 			return false;
 		} else if ((select_return == 0) && (connected == true)) {
             printf("timeout occurred\n");
-            //sendAck();
+            sendAck(sock, buffer, buff_len);
             timeouts++;
             if (timeouts == MAX_TIMEOUTS) {
                 printf("ERROR: Timed out too many times. Exiting program.\n");
@@ -328,7 +328,7 @@ bool createServer() {
                         
                         if (num_received == MAX_WINDOW_SIZE) {
                             sendAck(sock, buffer, buff_len);
-                        } // or timeout.
+                        }
                     }
                 }
 				
