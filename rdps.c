@@ -261,7 +261,11 @@ bool sendResponse(int sock, int seq) {
     
     fread(data, 1, MAX_DATA_SIZE - 1, fp);
     printf("data: %s\n", data);
-    if (strcmp(data, "") == 0) return false;
+    if (strcmp(data, "") == 0) {
+        // reached end of file
+        sent_entire_file = true;
+        return false;
+    }
     
     // Send the packet.
     sprintf(buffer, "%s,%s,%d,%d,%d,%d,%s", 
@@ -278,7 +282,11 @@ bool sendResponse(int sock, int seq) {
         return false;
     } else printf("successfully sent\n");
     
-    if (strlen(data) < (MAX_DATA_SIZE - 1)) return false;   // reached end of file
+    if (strlen(data) < (MAX_DATA_SIZE - 1)) {
+        // reached end of file
+        sent_entire_file = true;
+        return false;
+    }
     else return true;
 }
 
@@ -287,8 +295,9 @@ bool sendData(int sock) {
     
     int i;
     for (i = 0; i < WINDOW_SIZE; i ++) {
-        if ( sendResponse(sock, header.seq_num) == false ) {
-            sent_entire_file = true;
+        if (( sendResponse(sock, header.seq_num) == false ) && (sent_entire_file == true)) {
+            return false;
+        } else if ( sendResponse(sock, header.seq_num) == false ) {
             break;
         }
         header.seq_num += 1;
