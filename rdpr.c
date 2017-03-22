@@ -32,8 +32,8 @@ bool checkArguments();
 bool createServer();
 
 // Global Constants
-#define MAX_DATA_SIZE   1024
-#define MAX_BUFFER_SIZE 2048
+#define MAX_DATA_SIZE   4
+#define MAX_BUFFER_SIZE 1024
 #define MAX_WINDOW_SIZE 10
 
 #define MAX_TIMEOUTS 3
@@ -108,8 +108,8 @@ void zeroHeader() {
 void setHeader(char* buffer) {
 	// Tokenize received packet.
 	int i = 0;
-	char tokens[7][1024];
-	char buf2[1000];
+	char tokens[7][MAX_BUFFER_SIZE];
+	char buf2[MAX_BUFFER_SIZE];
 	strcpy(buf2, buffer);
 	
 	char* token = strtok(buf2, ",");
@@ -134,7 +134,7 @@ void setHeader(char* buffer) {
 	
 	if (i == 6) strcpy(buffer, "");
 	else {
-        char buf3[1000];
+        char buf3[MAX_BUFFER_SIZE];
         sprintf(buf3, "%s,%s,%s,%s,%s,%s,",
             tokens[0],
             tokens[1],
@@ -157,8 +157,8 @@ void printToFile(char* buffer) {
 /*
  *	Simply sends an ACK packet.
  */
-void sendAck(int sock, char* buffer, int buff_len) {
-    memset(buffer, 0, buff_len);
+void sendAck(int sock, char* buffer) {
+    memset(buffer, 0, MAX_BUFFER_SIZE);
 	sprintf(buffer, "%s,%s,%d,%d,%d,%d",
 		header.magic,
 		"ACK",
@@ -168,7 +168,7 @@ void sendAck(int sock, char* buffer, int buff_len) {
 		window_size
 	);
     
-	if ( sendto(sock, buffer, buff_len, 0, (struct sockaddr*) &sdraddr, slen) == -1 ) {
+	if ( sendto(sock, buffer, MAX_BUFFER_SIZE, 0, (struct sockaddr*) &sdraddr, slen) == -1 ) {
 		printf("problem sending\n");
 	} else printf("successfully sent\n");
 }
@@ -235,9 +235,8 @@ bool createServer() {
     fd_set fds;
 	ssize_t recsize;
     
-	char buffer[1000];
-	int buff_len = sizeof buffer;
-	memset(buffer, 0, buff_len);
+	char buffer[MAX_BUFFER_SIZE];
+	memset(buffer, 0, MAX_BUFFER_SIZE);
 	
 	// Create socket.
     int sock = socket(PF_INET, SOCK_DGRAM, IPPROTO_UDP);
@@ -288,7 +287,7 @@ bool createServer() {
 			return false;
 		} else if ((select_return == 0) && (connected == true)) {
             printf("timeout occurred\n");
-            sendAck(sock, buffer, buff_len);
+            sendAck(sock, buffer);
             timeouts++;
             if (timeouts == MAX_TIMEOUTS) {
                 printf("ERROR: Timed out too many times. Exiting program.\n");
@@ -298,13 +297,13 @@ bool createServer() {
         }
         
 		if (FD_ISSET(sock, &fds)) {
-			recsize = recvfrom(sock, (void*) buffer, buff_len, 0, (struct sockaddr*) &sdraddr, &slen);
+			recsize = recvfrom(sock, (void*) buffer, MAX_BUFFER_SIZE, 0, (struct sockaddr*) &sdraddr, &slen);
 		
 			if (recsize <= 0) {
 				printf("did not receive any data.\n");
 				close(sock);
 			} else {
-                buffer[buff_len] = '\0';
+                buffer[MAX_BUFFER_SIZE] = '\0';
 				printf("Received: %s\n", buffer);
 				
 				zeroHeader();
@@ -324,7 +323,7 @@ bool createServer() {
                     printf("received a SYN packet\n");
                     ack_num = header.seq_num + 1;
                     expected_seq_num = ack_num;
-					sendAck(sock, buffer, buff_len);
+					sendAck(sock, buffer);
 				} else if (strcmp(header.type, "DAT") == 0) {
                     printf("received a DAT packet\n");
                     
@@ -339,7 +338,7 @@ bool createServer() {
                         num_received++;
                         
                         if (num_received == MAX_WINDOW_SIZE) {
-                            sendAck(sock, buffer, buff_len);
+                            sendAck(sock, buffer);
                             num_received = 0;
                         }
                     }
@@ -347,10 +346,10 @@ bool createServer() {
 				
 			}
 			
-			memset(buffer, 0, buff_len);
+			memset(buffer, 0, MAX_BUFFER_SIZE);
 		}
 		
-		memset(buffer, 0, buff_len);
+		memset(buffer, 0, MAX_BUFFER_SIZE);
 	}
 	
 }
