@@ -207,7 +207,7 @@ bool checkArguments(int argc, char* argv[]) {
 	
 	// Last argument is the file to be received.
 	fp = fopen(argv[3], "a");
-	printf("Expected file:\t%s\n", argv[3]);
+	printf("Writing To:\t%s\n", argv[3]);
     printf("\n");
 	
 	return true;

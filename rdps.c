@@ -213,7 +213,7 @@ bool sendResponse(int sock, int seq) {
     // Read in the file.
     fseek(fp, 0, SEEK_END);
     int file_size = ftell(fp);
-    fseek(fp, 0, seq);
+    fseek(fp, 0, ((seq - (init_seq_num + 1))*(MAX_DATA_SIZE - 1)));
     
     char data[MAX_DATA_SIZE];
     char buffer[MAX_BUFFER_SIZE];
@@ -239,6 +239,7 @@ bool sendResponse(int sock, int seq) {
     );
     if ( sendto(sock, &buffer, sizeof buffer, 0, (struct sockaddr*) &rcvaddr, sizeof rcvaddr) == -1 ) {
         printf("Problem sending packet.\n");
+        return false;
     } else printf("successfully sent\n");
     
     memset(data, 0, MAX_DATA_SIZE);
@@ -246,6 +247,8 @@ bool sendResponse(int sock, int seq) {
     //}
     
     printf("here\n");
+    if (fp + MAX_DATA_SIZE == NULL) return false;   // reached end of file
+    else return true;
 }
 
 
@@ -320,7 +323,7 @@ bool connection(int sock) {
                 zeroHeader();
 				strcpy(header.magic, tokens[0]);
 				strcpy(header.type, tokens[1]);		
-				header.seq_num     = atoi(tokens[2]);
+				header.seq_num     = atoi(tokens[3]);
 				header.ack_num     = atoi(tokens[3]);
 				header.data_len    = atoi(tokens[4]);
 				header.window_size = atoi(tokens[5]);
@@ -340,7 +343,7 @@ bool connection(int sock) {
 					printf("Received something other than an ACK.\n");
 				}
 				
-				//printLogMessage();
+				printLogMessage();
 			}
 			
 			memset(buffer, 0, MAX_BUFFER_SIZE);
