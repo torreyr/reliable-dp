@@ -417,7 +417,7 @@ bool createServer() {
     int i;
     for (i = 0; i < WINDOW_SIZE; i ++) {
         if ( sendResponse(sock, header.seq_num) == false ) break;
-        header.seq_num += MAX_DATA_SIZE;
+        header.seq_num += 1;
     }
 }
 
