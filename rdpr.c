@@ -313,17 +313,16 @@ bool createServer() {
 					sendAck(sock, buffer, buff_len);
 				} else if (strcmp(header.type, "DAT") == 0) {
                     printf("received a DAT packet\n");
+                    
                     if (header.seq_num == expected_seq_num) {
                         // packet is the next expected seq_num.
                         printf("received the correct SEQ number\n");
+                        
                         ack_num = header.seq_num + 1;
                         expected_seq_num = ack_num;
                         printToFile(buffer);
                         sendAck(sock, buffer, buff_len);
-                    } // else {
-                        // drop the packet.
-                        // don't have to do anything.
-                    // }
+                    }
                 }
 				
 			}

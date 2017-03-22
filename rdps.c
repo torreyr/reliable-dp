@@ -24,6 +24,8 @@ void howto();
 void printStats();
 void printLogMessage();
 bool isPort();
+void zeroHeader();
+void setHeader();
 char* getTime();
 bool checkArguments();
 bool sendResponse();
@@ -103,6 +105,41 @@ void zeroHeader() {
 	header.ack_num     = 0;
 	header.data_len    = 0;
 	header.window_size = 0;
+}
+
+/*
+ *	Obtains the header values from a string.
+ */
+void setHeader(char* buffer) {
+    // Tokenize received packet.
+    int i = 0;
+    char tokens[6][MAX_BUFFER_SIZE];
+    char buf2[MAX_BUFFER_SIZE];
+    strcpy(buf2, buffer);
+    
+    char* token = strtok(buf2, ",");
+    while (token != NULL) {
+        if (i == 6) {
+            strncpy(tokens[i], token, atoi(tokens[4]));
+            tokens[i][atoi(tokens[4])] = '\0';
+        } else {
+            strcpy(tokens[i], token);
+        }
+        token = strtok(NULL, ",");
+        i++;
+    }
+    
+    // Set header values.
+    zeroHeader();
+    strcpy(header.magic, tokens[0]);
+    strcpy(header.type, tokens[1]);		
+    header.seq_num     = atoi(tokens[3]);
+    header.ack_num     = atoi(tokens[3]);
+    header.data_len    = atoi(tokens[4]);
+    header.window_size = atoi(tokens[5]);
+    
+    if (i == 6) strcpy(buffer, "");
+    else strcpy(buffer, tokens[6]);
 }
 
 
@@ -293,36 +330,9 @@ bool connection(int sock) {
 			} else {
 				buffer[MAX_BUFFER_SIZE] = '\0';
 				printf("Received: %s\n", buffer);
-				
-				// Tokenize received packet.
-				int i = 0;
-				char tokens[6][MAX_BUFFER_SIZE];
-				char buf2[MAX_BUFFER_SIZE];
-				strcpy(buf2, buffer);
-				
-				char* token = strtok(buf2, ",");
-				while (token != NULL) {
-					if (i == 6) {
-						strncpy(tokens[i], token, atoi(tokens[4]));
-						tokens[i][atoi(tokens[4])] = '\0';
-					} else {
-						strcpy(tokens[i], token);
-					}
-					token = strtok(NULL, ",");
-					i++;
-				}
-				
-				// Set header values.
+                
                 zeroHeader();
-				strcpy(header.magic, tokens[0]);
-				strcpy(header.type, tokens[1]);		
-				header.seq_num     = atoi(tokens[3]);
-				header.ack_num     = atoi(tokens[3]);
-				header.data_len    = atoi(tokens[4]);
-				header.window_size = atoi(tokens[5]);
-				
-				if (i == 6) strcpy(buffer, "");
-				else strcpy(buffer, tokens[6]);
+                setHeader(buffer);
 				
 				if (sdr_ip == NULL) {
 					sdr_port = ntohs(sdraddr.sin_port);
