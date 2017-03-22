@@ -224,7 +224,7 @@ bool sendResponse(int sock, int seq) {
     printf("%d\n", MAX_DATA_SIZE - 1);
     printf("%d\n", place);
     
-    printf("fseek returns %d\n", fseek(fp, 0, place));
+    fseek(fp, place, SEEK_SET);
     
     char data[MAX_DATA_SIZE];
     char buffer[MAX_BUFFER_SIZE];
