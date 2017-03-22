@@ -209,22 +209,11 @@ bool checkArguments(int argc, char* argv[]) {
 	return true;
 }
 
-bool sendResponse(int sock, int seq) {
-    printf("sequence number passed in is: %d\n", seq);
-    
+bool sendResponse(int sock, int seq) {    
     // Read in the file.
     fseek(fp, 0, SEEK_END);
-    int file_size = ftell(fp);
-    
-    int place = ((seq - (init_seq_num + 1))*(MAX_DATA_SIZE - 1));
-    printf("I think the position in the file is %d\n", place);
-    printf("%d\n", seq);
-    printf("%d\n", init_seq_num + 1);
-    printf("%d\n", seq - (init_seq_num + 1));
-    printf("%d\n", MAX_DATA_SIZE - 1);
-    printf("%d\n", place);
-    
-    fseek(fp, place, SEEK_SET);
+    int file_size = ftell(fp); 
+    fseek(fp, ((seq - (init_seq_num + 1))*(MAX_DATA_SIZE - 1)), SEEK_SET);
     
     char data[MAX_DATA_SIZE];
     char buffer[MAX_BUFFER_SIZE];
