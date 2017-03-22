@@ -288,6 +288,7 @@ bool createServer() {
 		} else if ((select_return == 0) && (connected == true)) {
             printf("timeout occurred\n");
             sendAck(sock, buffer);
+			num_received = 0;
             timeouts++;
             if (timeouts == MAX_TIMEOUTS) {
                 printf("ERROR: Timed out too many times. Exiting program.\n");
