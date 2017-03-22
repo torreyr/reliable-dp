@@ -125,7 +125,7 @@ void setHeader(char* buffer) {
 	strcpy(header.magic, tokens[0]);
 	strcpy(header.type, tokens[1]);		
 	header.seq_num     = 0;
-	header.ack_num     = atoi(tokens[2]) + 1;
+	header.ack_num     = atoi(tokens[2]);
 	header.data_len    = atoi(tokens[4]);
 	header.window_size = atoi(tokens[5]);
 	
