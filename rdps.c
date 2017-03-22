@@ -30,6 +30,10 @@ int sendResponse();
 bool connection();
 bool createServer();
 
+// Global Constants
+#define MAX_DATA_SIZE   1024
+#define MAX_BUFFER_SIZE 2048
+
 // Global Variables
 FILE* fp;
 int sdr_port;
@@ -189,7 +193,7 @@ bool connection(int sock) {
 	header.window_size = 10;
 	
 	// String to send.
-	char buffer[1024];
+	char buffer[MAX_BUFFER_SIZE];
 	int buff_len = sizeof buffer;
 	//memset(buffer, 0, buff_len);
 	sprintf(buffer, "%s,%s,%d,%d,%d,%d", 
@@ -237,8 +241,8 @@ bool connection(int sock) {
 				
 				// Tokenize received packet.
 				int i = 0;
-				char tokens[6][1024];
-				char buf2[1000];
+				char tokens[6][MAX_BUFFER_SIZE];
+				char buf2[MAX_BUFFER_SIZE];
 				strcpy(buf2, buffer);
 				
 				char* token = strtok(buf2, ",");
@@ -334,7 +338,7 @@ bool createServer() {
 	}
 	
 	// Set the header.
-	char data[1024];
+	char data[MAX_DATA_SIZE];
     memset(data, 0, sizeof data);
 	strcpy(data, "Does this work?");
 	strcpy(header.magic, "CSC361");
@@ -344,7 +348,7 @@ bool createServer() {
 	header.data_len = strlen(data);
 	header.window_size = 10;
 	
-	char buffer[1024];
+	char buffer[MAX_BUFFER_SIZE];
 	sprintf(buffer, "%s,%s,%d,%d,%d,%d,%s", 
 		header.magic,
 		header.type,

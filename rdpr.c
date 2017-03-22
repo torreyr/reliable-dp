@@ -32,7 +32,7 @@ bool checkArguments();
 bool createServer();
 
 // Global Constants
-#define MAX_WINDOW_SIZE 1000;
+#define MAX_WINDOW_SIZE 1000
 
 // Global Variables
 int sdr_port;
