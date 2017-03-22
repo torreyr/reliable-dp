@@ -135,7 +135,7 @@ void setHeader(char* buffer) {
 	if (i == 6) strcpy(buffer, "");
 	else {
         char buf3[1000];
-        sprintf(buf3, "%s,%s,%s,%s,%s,%s",
+        sprintf(buf3, "%s,%s,%s,%s,%s,%s,",
             tokens[0],
             tokens[1],
             tokens[2],
