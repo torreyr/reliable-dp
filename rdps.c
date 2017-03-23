@@ -35,7 +35,7 @@ bool createServer();
 // Global Constants
 #define MAX_DATA_SIZE   4
 #define MAX_BUFFER_SIZE 1024
-#define WINDOW_SIZE 10          // NOTE: 300 works fine. With 400, the last few packets come
+#define WINDOW_SIZE 100          // NOTE: 300 works fine. With 400, the last few packets come
                                 // out of order and/or not in time. Also, doesn't like commas.
 
 #define MAX_SYN_TIMEOUTS 150
@@ -512,7 +512,6 @@ bool closing(int sock) {
         return false;
     }
     
-    //expected_fin_ack_num += 1;
     printf("expected_fin_ack_num = %d\n", expected_fin_ack_num);
 
     int timeouts = 0;
