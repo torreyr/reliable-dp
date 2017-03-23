@@ -349,7 +349,7 @@ bool createServer() {
                     received_fin = true;
                     ack_num = header.seq_num + 1;
                     expected_seq_num = ack_num;
-					//sendAck(sock, buffer);
+					sendAck(sock, buffer);
                 }
 				
 			}
