@@ -509,9 +509,9 @@ bool connection(int sock) {
  */
 bool closing(int sock) {
     // Send initial FIN packet.
-    if ( sendFin(sock) == false ) {
-        return false;
-    }
+    // if ( sendFin(sock) == false ) {
+        // return false;
+    // }
 
     int timeouts = 0;
 	struct timeval timeout;
