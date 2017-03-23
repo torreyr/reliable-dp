@@ -309,10 +309,10 @@ bool sendData(int sock) {
     bool resp;
     for (i = 0; i < WINDOW_SIZE; i ++) {
         resp = sendResponse(sock, header.seq_num);
-        if ((resp == false) && (sent_entire_file == true)) {
+        /*if ((resp == false) && (sent_entire_file == true)) {
             printf("sent_entire_file = %s\n", sent_entire_file ? "true" : "false");
-            return false;
-        } else if ( resp == false ) {
+            break;
+        } else */if ( resp == false ) {
             break;
         }
         header.seq_num += 1;
@@ -356,6 +356,7 @@ bool sendData(int sock) {
             if (recsize <= 0) {
                 printf("did not receive any data.\n");
                 close(sock);
+                return false;
             } else {
                 buffer[MAX_BUFFER_SIZE] = '\0';
                 printf("Received: %s\n", buffer);
