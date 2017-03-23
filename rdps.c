@@ -366,7 +366,9 @@ bool sendData(int sock) {
                 
                 if (strcmp(header.type, "ACK") == 0) {
                     printf("RECEIVED AN ACK!\n");
-                    return true;
+                    
+                    if (!sent_entire_file) return true;
+                    
                 } else {
                     printf("Received something other than an ACK.\n");
                 }
