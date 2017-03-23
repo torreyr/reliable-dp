@@ -194,7 +194,7 @@ bool sendFin (int sock) {
 	sprintf(buffer, "%s,%s,%d,%d,%d,%d", 
 		"CSC361",
 		"FIN",
-		expected_ack_num + 1,
+		expected_ack_num,
 		0,
 		0,
 		WINDOW_SIZE
@@ -315,6 +315,7 @@ bool sendResponse(int sock, int seq) {
     );
     if ( sendto(sock, &buffer, sizeof buffer, 0, (struct sockaddr*) &rcvaddr, sizeof rcvaddr) == -1 ) {
         printf("Problem sending packet.\n");
+        problem = true;
         return false;
     } else printf("successfully sent\n");
     
