@@ -70,6 +70,7 @@ struct Header {
 } header;
 bool sent_entire_file = false;
 bool done_sending_file = false;
+bool problem = false;
 
 
 // ------- CONSOLE ------- //
@@ -168,6 +169,32 @@ bool sendSyn (int sock) {
 		"CSC361",
 		"SYN",
 		header.seq_num,
+		0,
+		0,
+		WINDOW_SIZE
+	);
+	
+	// Send packet.    
+    if ( sendto(sock, &buffer, MAX_BUFFER_SIZE, 0, (struct sockaddr*) &rcvaddr, rlen) == -1 ) {
+		printf("Problem sending packet.\n");
+        return false;
+    } else {
+        printf("successfully sent\n");
+        return true;
+    }
+}
+
+/*
+ *  Simply sends a FIN packet.
+ */
+bool sendFin (int sock) {	
+	// String to send.
+	char buffer[MAX_BUFFER_SIZE];
+	memset(buffer, 0, MAX_BUFFER_SIZE);
+	sprintf(buffer, "%s,%s,%d,%d,%d,%d", 
+		"CSC361",
+		"FIN",
+		expected_ack_num + 1,
 		0,
 		0,
 		WINDOW_SIZE
@@ -312,10 +339,7 @@ bool sendData(int sock) {
     bool resp;
     for (i = 0; i < WINDOW_SIZE; i ++) {
         resp = sendResponse(sock, header.seq_num);
-        /*if ((resp == false) && (sent_entire_file == true)) {
-            printf("sent_entire_file = %s\n", sent_entire_file ? "true" : "false");
-            break;
-        } else */if ( resp == false ) {
+        if ( resp == false ) {
             break;
         }
         header.seq_num += 1;
@@ -343,12 +367,15 @@ bool sendData(int sock) {
         if (select_return < 0) {   
             printf("Error with select. Closing the socket.\n");
             close(sock);
+            problem = true;
             return false;
         } else if (select_return == 0) {
             printf("timeout occurred\n");
             timeouts++;
             if (timeouts == MAX_TIMEOUTS) {
                 printf("ERROR: Connection request timed out too many times.\n");
+                close(sock);
+                problem = true;
                 return false;
             }
         }
@@ -359,6 +386,7 @@ bool sendData(int sock) {
             if (recsize <= 0) {
                 printf("did not receive any data.\n");
                 close(sock);
+                problem = true;
                 return false;
             } else {
                 buffer[MAX_BUFFER_SIZE] = '\0';
@@ -473,6 +501,80 @@ bool connection(int sock) {
 	return false;
 }
 
+/*
+ *	Closes the connection between sender and receiver.
+ */
+bool closing(int sock) {
+    // Send initial FIN packet.
+    if ( sendFin(sock) == false ) {
+        return false;
+    }
+
+    int timeouts = 0;
+	struct timeval timeout;
+	char buffer[MAX_BUFFER_SIZE];
+	memset(buffer, 0, MAX_BUFFER_SIZE);
+	
+	// Wait for ACK response.
+	// NOTE: Can I put this while loop in its own function called waitToReceive()?
+	while (1) {
+		// Reset file descriptors.
+		FD_ZERO(&fds);
+		FD_SET(sock, &fds);
+		FD_SET(0, &fds);
+		
+		timeout.tv_sec = TIMEOUT_SEC;
+        timeout.tv_usec = TIMEOUT_USEC;
+		printf("waiting for ACK...\n");
+		
+        int select_return = select(sock + 1, &fds, NULL, NULL, &timeout);
+		if (select_return < 0) {   
+			printf("Error with select. Closing the socket.\n");
+			close(sock);
+			return false;
+		} else if (select_return == 0) {
+            printf("timeout occurred\n");
+            timeouts++;
+            if (timeouts == MAX_TIMEOUTS) {
+                printf("ERROR: Connection request timed out too many times.\n");
+                return false;
+            } else if ( sendFin(sock) == false) {
+                return false;
+            }
+        }
+		
+		if (FD_ISSET(sock, &fds)) {
+			recsize = recvfrom(sock, (void*) buffer, MAX_BUFFER_SIZE, 0, (struct sockaddr*) &sdraddr, &len);
+		
+			if (recsize <= 0) {
+				printf("did not receive any data.\n");
+				close(sock);
+			} else {
+				buffer[MAX_BUFFER_SIZE] = '\0';
+				printf("Received: %s\n", buffer);
+                
+                zeroHeader();
+                setHeader(buffer);
+				
+				if (strcmp(header.type, "ACK") == 0) {
+					printf("RECEIVED AN ACK!\n");
+					return true;
+				} else {
+					printf("Received something other than an ACK.\n");
+				}
+				
+				printLogMessage();
+			}
+			
+			memset(buffer, 0, MAX_BUFFER_SIZE);
+		}
+		
+		memset(buffer, 0, MAX_BUFFER_SIZE);
+	}
+	
+	return false;
+}
+
 bool createServer() {	
 	printf("creating connection...\n\n");
 	
@@ -521,11 +623,17 @@ bool createServer() {
     
     // Send the data.
     while (done_sending_file == false) {
-        if ( sendData(sock) == false ) return true;
-        printf("sent_entire_file = %d\n", sent_entire_file);
+        if ( (sendData(sock) == false) && (problem == false) ) break;
+        else if (problem == true) return false;
     }
     
     printf("sent_entire_file = %d\n", sent_entire_file);
+    
+    // Close the connection (FIN/ACK).
+    if ( !closing(sock) ) {
+		printf("ERROR: Could not gracefully close the connection. Exiting program.\n");
+		return false;
+	}
 }
 
 
