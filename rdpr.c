@@ -345,7 +345,7 @@ bool createServer() {
                     }
                 } else if (strcmp(header.type, "FIN") == 0) {
                     printf("received a FIN packet\n");
-                    ack_num = header.seq_num + 1;
+                    //ack_num = header.seq_num + 1;
                     expected_seq_num = ack_num;
 					//sendAck(sock, buffer);
                 }
