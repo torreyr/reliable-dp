@@ -199,8 +199,6 @@ bool sendFin (int sock) {
 		0,
 		WINDOW_SIZE
 	);
-    
-    expected_ack_num += 1;
 	
 	// Send packet.    
     if ( sendto(sock, &buffer, MAX_BUFFER_SIZE, 0, (struct sockaddr*) &rcvaddr, rlen) == -1 ) {
@@ -636,6 +634,7 @@ bool createServer() {
     printf("sent_entire_file = %d\n", sent_entire_file);
     
     // Close the connection (FIN/ACK).
+    expected_ack_num += 1;
     if ( !closing(sock) ) {
 		printf("ERROR: Could not gracefully close the connection. Exiting program.\n");
 		return false;
