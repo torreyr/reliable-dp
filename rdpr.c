@@ -63,6 +63,7 @@ struct Header {
 	int window_size;
 } header;
 bool connected = false;
+bool received_fin = false;
 int num_received = 0;
 
 // ------- CONSOLE ------- //
@@ -287,8 +288,8 @@ bool createServer() {
 			return false;
 		} else if ((select_return == 0) && (connected == true)) {
             printf("timeout occurred\n");
-            sendAck(sock, buffer);
-			num_received = 0;
+            if (received_fin == false) sendAck(sock, buffer);
+            num_received = 0;
             timeouts++;
             if (timeouts == MAX_TIMEOUTS) {
                 printf("ERROR: Timed out too many times. Exiting program.\n");
@@ -345,6 +346,7 @@ bool createServer() {
                     }
                 } else if (strcmp(header.type, "FIN") == 0) {
                     printf("received a FIN packet\n");
+                    received_fin = true;
                     ack_num = header.seq_num + 1;
                     expected_seq_num = ack_num;
 					//sendAck(sock, buffer);
