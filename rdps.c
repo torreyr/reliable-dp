@@ -69,6 +69,7 @@ struct Header {
 	int window_size;
 } header;
 bool sent_entire_file = false;
+bool done_sending_file = false;
 
 
 // ------- CONSOLE ------- //
@@ -370,8 +371,9 @@ bool sendData(int sock) {
                 if (strcmp(header.type, "ACK") == 0) {
                     printf("RECEIVED AN ACK!\n");
                     
-                    if (!sent_entire_file) return true;
+                    if (sent_entire_file == false) return true;
                     else if (header.ack_num == expected_ack_num) {
+                        done_sending_file = true;
                         return false;
                     }
                     
@@ -518,7 +520,7 @@ bool createServer() {
 	}
     
     // Send the data.
-    while (sent_entire_file == false) {
+    while (done_sending_file == false) {
         if ( sendData(sock) == false ) return true;
         printf("sent_entire_file = %d\n", sent_entire_file);
     }
