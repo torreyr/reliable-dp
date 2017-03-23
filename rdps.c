@@ -513,7 +513,7 @@ bool closing(int sock) {
     }
     
     //expected_fin_ack_num += 1;
-    printf("expected_ack_num = %d\n", expected_ack_num);
+    printf("expected_fin_ack_num = %d\n", expected_ack_num);
 
     int timeouts = 0;
 	struct timeval timeout;
