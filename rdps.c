@@ -199,6 +199,8 @@ bool sendFin (int sock) {
 		0,
 		WINDOW_SIZE
 	);
+    
+    expected_ack_num += 1;
 	
 	// Send packet.    
     if ( sendto(sock, &buffer, MAX_BUFFER_SIZE, 0, (struct sockaddr*) &rcvaddr, rlen) == -1 ) {
