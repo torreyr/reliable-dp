@@ -59,6 +59,7 @@ int len  = sizeof(sdraddr);
 int rlen = sizeof(rcvaddr);
 
 int init_seq_num;
+int expected_ack_num;
 struct Header {
 	char magic[7];
 	char type[4];
@@ -274,6 +275,7 @@ bool sendResponse(int sock, int seq) {
     }
     
     // Send the packet.
+    expected_ack_num = header.seq_num + 1;
     sprintf(buffer, "%s,%s,%d,%d,%d,%d,%s", 
         header.magic,
         "DAT",
@@ -369,6 +371,9 @@ bool sendData(int sock) {
                     printf("RECEIVED AN ACK!\n");
                     
                     if (!sent_entire_file) return true;
+                    else if (header.ack_num == expected_ack_num) {
+                        return false;
+                    }
                     
                 } else {
                     printf("Received something other than an ACK.\n");
