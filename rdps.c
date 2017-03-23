@@ -561,7 +561,10 @@ bool closing(int sock) {
 				
 				if (strcmp(header.type, "ACK") == 0) {
 					printf("RECEIVED AN ACK!\n");
-                    if (header.ack_num == expected_ack_num) return true;
+                    if (header.ack_num == expected_ack_num) {
+                        printf("Closing the connection.\n");
+                        return true;
+                    }
 				} else {
 					printf("Received something other than an ACK.\n");
 				}
