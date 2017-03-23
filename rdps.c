@@ -39,6 +39,7 @@ bool createServer();
                                 // out of order and/or not in time. Also, doesn't like commas.
 
 #define MAX_SYN_TIMEOUTS 150
+#define MAX_TIMEOUTS 150
 #define TIMEOUT_SEC	     0
 #define TIMEOUT_USEC     50000
 
@@ -250,6 +251,9 @@ bool checkArguments(int argc, char* argv[]) {
 	return true;
 }
 
+/*
+ *  Sends a DAT packet.
+ */
 bool sendResponse(int sock, int seq) {    
     // Read in the file.
     fseek(fp, 0, SEEK_END);
@@ -295,6 +299,9 @@ bool sendResponse(int sock, int seq) {
     }
 }
 
+/*
+ *  Sends the file.
+ */
 bool sendData(int sock) {
     printf("trying to send...\n");
     
@@ -313,6 +320,7 @@ bool sendData(int sock) {
     
     printf("sent_entire_file = %s\n", sent_entire_file ? "true" : "false");
 	
+    int timeouts = 0;
 	int select_return;
     struct timeval timeout;
     char buffer[MAX_BUFFER_SIZE];
@@ -335,7 +343,11 @@ bool sendData(int sock) {
             return false;
         } else if (select_return == 0) {
             printf("timeout occurred\n");
-            // TODO: if max number of timeouts, give up, exit the program.
+            timeouts++;
+            if (timeouts == MAX_TIMEOUTS) {
+                printf("ERROR: Connection request timed out too many times.\n");
+                return false;
+            }
         }
         
         if (FD_ISSET(sock, &fds)) {
@@ -350,6 +362,7 @@ bool sendData(int sock) {
                 
                 zeroHeader();
                 setHeader(buffer);
+                timeouts = 0;
                 
                 if (strcmp(header.type, "ACK") == 0) {
                     printf("RECEIVED AN ACK!\n");
