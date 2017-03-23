@@ -292,6 +292,7 @@ bool sendResponse(int sock, int seq) {
         printf("here\n");
         return false;
     } else {
+        printf("here2\n");
         return true;
     }
 }
