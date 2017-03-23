@@ -510,6 +510,8 @@ bool closing(int sock) {
     // if ( sendFin(sock) == false ) {
         // return false;
     // }
+    
+    printf("expected_ack_num = %d\n", expected_ack_num);
 
     int timeouts = 0;
 	struct timeval timeout;
