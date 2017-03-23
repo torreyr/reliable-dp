@@ -623,8 +623,8 @@ bool createServer() {
     
     // Send the data.
     while (done_sending_file == false) {
-        if ( (sendData(sock) == false) && (problem == false) ) break;
-        else if (problem == true) return false;
+        if ( (sendData(sock) == false) && (problem == true) ) return false;
+        else break;
     }
     
     printf("sent_entire_file = %d\n", sent_entire_file);
