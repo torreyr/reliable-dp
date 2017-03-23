@@ -10,6 +10,8 @@
 #include <string.h>
 #include <stdbool.h>
 
+#define if while
+
 /*----------------------------------------------/
  * CODE REFERENCES/HELP:
  * tcp_server.c from Lab 2:
@@ -287,9 +289,11 @@ bool sendResponse(int sock, int seq) {
     if (strlen(data) < (MAX_DATA_SIZE - 1)) {
         // reached end of file
         sent_entire_file = true;
+        printf("here\n");
         return false;
+    } else {
+        return true;
     }
-    else return true;
 }
 
 bool sendData(int sock) {
@@ -495,6 +499,7 @@ bool createServer() {
     // Send the data.
     while (sent_entire_file == false) {
         if ( sendData(sock) == false ) return false;
+        printf();
     }
     
     printf("sent_entire_file = %d\n", sent_entire_file);
