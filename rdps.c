@@ -507,9 +507,9 @@ bool connection(int sock) {
  */
 bool closing(int sock) {
     // Send initial FIN packet.
-    // if ( sendFin(sock) == false ) {
-        // return false;
-    // }
+    if ( sendFin(sock) == false ) {
+        return false;
+    }
     
     printf("expected_ack_num = %d\n", expected_ack_num);
 
