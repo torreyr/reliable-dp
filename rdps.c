@@ -60,6 +60,7 @@ int rlen = sizeof(rcvaddr);
 
 int init_seq_num;
 int expected_ack_num;
+int expected_fin_ack_num;
 struct Header {
 	char magic[7];
 	char type[4];
@@ -511,7 +512,7 @@ bool closing(int sock) {
         return false;
     }
     
-    expected_ack_num += 1;
+    //expected_fin_ack_num += 1;
     printf("expected_ack_num = %d\n", expected_ack_num);
 
     int timeouts = 0;
@@ -562,7 +563,7 @@ bool closing(int sock) {
 				
 				if (strcmp(header.type, "ACK") == 0) {
 					printf("RECEIVED AN ACK!\n");
-                    if (header.ack_num == expected_ack_num) {
+                    if (header.ack_num == expected_fin_ack_num) {
                         printf("Closing the connection.\n");
                         return true;
                     }
@@ -637,6 +638,7 @@ bool createServer() {
     printf("sent_entire_file = %d\n", sent_entire_file);
     
     // Close the connection (FIN/ACK).
+    expected_fin_ack_num = expected_ack_num + 1;
     if ( !closing(sock) ) {
 		printf("ERROR: Could not gracefully close the connection. Exiting program.\n");
 		return false;
