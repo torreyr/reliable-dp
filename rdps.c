@@ -375,7 +375,7 @@ bool sendData(int sock) {
                     else if (header.ack_num == expected_ack_num) {
                         done_sending_file = true;
                         return false;
-                    }
+                    } else return true;
                     
                 } else {
                     printf("Received something other than an ACK.\n");
