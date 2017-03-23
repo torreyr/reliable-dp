@@ -559,7 +559,7 @@ bool closing(int sock) {
 				
 				if (strcmp(header.type, "ACK") == 0) {
 					printf("RECEIVED AN ACK!\n");
-					return true;
+                    if (header.ack_num == expected_ack_num) return true;
 				} else {
 					printf("Received something other than an ACK.\n");
 				}
