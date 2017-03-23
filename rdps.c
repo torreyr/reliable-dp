@@ -511,6 +511,7 @@ bool closing(int sock) {
         return false;
     }
     
+    expected_ack_num += 1;
     printf("expected_ack_num = %d\n", expected_ack_num);
 
     int timeouts = 0;
@@ -636,7 +637,6 @@ bool createServer() {
     printf("sent_entire_file = %d\n", sent_entire_file);
     
     // Close the connection (FIN/ACK).
-    expected_ack_num += 1;
     if ( !closing(sock) ) {
 		printf("ERROR: Could not gracefully close the connection. Exiting program.\n");
 		return false;
