@@ -115,10 +115,11 @@ void printStats() {
 /*
  *	Prints the sender's log message.
  */
-void printLogMessage() {
+void printLogMessage(char* event_type) {
 	char* time = getTime();
     printf("%s %s:%d %s:%d %s %d %d\n",
         time, 
+        event_type,
         sdr_ip, sdr_port, 
         rcv_ip, rcv_port, 
         header.type, 
@@ -212,7 +213,7 @@ bool sendSyn (int sock) {
 	);
 	
     strcpy(header.type, "SYN");
-    printLogMessage();
+    printLogMessage("s");
     
 	// Send packet.    
     if ( sendto(sock, &buffer, MAX_BUFFER_SIZE, 0, (struct sockaddr*) &rcvaddr, rlen) == -1 ) {
@@ -244,7 +245,7 @@ bool sendFin (int sock) {
 	);
 	
     strcpy(header.type, "FIN");
-    printLogMessage();
+    printLogMessage("s");
     
 	// Send packet.    
     if ( sendto(sock, &buffer, MAX_BUFFER_SIZE, 0, (struct sockaddr*) &rcvaddr, rlen) == -1 ) {
@@ -386,7 +387,7 @@ bool sendResponse(int sock, int seq) {
     }// else printf("successfully sent\n");
     
     strcpy(header.type, "DAT");
-    printLogMessage();
+    printLogMessage("s");
     if (window_size == 0) window_size = WINDOW_SIZE;
     t_bytes += strlen(data);
     t_packs++;
@@ -470,7 +471,7 @@ bool sendData(int sock) {
                 
                 if (strcmp(header.type, "ACK") == 0) {
                     //printf("RECEIVED AN ACK!\n");                    
-                    printLogMessage();
+                    printLogMessage("r");
                     acks_recv++;
 
 
@@ -497,7 +498,7 @@ bool sendData(int sock) {
                     printf("Received something other than an ACK.\n");
                 }
                 
-                printLogMessage();
+                printLogMessage("r");
             }
             
             memset(buffer, 0, MAX_BUFFER_SIZE);
@@ -572,14 +573,14 @@ bool connection(int sock) {
 				
 				if (strcmp(header.type, "ACK") == 0) {
 					//printf("RECEIVED AN ACK!\n");
-                    printLogMessage();
+                    printLogMessage("r");
                     acks_recv++;
 					return true;
 				} else {
 					printf("Received something other than an ACK.\n");
 				}
 				
-				printLogMessage();
+				printLogMessage("r");
 			}
 			
 			memset(buffer, 0, MAX_BUFFER_SIZE);
@@ -659,7 +660,7 @@ bool closing(int sock) {
 					printf("Received something other than an ACK.\n");
 				}
 				
-				printLogMessage();
+				printLogMessage("r");
 			}
 			
 			memset(buffer, 0, MAX_BUFFER_SIZE);
