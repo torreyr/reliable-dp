@@ -365,6 +365,7 @@ bool createServer() {
 				
 				zeroHeader();
 				setHeader(buffer);
+                printf("HERE!\n");
                 printf("sizeof buffer = %d\n", (int) sizeof buffer);
 				
 				if (sdr_ip == NULL) {
