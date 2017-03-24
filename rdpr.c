@@ -162,7 +162,6 @@ void setHeader(char* buffer) {
 		} else {
 			strcpy(tokens[i], token);
 		}
-        memset(token, 0, MAX_BUFFER_SIZE);
 		token = strtok(NULL, ",");
 		i++;
 	}
