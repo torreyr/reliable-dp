@@ -33,14 +33,13 @@ bool connection();
 bool createServer();
 
 // Global Constants
-#define MAX_DATA_SIZE   250
+#define MAX_DATA_SIZE   250     // NOTE: can do 250, can't do 300 for my tiny 1196 byte file.
 #define MAX_BUFFER_SIZE 1024
-#define WINDOW_SIZE 300          // NOTE: 300 works fine. With 400, the last few packets come
-                                // out of order and/or not in time.
+#define WINDOW_SIZE     300
 
-#define MAX_TIMEOUTS     150
-#define TIMEOUT_SEC	     0
-#define TIMEOUT_USEC     50000
+#define MAX_TIMEOUTS    150
+#define TIMEOUT_SEC     0
+#define TIMEOUT_USEC    50000
 
 // Global Variables
 FILE* fp;
