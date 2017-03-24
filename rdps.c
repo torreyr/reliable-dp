@@ -117,7 +117,7 @@ void printStats() {
  */
 void printLogMessage(char* event_type) {
 	char* time = getTime();
-    printf("%s %s:%d %s:%d %s %d %d\n",
+    printf("%s %s %s:%d %s:%d %s %d %d\n",
         time, 
         event_type,
         sdr_ip, sdr_port, 
