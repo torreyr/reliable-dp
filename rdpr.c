@@ -211,7 +211,7 @@ void sendAck(int sock, char* buffer) {
     
 	if ( sendto(sock, buffer, MAX_BUFFER_SIZE, 0, (struct sockaddr*) &sdraddr, slen) == -1 ) {
 		printf("problem sending\n");
-	} else printf("successfully sent\n");
+	}// else printf("successfully sent\n");
 }
 
 
@@ -327,7 +327,7 @@ bool createServer() {
 			close(sock);
 			return false;
 		} else if ((select_return == 0) && (connected == true)) {
-            printf("timeout occurred\n");
+            //printf("timeout occurred\n");
             if (received_fin == false) sendAck(sock, buffer);
             num_received = 0;
             timeouts++;
