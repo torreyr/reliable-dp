@@ -327,6 +327,7 @@ bool createServer() {
                 printf("ERROR: Timed out too many times. Exiting program.\n");
                 close(sock);
                 end_time = time(NULL);
+                printf("%f\n", start_time);
                 printf("%f\n", end_time);
                 return true;
             }
