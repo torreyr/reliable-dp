@@ -176,7 +176,6 @@ void setHeader(char* buffer) {
 	if (i == 6) strcpy(buffer, "");
 	else {
         char buf3[MAX_BUFFER_SIZE];
-        char buf4[MAX_BUFFER_SIZE];
         sprintf(buf3, "%s,%s,%s,%s,%s,%s,",
             tokens[0],
             tokens[1],
@@ -186,7 +185,7 @@ void setHeader(char* buffer) {
             tokens[5]
         );
         int offset = strlen(buf3);
-        strcpy(buf4, buffer + offset);
+        strcpy(buffer, buf2 + offset);
     }
 }
 
