@@ -190,7 +190,7 @@ void setHeader(char* buffer) {
     }
     printf("made it to here\n");
     printf("buffer = %s\n", buffer);
-    printf("strlen of buffer = %d\n", strlen(buffer));
+    printf("strlen of buffer = %d\n", (int) strlen(buffer));
 }
 
 void printToFile(char* buffer) {
