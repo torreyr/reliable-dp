@@ -378,6 +378,7 @@ bool sendResponse(int sock, int seq) {
     strcpy(header.type, "DAT");
     printLogMessage();
     window_size = window_size - 1;
+    printf("%d\n", window_size);
     if (window_size == 0) window_size = WINDOW_SIZE;
     t_bytes += strlen(data);
     t_packs++;
