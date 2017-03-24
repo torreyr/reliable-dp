@@ -82,8 +82,8 @@ int fins_sent = 0;
 int rsts_sent = 0;
 int acks_recv = 0;
 int rsts_recv = 0;
-int start_time = 0;
-int end_time = 0;
+float start_time = 0;
+float end_time = 0;
 
 
 // ------- CONSOLE ------- //
