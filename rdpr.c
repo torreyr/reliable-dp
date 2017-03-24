@@ -352,7 +352,7 @@ bool createServer() {
 				close(sock);
 			} else {
                 buffer[MAX_BUFFER_SIZE] = '\0';
-				//printf("Received: %s\n", buffer);
+				printf("Received: %s\n", buffer);
 				
 				zeroHeader();
 				setHeader(buffer);
