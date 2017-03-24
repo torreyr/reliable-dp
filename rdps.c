@@ -472,12 +472,7 @@ bool sendData(int sock) {
                     acks_recv++;
 
 
-                    if ((window_size == 0) && (header.ack_num != expected_ack_num)) {
-                        // u_bytes += last_window_bytes;
-                        // u_packs += WINDOW_SIZE;
-                        
-                        // reset num of bytes.
-                        
+                    if (header.ack_num != expected_ack_num) {                        
                         printf("did not get expected ack number\n");
                         printf("WINDOW_SIZE - window_size = %d\n", WINDOW_SIZE - window_size);
                         u_packs += WINDOW_SIZE - window_size;
