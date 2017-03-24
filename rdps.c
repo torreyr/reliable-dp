@@ -291,7 +291,6 @@ bool checkArguments(int argc, char* argv[]) {
 
 	// Check if valid IP address.
 	sdr_ip = argv[1];
-	//printf("Sender IP:\t%s\n", sdr_ip);
 	
 	// Check if valid port number.
     if (!isPort(argv[2])) {
@@ -299,11 +298,9 @@ bool checkArguments(int argc, char* argv[]) {
         howto();
         return false;
     } else sdr_port = atoi(argv[2]);
-	//printf("Sender Port:\t%d\n", sdr_port);
 	
 	// Check if valid IP address.
 	rcv_ip = argv[3];
-	//printf("Receiver IP:\t%s\n", rcv_ip);
 	
 	// Check if valid port number.
 	if (!isPort(argv[4])) {
@@ -311,7 +308,6 @@ bool checkArguments(int argc, char* argv[]) {
         howto();
         return false;
     } else rcv_port = atoi(argv[4]);
-	//printf("Receiver Port:\t%d\n", rcv_port);
 	
 	// Last argument is the file to send.
     fp = fopen(argv[5], "r");
@@ -321,10 +317,6 @@ bool checkArguments(int argc, char* argv[]) {
         fclose(fp);
         return false;
     }
-	//printf("Expected File:\t%s\n", argv[5]);
-    
-	//printf("\nSample log message:\n");
-	//printLogMessage();
 	
 	return true;
 }
@@ -344,29 +336,11 @@ bool sendResponse(int sock, int seq) {
     memset(buffer, 0, MAX_BUFFER_SIZE);
     
     fread(data, 1, MAX_DATA_SIZE - 1, fp);
-    //printf("data: %s\n", data);
     if (strcmp(data, "") == 0) {
         // reached end of file
         sent_entire_file = true;
         return false;
     }
-    
-    // keep track of bytes of last WINDOW_SIZE number of packets.
-    // if (window_size > 0) {
-        // last_window_bytes += strlen(data);
-    // }
-    // if the ack is the expected number
-    // if ((window_size == 1) && (header.ack_num != expected_ack_num)) {
-        // u_bytes += last_window_bytes;
-        // u_packs += WINDOW_SIZE;
-        
-        // reset num of bytes.
-        
-        // printf("did not get expected ack number\n");
-        // printf("WINDOW_SIZE - window_size = %d\n", WINDOW_SIZE - window_size);
-        // u_packs += WINDOW_SIZE - window_size;
-        // printf("u_packs = %d\n", u_packs);
-    // }
     
     window_size = window_size - 1;
     
@@ -401,6 +375,7 @@ bool sendResponse(int sock, int seq) {
         return true;
     }
 }
+
 /*
  *  Sends the file.
  */
@@ -418,8 +393,6 @@ bool sendData(int sock) {
         }
         header.seq_num += 1;
     }
-    
-    //printf("sent_entire_file = %s\n", sent_entire_file ? "true" : "false");
 	
     int timeouts = 0;
 	int select_return;
@@ -474,20 +447,6 @@ bool sendData(int sock) {
                     //printf("RECEIVED AN ACK!\n");                    
                     printLogMessage("r");
                     acks_recv++;
-
-
-                    // if (header.ack_num != expected_ack_num) {                        
-                        // printf("did not get expected ack number\n");
-                        // uniques = WINDOW_SIZE - (seq_num + 10 - header.ack_num);
-                        
-                        // non-uniques = WINDOW_SIZE - uniques
-                        // (seq_num + non-uniques - header.ack_num)
-                        
-                        // printf("uniques = %d\n", uniques);
-                        // u_packs += uniques;
-                        // printf("u_packs = %d\n", u_packs);
-                    // }
-
 
                     if (sent_entire_file == false) return true;
                     else if (header.ack_num == expected_ack_num) {

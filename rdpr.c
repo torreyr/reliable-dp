@@ -144,54 +144,6 @@ void zeroHeader() {
 }
 
 /*
- *	Obtains the header values from a string.
- */
- /*
-void setHeader(char* buffer) {
-	// Tokenize received packet.
-	int i = 0;
-	char tokens[7][MAX_BUFFER_SIZE];
-	char buf2[MAX_BUFFER_SIZE];
-	strcpy(buf2, buffer);
-	
-	char* token = strtok(buf2, ",");
-	while (token != NULL) {
-		if (i == 6) {
-			strncpy(tokens[i], token, atoi(tokens[4]));
-			tokens[i][atoi(tokens[4])] = '\0';
-		} else {
-			strcpy(tokens[i], token);
-		}
-		token = strtok(NULL, ",");
-		i++;
-	}
-	
-	// Set header values.
-	strcpy(header.magic, tokens[0]);
-	strcpy(header.type, tokens[1]);		
-	header.seq_num     = atoi(tokens[2]);
-	header.ack_num     = atoi(tokens[2]);
-	header.data_len    = atoi(tokens[4]);
-	header.window_size = atoi(tokens[5]);
-	
-	if (i == 6) strcpy(buffer, "");
-	else {
-        char buf3[MAX_BUFFER_SIZE];
-        sprintf(buf3, "%s,%s,%s,%s,%s,%s,",
-            tokens[0],
-            tokens[1],
-            tokens[2],
-            tokens[3],
-            tokens[4],
-            tokens[5]
-        );
-        int offset = strlen(buf3);
-        strcpy(buffer, buf2 + offset);
-    }
-}
-*/
-
-/*
  *    Obtains the header values from a string.
  */
 void setHeader(char buffer[]) {
@@ -286,7 +238,6 @@ bool checkArguments(int argc, char* argv[]) {
 
 	// Check if valid IP address.
 	rcv_ip = argv[1];
-	//printf("Receiver IP:\t%s\n", rcv_ip);
 
 	// Check if valid port number.
     if (!isPort(argv[2])) {
@@ -294,12 +245,9 @@ bool checkArguments(int argc, char* argv[]) {
         howto();
         return false;
     } else rcv_port = atoi(argv[2]);
-	//printf("Receiver Port:\t%d\n", rcv_port);
 	
 	// Last argument is the file to be received.
 	fp = fopen(argv[3], "w");
-	//printf("Writing To:\t%s\n", argv[3]);
-    //printf("\n");
 	
 	return true;
 }
@@ -456,8 +404,3 @@ int main(int argc, char* argv[]) {
     fclose(fp);
     printStats();
 }
-
-// draw.io
-// tc qdisc show
-// tc qdisc add dev br0 root netem drop 10%		// br0 blocks ACKs from the receiver.
-// tc qdisc del dev br0 root netem drop 10%
