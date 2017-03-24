@@ -196,9 +196,9 @@ void printToFile(char* buffer) {
 /*
  *	Simply sends an ACK packet.
  */
-void sendAck(int sock, char* buffer) {
-    memset(buffer, 0, MAX_BUFFER_SIZE);
-	sprintf(buffer, "%s,%s,%d,%d,%d,%d",
+void sendAck(int sock, char* buffer2) {
+    memset(buffer2, 0, MAX_BUFFER_SIZE);
+	sprintf(buffer2, "%s,%s,%d,%d,%d,%d",
 		header.magic,
 		"ACK",
 		0,
@@ -211,7 +211,7 @@ void sendAck(int sock, char* buffer) {
     acks_sent++;
     printLogMessage(0, "s");
     
-	if ( sendto(sock, buffer, MAX_BUFFER_SIZE, 0, (struct sockaddr*) &sdraddr, slen) == -1 ) {
+	if ( sendto(sock, buffer2, MAX_BUFFER_SIZE, 0, (struct sockaddr*) &sdraddr, slen) == -1 ) {
 		printf("problem sending\n");
 	}// else printf("successfully sent\n");
 }

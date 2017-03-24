@@ -337,9 +337,9 @@ bool sendResponse(int sock, int seq) {
     fseek(fp, ((seq - (init_seq_num + 1))*(MAX_DATA_SIZE - 1)), SEEK_SET);
     
     char data[MAX_DATA_SIZE];
-    char buffer[MAX_BUFFER_SIZE];
+    char buffer1[MAX_BUFFER_SIZE];
     memset(data, 0, MAX_DATA_SIZE);
-    memset(buffer, 0, MAX_BUFFER_SIZE);
+    memset(buffer1, 0, MAX_BUFFER_SIZE);
     
     fread(data, 1, MAX_DATA_SIZE - 1, fp);
     //printf("data: %s\n", data);
@@ -370,7 +370,7 @@ bool sendResponse(int sock, int seq) {
     
     // Send the packet.
     expected_ack_num = header.seq_num + 1;
-    sprintf(buffer, "%s,%s,%d,%d,%d,%d,%s", 
+    sprintf(buffer1, "%s,%s,%d,%d,%d,%d,%s", 
         header.magic,
         "DAT",
         header.seq_num,
@@ -379,7 +379,7 @@ bool sendResponse(int sock, int seq) {
         window_size,
         data
     );
-    if ( sendto(sock, &buffer, sizeof buffer, 0, (struct sockaddr*) &rcvaddr, sizeof rcvaddr) == -1 ) {
+    if ( sendto(sock, &buffer1, MAX_BUFFER_SIZE, 0, (struct sockaddr*) &rcvaddr, sizeof rcvaddr) == -1 ) {
         printf("Problem sending packet.\n");
         problem = true;
         return false;
@@ -521,8 +521,8 @@ bool connection(int sock) {
 
     int syn_timeouts = 0;
 	struct timeval timeout;
-	char buffer[MAX_BUFFER_SIZE];
-	memset(buffer, 0, MAX_BUFFER_SIZE);
+	char buffer3[MAX_BUFFER_SIZE];
+	memset(buffer3, 0, MAX_BUFFER_SIZE);
 	
 	// Wait for ACK response.
 	// NOTE: Can I put this while loop in its own function called waitToReceive()?
@@ -553,17 +553,17 @@ bool connection(int sock) {
         }
 		
 		if (FD_ISSET(sock, &fds)) {
-			recsize = recvfrom(sock, (void*) buffer, MAX_BUFFER_SIZE, 0, (struct sockaddr*) &sdraddr, &len);
+			recsize = recvfrom(sock, (void*) buffer3, MAX_BUFFER_SIZE, 0, (struct sockaddr*) &sdraddr, &len);
 		
 			if (recsize <= 0) {
 				printf("did not receive any data.\n");
 				close(sock);
 			} else {
-				buffer[MAX_BUFFER_SIZE] = '\0';
-				//printf("Received: %s\n", buffer);
+				buffer3[MAX_BUFFER_SIZE] = '\0';
+				//printf("Received: %s\n", buffer3);
                 
                 zeroHeader();
-                setHeader(buffer);
+                setHeader(buffer3);
 				
 				if (sdr_ip == NULL) {
 					sdr_port = ntohs(sdraddr.sin_port);
@@ -582,10 +582,10 @@ bool connection(int sock) {
 				printLogMessage("r");
 			}
 			
-			memset(buffer, 0, MAX_BUFFER_SIZE);
+			memset(buffer3, 0, MAX_BUFFER_SIZE);
 		}
 		
-		memset(buffer, 0, MAX_BUFFER_SIZE);
+		memset(buffer3, 0, MAX_BUFFER_SIZE);
 	}
 	
 	return false;
@@ -604,8 +604,8 @@ bool closing(int sock) {
 
     int timeouts = 0;
 	struct timeval timeout;
-	char buffer[MAX_BUFFER_SIZE];
-	memset(buffer, 0, MAX_BUFFER_SIZE);
+	char buffer4[MAX_BUFFER_SIZE];
+	memset(buffer4, 0, MAX_BUFFER_SIZE);
 	
 	// Wait for ACK response.
 	// NOTE: Can I put this while loop in its own function called waitToReceive()?
@@ -636,17 +636,17 @@ bool closing(int sock) {
         }
 		
 		if (FD_ISSET(sock, &fds)) {
-			recsize = recvfrom(sock, (void*) buffer, MAX_BUFFER_SIZE, 0, (struct sockaddr*) &sdraddr, &len);
+			recsize = recvfrom(sock, (void*) buffer4, MAX_BUFFER_SIZE, 0, (struct sockaddr*) &sdraddr, &len);
 		
 			if (recsize <= 0) {
 				printf("did not receive any data.\n");
 				close(sock);
 			} else {
-				buffer[MAX_BUFFER_SIZE] = '\0';
-				//printf("Received: %s\n", buffer);
+				buffer4[MAX_BUFFER_SIZE] = '\0';
+				//printf("Received: %s\n", buffer4);
                 
                 zeroHeader();
-                setHeader(buffer);
+                setHeader(buffer4);
 				
 				if (strcmp(header.type, "ACK") == 0) {
 					//printf("RECEIVED AN ACK!\n");
@@ -662,10 +662,10 @@ bool closing(int sock) {
 				printLogMessage("r");
 			}
 			
-			memset(buffer, 0, MAX_BUFFER_SIZE);
+			memset(buffer4, 0, MAX_BUFFER_SIZE);
 		}
 		
-		memset(buffer, 0, MAX_BUFFER_SIZE);
+		memset(buffer4, 0, MAX_BUFFER_SIZE);
 	}
 	
 	return false;
