@@ -332,7 +332,7 @@ bool createServer() {
             //printf("timeout occurred\n");
             if (received_fin == false) {
                 sendAck(sock, buffer);
-                printLogMessage("S");
+                printLogMessage("s");
             }
             num_received = 0;
             timeouts++;
