@@ -345,6 +345,11 @@ bool sendResponse(int sock, int seq) {
         return false;
     }
     
+    if (header.ack_num == expected_ack_num) {
+        u_bytes += strlen(data);
+        u_packs++;
+    }
+    
     // Send the packet.
     expected_ack_num = header.seq_num + 1;
     sprintf(buffer, "%s,%s,%d,%d,%d,%d,%s", 
