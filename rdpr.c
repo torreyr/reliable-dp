@@ -332,7 +332,7 @@ bool createServer() {
             num_received = 0;
             timeouts++;
             if (timeouts == MAX_TIMEOUTS) {
-                printf("ERROR: Timed out too many times. Exiting program.\n");
+                printf("Timed out too many times. Closing program.\n");
                 close(sock);
                 end_time = time(NULL);
                 return true;

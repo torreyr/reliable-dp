@@ -354,6 +354,7 @@ bool sendResponse(int sock, int seq) {
         return false;
     }// else printf("successfully sent\n");
     
+    strcpy(header.type, "DAT");
     printLogMessage();
     window_size--;
     
