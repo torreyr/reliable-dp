@@ -301,6 +301,7 @@ bool createServer() {
     int timeouts = 0;
     struct timeval timeout;
     start_time = time(NULL);
+    printf("%f\n", start_time);
 	
 	while (1) {
 		printf("ready...\n");
@@ -326,6 +327,7 @@ bool createServer() {
                 printf("ERROR: Timed out too many times. Exiting program.\n");
                 close(sock);
                 end_time = time(NULL);
+                printf("%f\n", end_time);
                 return true;
             }
         }
@@ -393,6 +395,7 @@ bool createServer() {
 	}
 
     end_time = time(NULL);
+    printf("%f\n", end_time);
     return true;
 }
 
