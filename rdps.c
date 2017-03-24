@@ -376,6 +376,7 @@ bool sendResponse(int sock, int seq) {
     }// else printf("successfully sent\n");
     
     strcpy(header.type, "DAT");
+    printf("window_size = %d\n", window_size);
     printLogMessage();
     window_size = window_size - 1;
     printf("%d\n", window_size);
