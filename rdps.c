@@ -477,7 +477,7 @@ bool sendData(int sock) {
                         printf("did not get expected ack number\n");
                         printf("seq_num = %d\n", seq_num);
                         printf("header.ack_num = %d\n", header.ack_num);
-                        u_packs += (seq_num + 10 - header.ack_num);
+                        u_packs += WINDOW_SIZE - (seq_num + 10 - header.ack_num);
                         printf("u_packs = %d\n", u_packs);
                     }
 
