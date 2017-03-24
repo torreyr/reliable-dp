@@ -484,6 +484,7 @@ bool sendData(int sock) {
 
                     if (sent_entire_file == false) return true;
                     else if (header.ack_num == expected_ack_num) {
+                        u_packs += WINDOW_SIZE;
                         done_sending_file = true;
                         return false;
                     } else return true;
@@ -567,6 +568,7 @@ bool connection(int sock) {
 				
 				if (strcmp(header.type, "ACK") == 0) {
 					//printf("RECEIVED AN ACK!\n");
+                    printLogMessage();
                     acks_recv++;
 					return true;
 				} else {
