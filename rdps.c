@@ -359,7 +359,10 @@ bool sendResponse(int sock, int seq) {
         
         // reset num of bytes.
         
+        printf("did not get expected ack number\n");
+        printf("WINDOW_SIZE - window_size = %d\n", WINDOW_SIZE - window_size);
         u_packs += WINDOW_SIZE - window_size;
+        printf("u_packs = %d\n", u_packs);
     }
     
     window_size = window_size - 1;
@@ -576,9 +579,9 @@ bool connection(int sock) {
  */
 bool closing(int sock) {
     // Send initial FIN packet.
-    // if ( sendFin(sock) == false ) {
-        // return false;
-    // }
+    if ( sendFin(sock) == false ) {
+        return false;
+    }
     
     //printf("expected_fin_ack_num = %d\n", expected_fin_ack_num);
 
