@@ -72,13 +72,14 @@ bool sent_entire_file = false;
 bool done_sending_file = false;
 bool problem = false;
 int window_size = WINDOW_SIZE;
-int last_window_bytes;
+//int last_window_bytes;
 
 // Global Variables for Stats
 int t_bytes = 0;
 int u_bytes = 0;
 int t_packs = 0;
 int u_packs = 0;
+int uniques = 0;
 int syns_sent = 0;
 int fins_sent = 0;
 int rsts_sent = 0;
@@ -473,13 +474,17 @@ bool sendData(int sock) {
                     acks_recv++;
 
 
-                    if (header.ack_num != expected_ack_num) {                        
-                        printf("did not get expected ack number\n");
-                        printf("seq_num = %d\n", seq_num);
-                        printf("header.ack_num = %d\n", header.ack_num);
-                        u_packs += WINDOW_SIZE - (seq_num + 10 - header.ack_num);
-                        printf("u_packs = %d\n", u_packs);
-                    }
+                    // if (header.ack_num != expected_ack_num) {                        
+                        // printf("did not get expected ack number\n");
+                        // uniques = WINDOW_SIZE - (seq_num + 10 - header.ack_num);
+                        
+                        // non-uniques = WINDOW_SIZE - uniques
+                        // (seq_num + non-uniques - header.ack_num)
+                        
+                        // printf("uniques = %d\n", uniques);
+                        // u_packs += uniques;
+                        // printf("u_packs = %d\n", u_packs);
+                    // }
 
 
                     if (sent_entire_file == false) return true;
