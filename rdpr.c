@@ -206,6 +206,8 @@ void sendAck(int sock, char* buffer) {
 		window_size
 	);
     
+    printLogMessage();
+    
 	if ( sendto(sock, buffer, MAX_BUFFER_SIZE, 0, (struct sockaddr*) &sdraddr, slen) == -1 ) {
 		printf("problem sending\n");
 	} else printf("successfully sent\n");
@@ -238,7 +240,7 @@ char* getTime() {
  *	Checks command line arguments for correct syntax.
  */
 bool checkArguments(int argc, char* argv[]) {    
-	printf("\n");
+	//printf("\n");
 	
 	if (argc < 4) {
 		printf("Incorrect syntax.\n");
@@ -248,7 +250,7 @@ bool checkArguments(int argc, char* argv[]) {
 
 	// Check if valid IP address.
 	rcv_ip = argv[1];
-	printf("Receiver IP:\t%s\n", rcv_ip);
+	//printf("Receiver IP:\t%s\n", rcv_ip);
 
 	// Check if valid port number.
     if (!isPort(argv[2])) {
@@ -256,12 +258,12 @@ bool checkArguments(int argc, char* argv[]) {
         howto();
         return false;
     } else rcv_port = atoi(argv[2]);
-	printf("Receiver Port:\t%d\n", rcv_port);
+	//printf("Receiver Port:\t%d\n", rcv_port);
 	
 	// Last argument is the file to be received.
 	fp = fopen(argv[3], "w");
-	printf("Writing To:\t%s\n", argv[3]);
-    printf("\n");
+	//printf("Writing To:\t%s\n", argv[3]);
+    //printf("\n");
 	
 	return true;
 }
@@ -340,7 +342,7 @@ bool createServer() {
 			recsize = recvfrom(sock, (void*) buffer, MAX_BUFFER_SIZE, 0, (struct sockaddr*) &sdraddr, &slen);
 		
 			if (recsize <= 0) {
-				printf("did not receive any data.\n");
+				printf("recvfrom failed. Closing socket. \n");
 				close(sock);
 			} else {
                 buffer[MAX_BUFFER_SIZE] = '\0';

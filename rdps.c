@@ -330,7 +330,7 @@ bool sendResponse(int sock, int seq) {
     memset(buffer, 0, MAX_BUFFER_SIZE);
     
     fread(data, 1, MAX_DATA_SIZE - 1, fp);
-    printf("data: %s\n", data);
+    //printf("data: %s\n", data);
     if (strcmp(data, "") == 0) {
         // reached end of file
         sent_entire_file = true;
@@ -352,7 +352,7 @@ bool sendResponse(int sock, int seq) {
         printf("Problem sending packet.\n");
         problem = true;
         return false;
-    } else printf("successfully sent\n");
+    }// else printf("successfully sent\n");
     
     printLogMessage();
     window_size--;
