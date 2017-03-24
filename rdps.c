@@ -472,7 +472,7 @@ bool sendData(int sock) {
                     acks_recv++;
 
 
-                    if ((window_size == 1) && (header.ack_num != expected_ack_num)) {
+                    if ((window_size == 0) && (header.ack_num != expected_ack_num)) {
                         // u_bytes += last_window_bytes;
                         // u_packs += WINDOW_SIZE;
                         
