@@ -75,8 +75,8 @@ int fins_recv = 0;
 int rsts_recv = 0;
 int acks_sent = 0;
 int rsts_sent = 0;
-int start_time = 0;
-int end_time = 0;
+float start_time = 0;
+float end_time = 0;
 
 // ------- CONSOLE ------- //
 void howto() {
