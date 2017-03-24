@@ -222,7 +222,7 @@ void sendAck(int sock, char* buffer) {
  *	Returns the formatted time of the request.
  */
 char* getTime() {
-    char* buffer = malloc(20);
+    char* timebuf = malloc(20);
     time_t curtime;
 	struct tm* times;
 	struct timeval timenow;
@@ -233,10 +233,10 @@ char* getTime() {
 	gettimeofday(&timenow, NULL);
 	int micro = timenow.tv_usec;
 	
-	strftime(buffer, 30, "%T", times);
-	strcat(buffer, ".");
-	sprintf(buffer, "%s%d", buffer, micro);
-	return buffer;
+	strftime(timebuf, 30, "%T", times);
+	strcat(timebuf, ".");
+	sprintf(timebuf, "%s%d", timebuf, micro);
+	return timebuf;
 }
 
 /*
