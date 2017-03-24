@@ -188,6 +188,7 @@ void setHeader(char* buffer) {
         strcpy(buffer, buffer + offset);
         printf("made this strcpy\n");
     }
+    printf("made it to here\n");
 }
 
 void printToFile(char* buffer) {
