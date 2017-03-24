@@ -185,9 +185,7 @@ void setHeader(char* buffer) {
             tokens[5]
         );
         int offset = strlen(buf3);
-        if (offset < strlen(buffer)) {
-            strcpy(buffer, buffer + offset);
-        }
+        strcpy(buffer, buffer + offset);
     }
 }
 
@@ -213,7 +211,7 @@ void sendAck(int sock, char* buffer) {
     
     strcpy(header.type, "ACK");
     acks_sent++;
-    printLogMessage(0, "s");
+    //printLogMessage(0, "s");
     
 	if ( sendto(sock, buffer, MAX_BUFFER_SIZE, 0, (struct sockaddr*) &sdraddr, slen) == -1 ) {
 		printf("problem sending\n");
@@ -366,7 +364,7 @@ bool createServer() {
 					sdr_ip   = inet_ntoa(sdraddr.sin_addr);
 				}
 				
-				printLogMessage(1, "r");
+				//printLogMessage(1, "r");
                 timeouts = 0;
 				
 				// If we received a SYN, send an ACK.
