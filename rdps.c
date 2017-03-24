@@ -349,7 +349,7 @@ bool sendResponse(int sock, int seq) {
     }
     
     // keep track of bytes of last WINDOW_SIZE number of packets.
-    // if (window_size > 1) {
+    // if (window_size > 0) {
         // last_window_bytes += strlen(data);
     // }
     // if the ack is the expected number
@@ -359,7 +359,7 @@ bool sendResponse(int sock, int seq) {
         
         // reset num of bytes.
         
-        
+        u_packs += WINDOW_SIZE - window_size;
     }
     
     window_size = window_size - 1;
