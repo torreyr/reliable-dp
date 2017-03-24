@@ -209,12 +209,16 @@ bool sendSyn (int sock) {
 		WINDOW_SIZE
 	);
 	
+    strcpy(header.type, "SYN");
+    printLogMessage();
+    
 	// Send packet.    
     if ( sendto(sock, &buffer, MAX_BUFFER_SIZE, 0, (struct sockaddr*) &rcvaddr, rlen) == -1 ) {
 		printf("Problem sending packet.\n");
         return false;
     } else {
         //printf("successfully sent\n");
+        syns_sent++;
         return true;
     }
 }
@@ -235,12 +239,16 @@ bool sendFin (int sock) {
 		window_size
 	);
 	
+    strcpy(header.type, "FIN");
+    printLogMessage();
+    
 	// Send packet.    
     if ( sendto(sock, &buffer, MAX_BUFFER_SIZE, 0, (struct sockaddr*) &rcvaddr, rlen) == -1 ) {
 		printf("Problem sending packet.\n");
         return false;
     } else {
         //printf("successfully sent\n");
+        fins_sent++;
         return true;
     }
 }
@@ -357,6 +365,8 @@ bool sendResponse(int sock, int seq) {
     strcpy(header.type, "DAT");
     printLogMessage();
     window_size--;
+    t_bytes += strlen(data);
+    t_packs++;
     
     if (strlen(data) < (MAX_DATA_SIZE - 1)) {
         // reached end of file
@@ -437,6 +447,7 @@ bool sendData(int sock) {
                 if (strcmp(header.type, "ACK") == 0) {
                     //printf("RECEIVED AN ACK!\n");                    
                     printLogMessage();
+                    acks_recv++;
                     
                     if (sent_entire_file == false) return true;
                     else if (header.ack_num == expected_ack_num) {
@@ -523,6 +534,7 @@ bool connection(int sock) {
 				
 				if (strcmp(header.type, "ACK") == 0) {
 					//printf("RECEIVED AN ACK!\n");
+                    acks_recv++;
 					return true;
 				} else {
 					printf("Received something other than an ACK.\n");
@@ -599,6 +611,7 @@ bool closing(int sock) {
 				
 				if (strcmp(header.type, "ACK") == 0) {
 					//printf("RECEIVED AN ACK!\n");
+                    acks_recv++;
                     if (header.ack_num == expected_fin_ack_num) {
                         printf("Closing the connection.\n");
                         return true;
