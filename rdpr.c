@@ -392,6 +392,7 @@ bool createServer() {
 	}
 
     end_time = time(NULL);
+    return true;
 }
 
 // MAIN
