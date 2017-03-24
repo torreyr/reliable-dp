@@ -51,7 +51,6 @@ int len  = sizeof rcvaddr;
 int slen = sizeof sdraddr;
 
 int ack_num;
-int window_size;
 int expected_seq_num;
 struct Header {
 	char magic[7];
@@ -61,6 +60,7 @@ struct Header {
 	int data_len;
 	int window_size;
 } header;
+int window_size = MAX_WINDOW_SIZE;
 bool connected = false;
 bool received_fin = false;
 int num_received = 0;
@@ -304,7 +304,6 @@ bool createServer() {
         return false;
     }
 	
-	window_size = MAX_WINDOW_SIZE;
     int timeouts = 0;
     struct timeval timeout;
     start_time = time(NULL);
@@ -345,7 +344,7 @@ bool createServer() {
 				close(sock);
 			} else {
                 buffer[MAX_BUFFER_SIZE] = '\0';
-				printf("Received: %s\n", buffer);
+				//printf("Received: %s\n", buffer);
 				
 				zeroHeader();
 				setHeader(buffer);
