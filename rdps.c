@@ -353,17 +353,17 @@ bool sendResponse(int sock, int seq) {
         // last_window_bytes += strlen(data);
     // }
     // if the ack is the expected number
-    if ((window_size == 1) && (header.ack_num != expected_ack_num)) {
+    // if ((window_size == 1) && (header.ack_num != expected_ack_num)) {
         // u_bytes += last_window_bytes;
         // u_packs += WINDOW_SIZE;
         
         // reset num of bytes.
         
-        printf("did not get expected ack number\n");
-        printf("WINDOW_SIZE - window_size = %d\n", WINDOW_SIZE - window_size);
-        u_packs += WINDOW_SIZE - window_size;
-        printf("u_packs = %d\n", u_packs);
-    }
+        // printf("did not get expected ack number\n");
+        // printf("WINDOW_SIZE - window_size = %d\n", WINDOW_SIZE - window_size);
+        // u_packs += WINDOW_SIZE - window_size;
+        // printf("u_packs = %d\n", u_packs);
+    // }
     
     window_size = window_size - 1;
     
@@ -470,7 +470,21 @@ bool sendData(int sock) {
                     //printf("RECEIVED AN ACK!\n");                    
                     printLogMessage();
                     acks_recv++;
-                    
+
+
+                    if ((window_size == 1) && (header.ack_num != expected_ack_num)) {
+                        // u_bytes += last_window_bytes;
+                        // u_packs += WINDOW_SIZE;
+                        
+                        // reset num of bytes.
+                        
+                        printf("did not get expected ack number\n");
+                        printf("WINDOW_SIZE - window_size = %d\n", WINDOW_SIZE - window_size);
+                        u_packs += WINDOW_SIZE - window_size;
+                        printf("u_packs = %d\n", u_packs);
+                    }
+
+
                     if (sent_entire_file == false) return true;
                     else if (header.ack_num == expected_ack_num) {
                         done_sending_file = true;
