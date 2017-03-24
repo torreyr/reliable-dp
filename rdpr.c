@@ -146,6 +146,7 @@ void zeroHeader() {
 /*
  *	Obtains the header values from a string.
  */
+ /*
 void setHeader(char* buffer) {
 	// Tokenize received packet.
 	int i = 0;
@@ -188,6 +189,36 @@ void setHeader(char* buffer) {
         strcpy(buffer, buf2 + offset);
     }
 }
+*/
+
+/*
+ *    Obtains the header values from a string.
+ */
+void setHeader(char buffer[]) {
+    char tmp[MAX_BUFFER_SIZE];
+    int i = 0;
+    int j = 0;
+    int token = 0;
+    for(; token < 6 && i < MAX_BUFFER_SIZE; i++) {
+        if(buffer[i] == ',') {
+            memset(tmp, 0, MAX_BUFFER_SIZE);
+            strncpy(tmp, buffer + j, i - j);
+            switch(token) {
+                case 0: strcpy(header.magic, tmp); break;
+                case 1: strcpy(header.type, tmp); break;
+                case 2: header.seq_num = atoi(tmp); break;
+                case 3: header.ack_num = atoi(tmp); break;
+                case 4: header.data_len = atoi(tmp); break;
+                case 5: header.window_size = atoi(tmp); break;
+            }
+            j = i + 1;
+            token++;
+        }
+    }
+    strcpy(tmp, buffer + j);
+    strcpy(buffer, tmp);
+}
+
 
 void printToFile(char* buffer) {
     fwrite(buffer, 1, header.data_len, fp);
