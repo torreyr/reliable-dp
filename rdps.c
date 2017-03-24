@@ -227,7 +227,9 @@ bool sendSyn (int sock) {
 /*
  *  Simply sends a FIN packet.
  */
-bool sendFin (int sock) {	
+bool sendFin (int sock) {
+    window_size = WINDOW_SIZE;
+
 	// String to send.
 	char buffer[MAX_BUFFER_SIZE];
 	memset(buffer, 0, MAX_BUFFER_SIZE);
@@ -347,7 +349,7 @@ bool sendResponse(int sock, int seq) {
     }
     
     // keep track of bytes of last WINDOW_SIZE number of packets.
-    if (window_size > 0) {
+    if (window_size > 1) {
         last_window_bytes += strlen(data);
     }
     // if the ack is the expected number
@@ -358,7 +360,7 @@ bool sendResponse(int sock, int seq) {
         // reset num of bytes.
     }
     window_size = window_size - 1;
-    printf("sending window size of %d\n", window_size);
+    
     // Send the packet.
     expected_ack_num = header.seq_num + 1;
     sprintf(buffer, "%s,%s,%d,%d,%d,%d,%s", 
@@ -377,10 +379,8 @@ bool sendResponse(int sock, int seq) {
     }// else printf("successfully sent\n");
     
     strcpy(header.type, "DAT");
-    printf("window_size = %d\n", window_size);
     printLogMessage();
-    printf("%d\n", window_size);
-    if (window_size == 0) window_size = WINDOW_SIZE;
+    if (window_size == 1) window_size = WINDOW_SIZE;
     t_bytes += strlen(data);
     t_packs++;
     
