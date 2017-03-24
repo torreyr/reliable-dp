@@ -185,6 +185,8 @@ void setHeader(char* buffer) {
             tokens[5]
         );
         int offset = strlen(buf3);
+        printf("buffer was = %s\n", buffer);
+        printf("buffer + offset = %s\n", buffer+offset);
         strcpy(buffer, buffer + offset);
         printf("made this strcpy\n");
     }
