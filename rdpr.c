@@ -104,15 +104,16 @@ void printStats() {
 /*
  *	Prints the sender's log message.
  */
-void printLogMessage(bool seq, char* event_type) {
+void printLogMessage(int seq, char* event_type) {
 	char* time = getTime();
+    int num = seq ? header.seq_num : ack_num;
     printf("%s %s %s:%d %s:%d %s %d %d\n", 
         time,
         event_type,
         sdr_ip, sdr_port,
         rcv_ip, rcv_port,
         header.type,
-        seq ? header.seq_num : ack_num,
+        num,
         window_size
     );
 	free(time);
@@ -209,7 +210,7 @@ void sendAck(int sock, char* buffer) {
     
     strcpy(header.type, "ACK");
     acks_sent++;
-    printLogMessage(false, "s");
+    printLogMessage(0, "s");
     
 	if ( sendto(sock, buffer, MAX_BUFFER_SIZE, 0, (struct sockaddr*) &sdraddr, slen) == -1 ) {
 		printf("problem sending\n");
@@ -362,7 +363,7 @@ bool createServer() {
 					sdr_ip   = inet_ntoa(sdraddr.sin_addr);
 				}
 				
-				printLogMessage(true, "r");
+				printLogMessage(1, "r");
                 timeouts = 0;
 				
 				// If we received a SYN, send an ACK.
