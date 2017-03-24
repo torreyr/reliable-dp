@@ -206,7 +206,7 @@ void sendAck(int sock, char* buffer) {
 		window_size
 	);
     
-    header.type = "ACK";
+    strcpy(header.type, "ACK");
     printLogMessage();
     
 	if ( sendto(sock, buffer, MAX_BUFFER_SIZE, 0, (struct sockaddr*) &sdraddr, slen) == -1 ) {
