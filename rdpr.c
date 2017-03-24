@@ -32,11 +32,11 @@ bool createServer();
 
 // Global Constants
 #define MAX_BUFFER_SIZE 1024
-#define MAX_WINDOW_SIZE 5
+#define MAX_WINDOW_SIZE 10
 
 #define MAX_TIMEOUTS    100
 #define TIMEOUT_SEC     0
-#define TIMEOUT_USEC    50000
+#define TIMEOUT_USEC    5000
 
 // Global Variables
 FILE* fp;
