@@ -119,8 +119,8 @@ void printLogMessage(char* event_type) {
     printf("%s %s %s:%d %s:%d %s %d %d\n",
         time, 
         event_type,
-        sdr_ip, sdr_port, 
         rcv_ip, rcv_port, 
+        sdr_ip, sdr_port, 
         header.type, 
         header.seq_num, 
         window_size
