@@ -398,7 +398,6 @@ bool sendResponse(int sock, int seq) {
         return true;
     }
 }
-
 /*
  *  Sends the file.
  */
@@ -407,7 +406,9 @@ bool sendData(int sock) {
     
     int i;
     bool resp;
+    int seq_num = init_seq_num;
     for (i = 0; i < WINDOW_SIZE; i ++) {
+        if (i == 0) seq_num = header.seq_num;
         resp = sendResponse(sock, header.seq_num);
         if ( resp == false ) {
             break;
@@ -474,9 +475,9 @@ bool sendData(int sock) {
 
                     if (header.ack_num != expected_ack_num) {                        
                         printf("did not get expected ack number\n");
-                        printf("WINDOW_SIZE = %d\n", WINDOW_SIZE);
-                        printf("WINDOW_SIZE - window_size = %d\n", WINDOW_SIZE - window_size);
-                        u_packs += WINDOW_SIZE - window_size;
+                        printf("seq_num = %d\n", seq_num);
+                        printf("header.ack_num = %d\n", header.ack_num);
+                        u_packs += (seq_num + 10 - header.ack_num);
                         printf("u_packs = %d\n", u_packs);
                     }
 
