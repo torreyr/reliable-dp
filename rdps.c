@@ -214,7 +214,7 @@ bool sendSyn (int sock) {
 		printf("Problem sending packet.\n");
         return false;
     } else {
-        printf("successfully sent\n");
+        //printf("successfully sent\n");
         return true;
     }
 }
@@ -240,7 +240,7 @@ bool sendFin (int sock) {
 		printf("Problem sending packet.\n");
         return false;
     } else {
-        printf("successfully sent\n");
+        //printf("successfully sent\n");
         return true;
     }
 }
@@ -267,7 +267,7 @@ char* getTime() {
 }
 
 bool checkArguments(int argc, char* argv[]) {    
-	printf("\n");
+	//printf("\n");
 	
 	if (argc < 6) {
 		printf("Incorrect syntax.\n");
@@ -277,7 +277,7 @@ bool checkArguments(int argc, char* argv[]) {
 
 	// Check if valid IP address.
 	sdr_ip = argv[1];
-	printf("Sender IP:\t%s\n", sdr_ip);
+	//printf("Sender IP:\t%s\n", sdr_ip);
 	
 	// Check if valid port number.
     if (!isPort(argv[2])) {
@@ -285,11 +285,11 @@ bool checkArguments(int argc, char* argv[]) {
         howto();
         return false;
     } else sdr_port = atoi(argv[2]);
-	printf("Sender Port:\t%d\n", sdr_port);
+	//printf("Sender Port:\t%d\n", sdr_port);
 	
 	// Check if valid IP address.
 	rcv_ip = argv[3];
-	printf("Receiver IP:\t%s\n", rcv_ip);
+	//printf("Receiver IP:\t%s\n", rcv_ip);
 	
 	// Check if valid port number.
 	if (!isPort(argv[4])) {
@@ -297,7 +297,7 @@ bool checkArguments(int argc, char* argv[]) {
         howto();
         return false;
     } else rcv_port = atoi(argv[4]);
-	printf("Receiver Port:\t%d\n", rcv_port);
+	//printf("Receiver Port:\t%d\n", rcv_port);
 	
 	// Last argument is the file to send.
     fp = fopen(argv[5], "r");
@@ -307,7 +307,7 @@ bool checkArguments(int argc, char* argv[]) {
         fclose(fp);
         return false;
     }
-	printf("Expected File:\t%s\n", argv[5]);
+	//printf("Expected File:\t%s\n", argv[5]);
     
 	//printf("\nSample log message:\n");
 	//printLogMessage();
@@ -511,7 +511,7 @@ bool connection(int sock) {
 				close(sock);
 			} else {
 				buffer[MAX_BUFFER_SIZE] = '\0';
-				printf("Received: %s\n", buffer);
+				//printf("Received: %s\n", buffer);
                 
                 zeroHeader();
                 setHeader(buffer);
@@ -522,7 +522,7 @@ bool connection(int sock) {
 				}
 				
 				if (strcmp(header.type, "ACK") == 0) {
-					printf("RECEIVED AN ACK!\n");
+					//printf("RECEIVED AN ACK!\n");
 					return true;
 				} else {
 					printf("Received something other than an ACK.\n");
@@ -549,7 +549,7 @@ bool closing(int sock) {
         return false;
     }
     
-    printf("expected_fin_ack_num = %d\n", expected_fin_ack_num);
+    //printf("expected_fin_ack_num = %d\n", expected_fin_ack_num);
 
     int timeouts = 0;
 	struct timeval timeout;
@@ -566,7 +566,7 @@ bool closing(int sock) {
 		
 		timeout.tv_sec = TIMEOUT_SEC;
         timeout.tv_usec = TIMEOUT_USEC;
-		printf("waiting for ACK...\n");
+		//printf("waiting for ACK...\n");
 		
         int select_return = select(sock + 1, &fds, NULL, NULL, &timeout);
 		if (select_return < 0) {   
@@ -592,13 +592,13 @@ bool closing(int sock) {
 				close(sock);
 			} else {
 				buffer[MAX_BUFFER_SIZE] = '\0';
-				printf("Received: %s\n", buffer);
+				//printf("Received: %s\n", buffer);
                 
                 zeroHeader();
                 setHeader(buffer);
 				
 				if (strcmp(header.type, "ACK") == 0) {
-					printf("RECEIVED AN ACK!\n");
+					//printf("RECEIVED AN ACK!\n");
                     if (header.ack_num == expected_fin_ack_num) {
                         printf("Closing the connection.\n");
                         return true;
@@ -620,7 +620,7 @@ bool closing(int sock) {
 }
 
 bool createServer() {	
-	printf("creating connection...\n\n");
+	//printf("creating connection...\n\n");
 	
 	// Create socket.
     int sock = socket(PF_INET, SOCK_DGRAM, IPPROTO_UDP);
@@ -673,7 +673,7 @@ bool createServer() {
         else if (problem == true) return false;
     }
     
-    printf("sent_entire_file = %d\n", sent_entire_file);
+    //printf("sent_entire_file = %d\n", sent_entire_file);
     
     // Close the connection (FIN/ACK).
     expected_fin_ack_num = expected_ack_num + 1;
