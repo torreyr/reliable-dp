@@ -474,6 +474,7 @@ bool sendData(int sock) {
 
                     if (header.ack_num != expected_ack_num) {                        
                         printf("did not get expected ack number\n");
+                        printf("WINDOW_SIZE = %d\n", WINDOW_SIZE);
                         printf("WINDOW_SIZE - window_size = %d\n", WINDOW_SIZE - window_size);
                         u_packs += WINDOW_SIZE - window_size;
                         printf("u_packs = %d\n", u_packs);
