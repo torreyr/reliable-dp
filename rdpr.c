@@ -208,6 +208,7 @@ void sendAck(int sock, char* buffer) {
     
     strcpy(header.type, "ACK");
     printLogMessage();
+    acks_sent++;
     
 	if ( sendto(sock, buffer, MAX_BUFFER_SIZE, 0, (struct sockaddr*) &sdraddr, slen) == -1 ) {
 		printf("problem sending\n");
@@ -367,8 +368,11 @@ bool createServer() {
                     expected_seq_num = ack_num;
 					sendAck(sock, buffer);
 					connected = true;
+                    syns_recv++;
 				} else if (strcmp(header.type, "DAT") == 0) {
                     //printf("received a DAT packet\n");
+                    t_packs++;
+                    t_bytes += strlen(buffer);
                     
                     if (header.seq_num == expected_seq_num) {
                         // packet is the next expected seq_num.
@@ -379,6 +383,8 @@ bool createServer() {
                         printToFile(buffer);
                         
                         num_received++;
+                        u_packs++;
+                        u_bytes += strlen(buffer);
                         
                         if (num_received == MAX_WINDOW_SIZE) {
                             sendAck(sock, buffer);
@@ -391,6 +397,7 @@ bool createServer() {
                     ack_num = header.seq_num + 1;
                     expected_seq_num = ack_num;
 					sendAck(sock, buffer);
+                    fins_recv++;
                 }
 				
 			}
