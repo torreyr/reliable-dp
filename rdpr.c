@@ -33,7 +33,7 @@ bool createServer();
 // Global Constants
 #define MAX_DATA_SIZE   4
 #define MAX_BUFFER_SIZE 1024
-#define MAX_WINDOW_SIZE 100
+#define MAX_WINDOW_SIZE 10
 
 #define MAX_TIMEOUTS 100
 
