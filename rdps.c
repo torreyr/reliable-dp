@@ -92,19 +92,20 @@ void howto() {
 }
 
 void printStats() {    
-	printf("total data bytes sent: %d\n"
-           "unique data bytes sent: %d\n"
-           "total data packets sent: %d\n"
-           "unique data packets sent: %d\n"
-           "SYN packets sent: %d\n"
-           "FIN packets sent: %d\n"
-           "RST packets sent: %d\n"
-           "ACK packets received: %d\n"
-           "RST packets received: %d\n"
-           "total time duration (second): %d\n",
-           t_bytes, u_bytes, t_packs, u_packs,
-           syns_sent, fins_sent, rsts_sent,
-           acks_recv, rsts_recv, end_time - start_time
+	printf(
+        "\ntotal data bytes sent: %d\n"
+        "unique data bytes sent: %d\n"
+        "total data packets sent: %d\n"
+        "unique data packets sent: %d\n"
+        "SYN packets sent: %d\n"
+        "FIN packets sent: %d\n"
+        "RST packets sent: %d\n"
+        "ACK packets received: %d\n"
+        "RST packets received: %d\n"
+        "total time duration (second): %f\n",
+        t_bytes, u_bytes, t_packs, u_packs,
+        syns_sent, fins_sent, rsts_sent,
+        acks_recv, rsts_recv, end_time - start_time
     );
 }
 
