@@ -33,9 +33,9 @@ bool connection();
 bool createServer();
 
 // Global Constants
-#define MAX_DATA_SIZE   4     // NOTE: can do 250, can't do 300 for my tiny 1196 byte file. Can't do 250 for a 6MB file...
+#define MAX_DATA_SIZE   100     // NOTE: can do 250, can't do 300 for my tiny 1196 byte file. Can't do 250 for a 6MB file...
 #define MAX_BUFFER_SIZE 1024
-#define WINDOW_SIZE     300
+#define WINDOW_SIZE     100
 
 #define MAX_TIMEOUTS    150
 #define TIMEOUT_SEC     0
