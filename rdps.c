@@ -634,7 +634,7 @@ bool closing(int sock) {
                     if (header.ack_num == expected_fin_ack_num) {
                         printf("Closing the connection.\n");
                         return true;
-                    }
+                    } else sendFin(sock);
 				} else {
 					printf("Received something other than an ACK.\n");
 				}
