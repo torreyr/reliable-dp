@@ -72,6 +72,7 @@ bool sent_entire_file = false;
 bool done_sending_file = false;
 bool problem = false;
 int window_size = WINDOW_SIZE;
+int last_window_bytes;
 
 // Global Variables for Stats
 int t_bytes = 0;
@@ -345,9 +346,16 @@ bool sendResponse(int sock, int seq) {
         return false;
     }
     
+    // keep track of bytes of last WINDOW_SIZE number of packets.
+    if (window_size > 0) {
+        last_window_bytes += strlen(data);
+    }
+    // if the ack is the expected number
     if (header.ack_num == expected_ack_num) {
-        u_bytes += strlen(data);
-        u_packs++;
+        u_bytes += last_window_bytes;
+        u_packs += WINDOW_SIZE;
+        
+        // reset num of bytes.
     }
     
     // Send the packet.
@@ -370,6 +378,7 @@ bool sendResponse(int sock, int seq) {
     strcpy(header.type, "DAT");
     printLogMessage();
     window_size--;
+    if (window_size == 0) window_size = WINDOW_SIZE;
     t_bytes += strlen(data);
     t_packs++;
     

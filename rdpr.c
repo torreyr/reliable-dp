@@ -312,8 +312,9 @@ bool createServer() {
     struct timeval timeout;
     start_time = time(NULL);
 	
+    printf("ready...\n");
+
 	while (1) {
-		//printf("ready...\n");
 		
         // Reset file descriptors and timeout.
         FD_ZERO(&fds);
