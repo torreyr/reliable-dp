@@ -154,6 +154,7 @@ void setHeader(char* buffer) {
 	strcpy(buf2, buffer);
 	
 	char* token = malloc(MAX_BUFFER_SIZE);
+    memset(token, 0, MAX_BUFFER_SIZE);
     token = strtok(buf2, ",");
 	while (token != NULL) {
 		if (i == 6) {
