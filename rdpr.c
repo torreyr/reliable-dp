@@ -165,6 +165,7 @@ void setHeader(char* buffer) {
 		token = strtok(NULL, ",");
 		i++;
 	}
+    free(token);
 	
 	// Set header values.
 	strcpy(header.magic, tokens[0]);
