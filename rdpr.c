@@ -365,6 +365,7 @@ bool createServer() {
 				
 				zeroHeader();
 				setHeader(buffer);
+                printf("sizeof buffer = %d\n", (int) sizeof buffer);
 				
 				if (sdr_ip == NULL) {
 					sdr_port = ntohs(sdraddr.sin_port);
