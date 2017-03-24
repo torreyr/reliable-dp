@@ -330,16 +330,11 @@ bool checkArguments(int argc, char* argv[]) {
 /*
  *  Sends a DAT packet.
  */
-bool sendResponse(int sock, int seq) {    
+bool sendResponse(int sock, int seq, char* data, char* buffer) {    
     // Read in the file.
     fseek(fp, 0, SEEK_END);
     int file_size = ftell(fp); 
     fseek(fp, ((seq - (init_seq_num + 1))*(MAX_DATA_SIZE - 1)), SEEK_SET);
-    
-    char data[MAX_DATA_SIZE];
-    char buffer[MAX_BUFFER_SIZE];
-    memset(data, 0, MAX_DATA_SIZE);
-    memset(buffer, 0, MAX_BUFFER_SIZE);
     
     fread(data, 1, MAX_DATA_SIZE - 1, fp);
     //printf("data: %s\n", data);
@@ -408,9 +403,15 @@ bool sendData(int sock) {
     int i;
     bool resp;
     int seq_num = init_seq_num;
+    
+    char data[MAX_DATA_SIZE];
+    char buffer[MAX_BUFFER_SIZE];
+    memset(data, 0, MAX_DATA_SIZE);
+    memset(buffer, 0, MAX_BUFFER_SIZE);
+    
     for (i = 0; i < WINDOW_SIZE; i ++) {
         if (i == 0) seq_num = header.seq_num;
-        resp = sendResponse(sock, header.seq_num);
+        resp = sendResponse(sock, header.seq_num, data, buffer);
         if ( resp == false ) {
             break;
         }
@@ -422,7 +423,7 @@ bool sendData(int sock) {
     int timeouts = 0;
 	int select_return;
     struct timeval timeout;
-    char buffer[MAX_BUFFER_SIZE];
+    //char buffer[MAX_BUFFER_SIZE];
     memset(buffer, 0, MAX_BUFFER_SIZE);
     
     while (1) {
