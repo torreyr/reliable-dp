@@ -360,8 +360,9 @@ bool createServer() {
 				printf("recvfrom failed. Closing socket. \n");
 				close(sock);
 			} else {
-                //buffer[MAX_BUFFER_SIZE] = '\0';
-				//printf("Received: %s\n", buffer);
+				printf("Received (before): %s\n", buffer);
+                buffer[MAX_BUFFER_SIZE] = '\0';
+				printf("Received (after): %s\n", buffer);
 				
 				zeroHeader();
 				setHeader(buffer);
