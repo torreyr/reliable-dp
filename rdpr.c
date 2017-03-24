@@ -173,7 +173,7 @@ void setHeader(char* buffer) {
 	header.data_len    = atoi(tokens[4]);
 	header.window_size = atoi(tokens[5]);
 	
-	if (i == 6) strcpy(buffer, "");
+	if (i == 6) strcpy(buffer, '\0');
 	else {
         char buf3[MAX_BUFFER_SIZE];
         sprintf(buf3, "%s,%s,%s,%s,%s,%s,",
