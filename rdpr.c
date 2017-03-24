@@ -153,7 +153,8 @@ void setHeader(char* buffer) {
 	char buf2[MAX_BUFFER_SIZE];
 	strcpy(buf2, buffer);
 	
-	char* token = strtok(buf2, ",");
+	char* token = malloc(MAX_BUFFER_SIZE);
+    token = strtok(buf2, ",");
 	while (token != NULL) {
 		if (i == 6) {
 			strncpy(tokens[i], token, atoi(tokens[4]));
@@ -161,6 +162,7 @@ void setHeader(char* buffer) {
 		} else {
 			strcpy(tokens[i], token);
 		}
+        memset(token, 0, MAX_BUFFER_SIZE);
 		token = strtok(NULL, ",");
 		i++;
 	}
@@ -360,9 +362,8 @@ bool createServer() {
 				printf("recvfrom failed. Closing socket. \n");
 				close(sock);
 			} else {
-				printf("Received (before): %s\n", buffer);
                 buffer[MAX_BUFFER_SIZE] = '\0';
-				printf("Received (after): %s\n", buffer);
+				//printf("Received: %s\n", buffer);
 				
 				zeroHeader();
 				setHeader(buffer);
