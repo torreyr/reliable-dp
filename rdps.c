@@ -349,16 +349,19 @@ bool sendResponse(int sock, int seq) {
     }
     
     // keep track of bytes of last WINDOW_SIZE number of packets.
-    if (window_size > 1) {
-        last_window_bytes += strlen(data);
-    }
+    // if (window_size > 1) {
+        // last_window_bytes += strlen(data);
+    // }
     // if the ack is the expected number
-    if (header.ack_num == expected_ack_num) {
-        u_bytes += last_window_bytes;
-        u_packs += WINDOW_SIZE;
+    if (header.ack_num != expected_ack_num) {
+        // u_bytes += last_window_bytes;
+        // u_packs += WINDOW_SIZE;
         
         // reset num of bytes.
+        
+        
     }
+    
     window_size = window_size - 1;
     
     // Send the packet.
@@ -380,7 +383,7 @@ bool sendResponse(int sock, int seq) {
     
     strcpy(header.type, "DAT");
     printLogMessage();
-    if (window_size == 1) window_size = WINDOW_SIZE;
+    if (window_size == 0) window_size = WINDOW_SIZE;
     t_bytes += strlen(data);
     t_packs++;
     
