@@ -122,7 +122,7 @@ void printLogMessage() {
         rcv_ip, rcv_port, 
         header.type, 
         header.seq_num, 
-        header.window_size
+        window_size
     );
 	free(time);
 }
