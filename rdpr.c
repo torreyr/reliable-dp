@@ -204,6 +204,7 @@ void printToFile(char* buffer) {
  */
 void sendAck(int sock, char* buffer) {
     printf("sizeof buffer = %d\n", sizeof buffer);
+    printf("MAX_BUFFER_SIZE = %d\n", MAX_BUFFER_SIZE);
     memset(buffer, 0, MAX_BUFFER_SIZE);
 	sprintf(buffer, "%s,%s,%d,%d,%d,%d",
 		header.magic,
