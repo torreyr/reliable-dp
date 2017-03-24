@@ -360,13 +360,11 @@ bool createServer() {
 				printf("recvfrom failed. Closing socket. \n");
 				close(sock);
 			} else {
-                buffer[MAX_BUFFER_SIZE] = '\0';
+                //buffer[MAX_BUFFER_SIZE] = '\0';
 				//printf("Received: %s\n", buffer);
 				
 				zeroHeader();
 				setHeader(buffer);
-                printf("HERE!\n");
-                printf("sizeof buffer = %d\n", (int) sizeof buffer);
 				
 				if (sdr_ip == NULL) {
 					sdr_port = ntohs(sdraddr.sin_port);
