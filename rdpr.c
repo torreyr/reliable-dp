@@ -106,7 +106,14 @@ void printStats() {
  */
 void printLogMessage() {
 	char* time = getTime();
-    printf("%s %s:%d %s:%d\n", time, sdr_ip, sdr_port, rcv_ip, rcv_port);
+    printf("%s %s:%d %s:%d %s %d %d\n", 
+        time,
+        sdr_ip, sdr_port,
+        rcv_ip, rcv_port,
+        header.type,
+        ack_num,
+        window_size
+    );
 	free(time);
 }
 
@@ -303,7 +310,7 @@ bool createServer() {
     start_time = time(NULL);
 	
 	while (1) {
-		printf("ready...\n");
+		//printf("ready...\n");
 		
         // Reset file descriptors and timeout.
         FD_ZERO(&fds);
@@ -353,17 +360,17 @@ bool createServer() {
 				
 				// If we received a SYN, send an ACK.
 				if (strcmp(header.type, "SYN") == 0) {
-                    printf("received a SYN packet\n");
+                    //printf("received a SYN packet\n");
                     ack_num = header.seq_num + 1;
                     expected_seq_num = ack_num;
 					sendAck(sock, buffer);
 					connected = true;
 				} else if (strcmp(header.type, "DAT") == 0) {
-                    printf("received a DAT packet\n");
+                    //printf("received a DAT packet\n");
                     
                     if (header.seq_num == expected_seq_num) {
                         // packet is the next expected seq_num.
-                        printf("received the correct SEQ number\n");
+                        //printf("received the correct SEQ number\n");
                         
                         ack_num = header.seq_num + 1;
                         expected_seq_num = ack_num;
@@ -377,7 +384,7 @@ bool createServer() {
                         }
                     }
                 } else if (strcmp(header.type, "FIN") == 0) {
-                    printf("received a FIN packet\n");
+                    //printf("received a FIN packet\n");
                     received_fin = true;
                     ack_num = header.seq_num + 1;
                     expected_seq_num = ack_num;

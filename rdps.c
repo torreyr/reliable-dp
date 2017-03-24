@@ -71,7 +71,7 @@ struct Header {
 bool sent_entire_file = false;
 bool done_sending_file = false;
 bool problem = false;
-int window_size = 10;
+int window_size = WINDOW_SIZE;
 
 // Global Variables for Stats
 int t_bytes = 0;
@@ -115,7 +115,7 @@ void printStats() {
  */
 void printLogMessage() {
 	char* time = getTime();
-    printf("%s %s:%d %s:%d %s %d %d\n\n",
+    printf("%s %s:%d %s:%d %s %d %d\n",
         time, 
         sdr_ip, sdr_port, 
         rcv_ip, rcv_port, 
