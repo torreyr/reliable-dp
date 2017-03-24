@@ -153,8 +153,7 @@ void setHeader(char* buffer) {
 	char buf2[MAX_BUFFER_SIZE];
 	strcpy(buf2, buffer);
 	
-	char* token = malloc(MAX_BUFFER_SIZE);
-    token = strtok(buf2, ",");
+	char* token = strtok(buf2, ",");
 	while (token != NULL) {
 		if (i == 6) {
 			strncpy(tokens[i], token, atoi(tokens[4]));
@@ -165,7 +164,6 @@ void setHeader(char* buffer) {
 		token = strtok(NULL, ",");
 		i++;
 	}
-    free(token);
 	
 	// Set header values.
 	strcpy(header.magic, tokens[0]);
@@ -206,8 +204,6 @@ void printToFile(char* buffer) {
  *	Simply sends an ACK packet.
  */
 void sendAck(int sock, char* buffer) {
-    printf("sizeof buffer = %d\n", sizeof buffer);
-    printf("MAX_BUFFER_SIZE = %d\n", MAX_BUFFER_SIZE);
     memset(buffer, 0, MAX_BUFFER_SIZE);
 	sprintf(buffer, "%s,%s,%d,%d,%d,%d",
 		header.magic,
