@@ -33,7 +33,7 @@ bool connection();
 bool createServer();
 
 // Global Constants
-#define MAX_DATA_SIZE   500
+#define MAX_DATA_SIZE   900
 #define MAX_BUFFER_SIZE 1024
 #define WINDOW_SIZE     10
 
