@@ -82,8 +82,8 @@ int fins_sent = 0;
 int rsts_sent = 0;
 int acks_recv = 0;
 int rsts_recv = 0;
-float start_time = 0;
-float end_time = 0;
+int start_time = 0;
+int end_time = 0;
 
 
 // ------- CONSOLE ------- //
@@ -102,7 +102,7 @@ void printStats() {
         "RST packets sent: %d\n"
         "ACK packets received: %d\n"
         "RST packets received: %d\n"
-        "total time duration (second): %f\n",
+        "total time duration (second): %d\n",
         t_bytes, u_bytes, t_packs, u_packs,
         syns_sent, fins_sent, rsts_sent,
         acks_recv, rsts_recv, end_time - start_time
