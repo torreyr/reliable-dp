@@ -33,7 +33,7 @@ bool connection();
 bool createServer();
 
 // Global Constants
-#define MAX_DATA_SIZE   4     // NOTE: can do 250, can't do 300 for my tiny 1196 byte file. Can't do 250 for a 6MB file...
+#define MAX_DATA_SIZE   50     // NOTE: can do 250, can't do 300 for my tiny 1196 byte file. Can't do 250 for a 6MB file...
 #define MAX_BUFFER_SIZE 1024
 #define WINDOW_SIZE     10
 
@@ -330,14 +330,19 @@ bool checkArguments(int argc, char* argv[]) {
 /*
  *  Sends a DAT packet.
  */
-bool sendResponse(int sock, int seq, char* data, char* buffer) {    
+bool sendResponse(int sock, int seq) {    
     // Read in the file.
     fseek(fp, 0, SEEK_END);
     int file_size = ftell(fp); 
     fseek(fp, ((seq - (init_seq_num + 1))*(MAX_DATA_SIZE - 1)), SEEK_SET);
     
+    char data[MAX_DATA_SIZE];
+    char buffer[MAX_BUFFER_SIZE];
+    memset(data, 0, MAX_DATA_SIZE);
+    memset(buffer, 0, MAX_BUFFER_SIZE);
+    
     fread(data, 1, MAX_DATA_SIZE - 1, fp);
-    printf("data: %s\n", data);
+    //printf("data: %s\n", data);
     if (strcmp(data, "") == 0) {
         // reached end of file
         sent_entire_file = true;
@@ -403,15 +408,9 @@ bool sendData(int sock) {
     int i;
     bool resp;
     int seq_num = init_seq_num;
-    
-    char data[MAX_DATA_SIZE];
-    char buffer[MAX_BUFFER_SIZE];
-    memset(data, 0, MAX_DATA_SIZE);
-    memset(buffer, 0, MAX_BUFFER_SIZE);
-    
     for (i = 0; i < WINDOW_SIZE; i ++) {
         if (i == 0) seq_num = header.seq_num;
-        resp = sendResponse(sock, header.seq_num, data, buffer);
+        resp = sendResponse(sock, header.seq_num);
         if ( resp == false ) {
             break;
         }
@@ -423,7 +422,7 @@ bool sendData(int sock) {
     int timeouts = 0;
 	int select_return;
     struct timeval timeout;
-    //char buffer[MAX_BUFFER_SIZE];
+    char buffer[MAX_BUFFER_SIZE];
     memset(buffer, 0, MAX_BUFFER_SIZE);
     
     while (1) {

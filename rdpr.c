@@ -31,7 +31,6 @@ bool checkArguments();
 bool createServer();
 
 // Global Constants
-#define MAX_DATA_SIZE   4
 #define MAX_BUFFER_SIZE 1024
 #define MAX_WINDOW_SIZE 10
 
@@ -353,7 +352,7 @@ bool createServer() {
 				close(sock);
 			} else {
                 buffer[MAX_BUFFER_SIZE] = '\0';
-				printf("Received: %s\n", buffer);
+				//printf("Received: %s\n", buffer);
 				
 				zeroHeader();
 				setHeader(buffer);
