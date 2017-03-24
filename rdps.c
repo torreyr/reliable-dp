@@ -309,8 +309,8 @@ bool checkArguments(int argc, char* argv[]) {
     }
 	printf("Expected File:\t%s\n", argv[5]);
     
-	printf("\nSample log message:\n");
-	printLogMessage();
+	//printf("\nSample log message:\n");
+	//printLogMessage();
 	
 	return true;
 }
@@ -354,15 +354,14 @@ bool sendResponse(int sock, int seq) {
         return false;
     } else printf("successfully sent\n");
     
+    printLogMessage();
     window_size--;
     
     if (strlen(data) < (MAX_DATA_SIZE - 1)) {
         // reached end of file
         sent_entire_file = true;
-        printf("here\n");
         return false;
     } else {
-        printf("here2\n");
         return true;
     }
 }
@@ -383,7 +382,7 @@ bool sendData(int sock) {
         header.seq_num += 1;
     }
     
-    printf("sent_entire_file = %s\n", sent_entire_file ? "true" : "false");
+    //printf("sent_entire_file = %s\n", sent_entire_file ? "true" : "false");
 	
     int timeouts = 0;
 	int select_return;
@@ -399,7 +398,7 @@ bool sendData(int sock) {
 		
 		timeout.tv_sec = TIMEOUT_SEC;
         timeout.tv_usec = TIMEOUT_USEC;
-        printf("waiting for ACK...\n");
+        //printf("waiting for ACK...\n");
         
         select_return = select(sock + 1, &fds, NULL, NULL, &timeout);
         if (select_return < 0) {   
@@ -428,14 +427,15 @@ bool sendData(int sock) {
                 return false;
             } else {
                 buffer[MAX_BUFFER_SIZE] = '\0';
-                printf("Received: %s\n", buffer);
+                //printf("Received: %s\n", buffer);
                 
                 zeroHeader();
                 setHeader(buffer);
                 timeouts = 0;
                 
                 if (strcmp(header.type, "ACK") == 0) {
-                    printf("RECEIVED AN ACK!\n");
+                    //printf("RECEIVED AN ACK!\n");                    
+                    printLogMessage();
                     
                     if (sent_entire_file == false) return true;
                     else if (header.ack_num == expected_ack_num) {
