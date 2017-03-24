@@ -23,10 +23,7 @@
 Only support one flag at a time.
 TODO (?): Have an extra field in the header for if the packet is a resent packet.
 TODO:
- - unique bytes/packets sent/received.
- - receiver stats
  - event type in log message
- - make sure sender gets the correct fin ack number.
  
 Send 10(WINDOW_SIZE) packets, drop any that are out of order, ACK the highest one we have, send the next 10.
 Sequence numbers are packet numbers with an offset. Not the next byte that it's expecting. The next packet it's expecting.
@@ -39,9 +36,13 @@ Every time a SYN is seen, send an ACK.
 	which means they didn't get your ACK.
 Whenever a timeout occurs, send an ACK.
 Deals with duplicate packets by dropping anything that is not the sequence number it expects.
+Unique packets are ones that arrive when it is expecting them. (they match the previous ACK number).
+Therefore, unique bytes ends up being the size of the file because my implementation does not deal
+with out-of-order packets.
 	
 SENDER
 
 Send a SYN.
     Wait for an ACK.
     If timeout occurs and no ACK received, send another SYN with a new sequence number.
+    Statistics for unique data tracking not implemented.

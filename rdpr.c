@@ -104,10 +104,11 @@ void printStats() {
 /*
  *	Prints the sender's log message.
  */
-void printLogMessage() {
+void printLogMessage(char* event_type) {
 	char* time = getTime();
-    printf("%s %s:%d %s:%d %s %d %d\n", 
+    printf("%s %s %s:%d %s:%d %s %d %d\n", 
         time,
+        event_type,
         sdr_ip, sdr_port,
         rcv_ip, rcv_port,
         header.type,
@@ -207,7 +208,7 @@ void sendAck(int sock, char* buffer) {
 	);
     
     strcpy(header.type, "ACK");
-    printLogMessage();
+    printLogMessage("s");
     acks_sent++;
     
 	if ( sendto(sock, buffer, MAX_BUFFER_SIZE, 0, (struct sockaddr*) &sdraddr, slen) == -1 ) {
@@ -330,7 +331,10 @@ bool createServer() {
 			return false;
 		} else if ((select_return == 0) && (connected == true)) {
             //printf("timeout occurred\n");
-            if (received_fin == false) sendAck(sock, buffer);
+            if (received_fin == false) {
+                sendAck(sock, buffer);
+                printLogMessage("S");
+            }
             num_received = 0;
             timeouts++;
             if (timeouts == MAX_TIMEOUTS) {
@@ -359,7 +363,7 @@ bool createServer() {
 					sdr_ip   = inet_ntoa(sdraddr.sin_addr);
 				}
 				
-				printLogMessage();
+				printLogMessage("r");
                 timeouts = 0;
 				
 				// If we received a SYN, send an ACK.
