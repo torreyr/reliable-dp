@@ -337,7 +337,7 @@ bool sendResponse(int sock, int seq, char* data, char* buffer) {
     fseek(fp, ((seq - (init_seq_num + 1))*(MAX_DATA_SIZE - 1)), SEEK_SET);
     
     fread(data, 1, MAX_DATA_SIZE - 1, fp);
-    //printf("data: %s\n", data);
+    printf("data: %s\n", data);
     if (strcmp(data, "") == 0) {
         // reached end of file
         sent_entire_file = true;
