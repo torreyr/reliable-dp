@@ -395,6 +395,7 @@ bool createServer() {
 	}
 
     end_time = time(NULL);
+    printf("%f\n", start_time);
     printf("%f\n", end_time);
     return true;
 }
