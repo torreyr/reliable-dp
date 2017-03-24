@@ -33,7 +33,7 @@ bool createServer();
 // Global Constants
 #define MAX_DATA_SIZE   4
 #define MAX_BUFFER_SIZE 1024
-#define MAX_WINDOW_SIZE 300
+#define MAX_WINDOW_SIZE 10
 
 #define MAX_TIMEOUTS 100
 
@@ -209,6 +209,7 @@ void sendAck(int sock, char* buffer) {
     
     strcpy(header.type, "ACK");
     acks_sent++;
+    printLogMessage("s");
     
 	if ( sendto(sock, buffer, MAX_BUFFER_SIZE, 0, (struct sockaddr*) &sdraddr, slen) == -1 ) {
 		printf("problem sending\n");
@@ -332,7 +333,6 @@ bool createServer() {
             //printf("timeout occurred\n");
             if (received_fin == false) {
                 sendAck(sock, buffer);
-                printLogMessage("s");
             }
             num_received = 0;
             timeouts++;
@@ -371,7 +371,6 @@ bool createServer() {
                     ack_num = header.seq_num + 1;
                     expected_seq_num = ack_num;
 					sendAck(sock, buffer);
-                    printLogMessage("s");
 					connected = true;
                     syns_recv++;
 				} else if (strcmp(header.type, "DAT") == 0) {
@@ -393,7 +392,6 @@ bool createServer() {
                         
                         if (num_received == MAX_WINDOW_SIZE) {
                             sendAck(sock, buffer);
-                            printLogMessage("s");
                             num_received = 0;
                         }
                     }
@@ -403,7 +401,6 @@ bool createServer() {
                     ack_num = header.seq_num + 1;
                     expected_seq_num = ack_num;
 					sendAck(sock, buffer);
-                    printLogMessage("s");
                     fins_recv++;
                 }
 				

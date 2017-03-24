@@ -29,6 +29,8 @@ Send 10(WINDOW_SIZE) packets, drop any that are out of order, ACK the highest on
 Sequence numbers are packet numbers with an offset. Not the next byte that it's expecting. The next packet it's expecting.
 Did not implement RST flags. Mostly, when things go wrong, the program exits.
 Required duplicated packet event types not implemented.
+For my implementation, the WINDOW_SIZE of the sender should be less than or equal to the WINDOW_SIZE of the receiver in 
+order to be efficient.
 
 RECEIVER
 
