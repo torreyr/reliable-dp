@@ -3,6 +3,12 @@
 
 1. How do you design and implement your RDP header and header fields?
    Do you use any additional header fields?
+   
+   My header is a comma-delineated string. The magic and type fields are strings
+   and the sequence number, acknowledgement number, payload size, and window size
+   are integers.
+   If a field is not used, it is zero.
+   Only one flag is supported at a time, and it goes in the type field.
 
 2. How do you design and implement the connection management using SYN, 
    FIN and RST packets?
@@ -19,11 +25,6 @@
    How to repond to the events at the sender and receiver side?
    How to ensure reliable data transfer?
    
-   
-Only support one flag at a time.
-TODO (?): Have an extra field in the header for if the packet is a resent packet.
-TODO:
- - event type in log message
  
 Send 10(WINDOW_SIZE) packets, drop any that are out of order, ACK the highest one we have, send the next 10.
 Sequence numbers are packet numbers with an offset. Not the next byte that it's expecting. The next packet it's expecting.

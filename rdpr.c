@@ -189,7 +189,8 @@ void setHeader(char* buffer) {
         printf("made this strcpy\n");
     }
     printf("made it to here\n");
-    return;
+    printf("buffer = %s\n", buffer);
+    printf("strlen of buffer = %d\n", strlen(buffer));
 }
 
 void printToFile(char* buffer) {
