@@ -112,7 +112,7 @@ void printLogMessage(char* event_type) {
         sdr_ip, sdr_port,
         rcv_ip, rcv_port,
         header.type,
-        ack_num,
+        header.seq_num,
         window_size
     );
 	free(time);
