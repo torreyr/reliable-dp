@@ -1,52 +1,57 @@
 # reliable-dp
+Torrey Randolph
+V00818198
+Lab Section B07
 
 
-1. How do you design and implement your RDP header and header fields?
-   Do you use any additional header fields?
+### Header
+My header consists of the following fields:
+```
+	magic           (CSC361)
+	type            (SYN/FIN/DAT/ACK/RST)
+	seq_num         (sequence number)
+	ack_num         (acknowledgment number)
+	data_len        (payload size in bytes)
+	window_size     (current window size)
+```
+- My header is a comma-delimited string. The magic and type fields are strings and the sequence number, acknowledgement number, payload size, and window size are integers.
+- Sequence numbers increase by one each packet.
+- If a field is not used, it is zero.
+- Only one flag is supported at a time, and it goes in the type field. Therefore, the type field is always three characters long.
+
+### Connection Management
+Creating and closing the connection are dealt with in similar ways.
+##### Creating the Connection
+- The initial SYN number is random within a range of 0 to 65000.
+- The sender sends a SYN packet and then waits for an ACK.
+    - If it does not receive one within its timeout limit, it will resend the SYN.
+    - If it times out the maximum number of times, it will give up, close the socket, and close the program.
+- The receiver waits for a SYN packet.
+    - It never times out so you have to manually close the program if a SYN packet is never received.
+    - Once it receives a SYN, it will immediately send the corresponding ACK, then wait for data.
+    - If it times out while waiting for data, it will resend the ACK.
+    - If it times out the maximum number of times while waiting for data, it will close the socket and close the program.
+##### Closing the Connection
+- When the sender has sent the entire file, and received an ACK for the last data packet it sent, it sends a FIN packet, then waits for an ACK.
+    - If it gets an incorrect ACK number, it will resend data from the corresponding point in the file.
+    - If it times out, it will resend the FIN.
+    - If it times out the maximum number of times, it will give up, close the socket, and close the program.
+- When the receiver gets a FIN packet, it immediately sends an ACK. However, it will ACK whatever the next sequence number it is expecting is.
+    - If at any point the receiver times out the maximum number of times, it will give up, close the socket, and close the program.
+
+### Flow Control
+- The sender and receiver window sizes are both set to ten packets. This was decided through optimization testing.
+- The sender sends data packets in chunks of ten, then waits for an ACK. Each time a data packet is sent, the sender decrements its window size by one. When the window size gets down to zero, it is reset to ten. The receiver, after receiving ten data packets or timing out, sends an ACK.
+
+#### File Management
+- The sender reads in one packet worth of the file at a time. It calculates the necessary starting file position from the ACK number it received last.
+- The receiver watches for the next expected sequence number. If it receives anything unexpected, it will drop the packet. Correctly sequenced data packets will be immediately written to file.
    
-   My header is a comma-delineated string. The magic and type fields are strings
-   and the sequence number, acknowledgement number, payload size, and window size
-   are integers.
-   If a field is not used, it is zero.
-   Only one flag is supported at a time, and it goes in the type field.
+### Error Control
+Stated above in __Flow Control__.
+- The sender is split into three states: creating the connection, sending data, and closing the connection. Each of these states have their own timers.
 
-2. How do you design and implement the connection management using SYN, 
-   FIN and RST packets?
-   How do you choose the initial sequence number?
-   
-3. How do you design and implement the flow control using window size?
-   How do you choose the initial window size and adjust the size?
-   How do you read and write the file and manage the buffer at the 
-   sender and receiver side, respectively?
-   
-4. How do you design and implement the error detection, notification 
-   and recovery?
-   How to use timer? How many timers do you use?
-   How to repond to the events at the sender and receiver side?
-   How to ensure reliable data transfer?
-   
- 
-Send 10(WINDOW_SIZE) packets, drop any that are out of order, ACK the highest one we have, send the next 10.
-Sequence numbers are packet numbers with an offset. Not the next byte that it's expecting. The next packet it's expecting.
-Did not implement RST flags. Mostly, when things go wrong, the program exits.
-Required duplicated packet event types not implemented.
-For my implementation, the WINDOW_SIZE of the sender should be less than or equal to the WINDOW_SIZE of the receiver in 
-order to be efficient.
-
-RECEIVER
-
-Every time a SYN is seen, send an ACK.
-	Because the only reason another SYN will be sent is if the sender times out,
-	which means they didn't get your ACK.
-Whenever a timeout occurs, send an ACK.
-Deals with duplicate packets by dropping anything that is not the sequence number it expects.
-Unique packets are ones that arrive when it is expecting them. (they match the previous ACK number).
-Therefore, unique bytes ends up being the size of the file because my implementation does not deal
-with out-of-order packets.
-	
-SENDER
-
-Send a SYN.
-    Wait for an ACK.
-    If timeout occurs and no ACK received, send another SYN with a new sequence number.
-    Statistics for unique data tracking not implemented.
+### Miscellaneous
+- For the receiver, unique packets are ones that arrive when it is expecting them (they match the previous ACK number). Therefore, unique bytes ends up being the size of the file because my implementation does not deal with out-of-order packets.
+- Statistics for unique data tracking not implemented on the sender side.
+- Duplicated packet event types not implemented.
