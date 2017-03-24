@@ -10,7 +10,6 @@
 #include <string.h>
 #include <stdbool.h>
 
-#define STEP(x) printf("STEP: %d\n", x); fflush(stdout);
 
 /*----------------------------------------------/
  * CODE REFERENCES/HELP:
@@ -66,9 +65,40 @@ bool connected = false;
 bool received_fin = false;
 int num_received = 0;
 
+// Global Variables for Stats
+int t_bytes = 0;
+int u_bytes = 0;
+int t_packs = 0;
+int u_packs = 0;
+int syns_recv = 0;
+int fins_recv = 0;
+int rsts_recv = 0;
+int acks_sent = 0;
+int rsts_sent = 0;
+int start_time = 0;
+int end_time = 0;
+
 // ------- CONSOLE ------- //
 void howto() {
     printf("Correct syntax: ./rdpr <receiver_ip> <receiver_port> <receiver_file_name>\n\n");
+}
+
+void printStats() {
+    printf(
+        "total data bytes received: %d\n"
+        "unique data bytes received: %d\n"
+        "total data packets received: %d\n"
+        "unique data packets received: %d\n"
+        "SYN packets received: %d\n"
+        "FIN packets received: %d\n"
+        "RST packets received: %d\n"
+        "ACK packets sent: %d\n"
+        "RST packets sent: %d\n"
+        "total time duration (second): %d\n",
+        t_bytes, u_bytes, t_packs, u_packs,
+        syns_recv, fins_recv, rsts_recv,
+        acks_sent, rsts_sent, end_time - start_time
+    );
 }
 
 /*
@@ -222,7 +252,7 @@ bool checkArguments(int argc, char* argv[]) {
 	printf("Receiver Port:\t%d\n", rcv_port);
 	
 	// Last argument is the file to be received.
-	fp = fopen(argv[3], "a");
+	fp = fopen(argv[3], "w");
 	printf("Writing To:\t%s\n", argv[3]);
     printf("\n");
 	
@@ -270,6 +300,7 @@ bool createServer() {
 	window_size = MAX_WINDOW_SIZE;
     int timeouts = 0;
     struct timeval timeout;
+    start_time = time(NULL);
 	
 	while (1) {
 		printf("ready...\n");
@@ -359,7 +390,8 @@ bool createServer() {
 		
 		memset(buffer, 0, MAX_BUFFER_SIZE);
 	}
-	
+
+    end_time = time(NULL);
 }
 
 // MAIN
@@ -367,6 +399,7 @@ int main(int argc, char* argv[]) {
     if ( !checkArguments(argc, argv) ) return 0;	
     if ( !createServer(argv) ) return 0;
     fclose(fp);
+    printStats();
 }
 
 // draw.io

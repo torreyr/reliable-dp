@@ -35,11 +35,10 @@ bool createServer();
 // Global Constants
 #define MAX_DATA_SIZE   4
 #define MAX_BUFFER_SIZE 1024
-#define WINDOW_SIZE 100          // NOTE: 300 works fine. With 400, the last few packets come
-                                // out of order and/or not in time. Also, doesn't like commas.
+#define WINDOW_SIZE 10          // NOTE: 300 works fine. With 400, the last few packets come
+                                // out of order and/or not in time.
 
-#define MAX_SYN_TIMEOUTS 150
-#define MAX_TIMEOUTS 150
+#define MAX_TIMEOUTS     150
 #define TIMEOUT_SEC	     0
 #define TIMEOUT_USEC     50000
 
@@ -73,14 +72,40 @@ bool sent_entire_file = false;
 bool done_sending_file = false;
 bool problem = false;
 
+// Global Variables for Stats
+int t_bytes = 0;
+int u_bytes = 0;
+int t_packs = 0;
+int u_packs = 0;
+int syns_sent = 0;
+int fins_sent = 0;
+int rsts_sent = 0;
+int acks_recv = 0;
+int rsts_recv = 0;
+int start_time = 0;
+int end_time = 0;
+
 
 // ------- CONSOLE ------- //
 void howto() {
     printf("Correct syntax: ./rdps <sender_ip> <sender_port> <receiver_ip> <receiver_port> <sender_file_name>\n\n");
 }
 
-void printStats() {
-	
+void printStats() {    
+	printf("total data bytes sent: %d\n"
+           "unique data bytes sent: %d\n"
+           "total data packets sent: %d\n"
+           "unique data packets sent: %d\n"
+           "SYN packets sent: %d\n"
+           "FIN packets sent: %d\n"
+           "RST packets sent: %d\n"
+           "ACK packets received: %d\n"
+           "RST packets received: %d\n"
+           "total time duration (second): %d\n",
+           t_bytes, u_bytes, t_packs, u_packs,
+           syns_sent, fins_sent, rsts_sent,
+           acks_recv, rsts_recv, end_time - start_time
+    );
 }
 
 /*
@@ -458,7 +483,7 @@ bool connection(int sock) {
 		} else if (select_return == 0) {
             printf("timeout occurred\n");
             syn_timeouts++;
-            if (syn_timeouts == MAX_SYN_TIMEOUTS) {
+            if (syn_timeouts == MAX_TIMEOUTS) {
                 printf("ERROR: Connection request timed out too many times.\n");
                 return false;
             } else if ( sendSyn(sock) == false) {
@@ -622,6 +647,8 @@ bool createServer() {
 	rcvaddr.sin_addr.s_addr = inet_addr(rcv_ip);
 	rcvaddr.sin_port 		= htons(rcv_port);
 	
+    start_time = time(NULL);
+    
 	// Create initial connection (SYN/ACK).
 	if ( !connection(sock) ) {
 		printf("ERROR: Could not make initial connection. Exiting program.\n");
@@ -642,6 +669,8 @@ bool createServer() {
 		printf("ERROR: Could not gracefully close the connection. Exiting program.\n");
 		return false;
 	}
+    
+    end_time = time(NULL);
 }
 
 
@@ -650,4 +679,5 @@ int main(int argc, char* argv[]) {
     if ( !checkArguments(argc, argv) ) return 0;
     if ( !createServer() ) return 0;
     fclose(fp);
+    printStats();
 }
