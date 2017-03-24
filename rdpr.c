@@ -208,7 +208,6 @@ void sendAck(int sock, char* buffer) {
 	);
     
     strcpy(header.type, "ACK");
-    printLogMessage("s");
     acks_sent++;
     
 	if ( sendto(sock, buffer, MAX_BUFFER_SIZE, 0, (struct sockaddr*) &sdraddr, slen) == -1 ) {
@@ -372,6 +371,7 @@ bool createServer() {
                     ack_num = header.seq_num + 1;
                     expected_seq_num = ack_num;
 					sendAck(sock, buffer);
+                    printLogMessage("s");
 					connected = true;
                     syns_recv++;
 				} else if (strcmp(header.type, "DAT") == 0) {
@@ -393,6 +393,7 @@ bool createServer() {
                         
                         if (num_received == MAX_WINDOW_SIZE) {
                             sendAck(sock, buffer);
+                            printLogMessage("s");
                             num_received = 0;
                         }
                     }
@@ -402,6 +403,7 @@ bool createServer() {
                     ack_num = header.seq_num + 1;
                     expected_seq_num = ack_num;
 					sendAck(sock, buffer);
+                    printLogMessage("s");
                     fins_recv++;
                 }
 				
