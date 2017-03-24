@@ -185,8 +185,6 @@ void setHeader(char* buffer) {
             tokens[5]
         );
         int offset = strlen(buf3);
-        printf("buffer was = %s\n", buffer);
-        printf("buffer + offset = %s\n", buffer+offset);
         strcpy(buffer, buffer + offset);
         printf("made this strcpy\n");
     }
@@ -205,6 +203,7 @@ void printToFile(char* buffer) {
  *	Simply sends an ACK packet.
  */
 void sendAck(int sock, char* buffer) {
+    printf("sizeof buffer = %d\n", sizeof buffer);
     memset(buffer, 0, MAX_BUFFER_SIZE);
 	sprintf(buffer, "%s,%s,%d,%d,%d,%d",
 		header.magic,
