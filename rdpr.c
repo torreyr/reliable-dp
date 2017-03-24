@@ -34,7 +34,9 @@ bool createServer();
 #define MAX_BUFFER_SIZE 1024
 #define MAX_WINDOW_SIZE 10
 
-#define MAX_TIMEOUTS 100
+#define MAX_TIMEOUTS    100
+#define TIMEOUT_SEC     0
+#define TIMEOUT_USEC    50000
 
 // Global Variables
 FILE* fp;
@@ -183,7 +185,9 @@ void setHeader(char* buffer) {
             tokens[5]
         );
         int offset = strlen(buf3);
-        strcpy(buffer, buffer + offset);
+        if (offset < strlen(buffer)) {
+            strcpy(buffer, buffer + offset);
+        }
     }
 }
 
@@ -321,8 +325,8 @@ bool createServer() {
         FD_ZERO(&fds);
         FD_SET(sock, &fds);
 		
-		timeout.tv_sec = 0;
-        timeout.tv_usec = 30000;
+		timeout.tv_sec = TIMEOUT_SEC;
+        timeout.tv_usec = TIMEOUT_USEC;
 		
 		int select_return = select(sock + 1, &fds, NULL, NULL, &timeout);
 		if (select_return < 0) {   

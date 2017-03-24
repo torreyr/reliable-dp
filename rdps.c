@@ -330,7 +330,7 @@ bool checkArguments(int argc, char* argv[]) {
 /*
  *  Sends a DAT packet.
  */
-bool sendResponse(int sock, int seq) {    
+bool sendResponse(int sock, int seq) {
     // Read in the file.
     fseek(fp, 0, SEEK_END);
     int file_size = ftell(fp); 
