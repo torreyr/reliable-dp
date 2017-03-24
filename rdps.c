@@ -71,6 +71,7 @@ struct Header {
 bool sent_entire_file = false;
 bool done_sending_file = false;
 bool problem = false;
+int window_size = 10;
 
 // Global Variables for Stats
 int t_bytes = 0;
@@ -114,7 +115,14 @@ void printStats() {
  */
 void printLogMessage() {
 	char* time = getTime();
-    printf("%s %s:%d %s:%d\n\n", time, sdr_ip, sdr_port, rcv_ip, rcv_port);
+    printf("%s %s:%d %s:%d %s %d %d\n\n",
+        time, 
+        sdr_ip, sdr_port, 
+        rcv_ip, rcv_port, 
+        header.type, 
+        header.seq_num, 
+        header.window_size
+    );
 	free(time);
 }
 
@@ -224,7 +232,7 @@ bool sendFin (int sock) {
 		expected_ack_num,
 		0,
 		0,
-		WINDOW_SIZE
+		window_size
 	);
 	
 	// Send packet.    
@@ -337,7 +345,7 @@ bool sendResponse(int sock, int seq) {
         header.seq_num,
         0,
         (int) strlen(data),
-        WINDOW_SIZE,
+        window_size,
         data
     );
     if ( sendto(sock, &buffer, sizeof buffer, 0, (struct sockaddr*) &rcvaddr, sizeof rcvaddr) == -1 ) {
@@ -345,6 +353,8 @@ bool sendResponse(int sock, int seq) {
         problem = true;
         return false;
     } else printf("successfully sent\n");
+    
+    window_size--;
     
     if (strlen(data) < (MAX_DATA_SIZE - 1)) {
         // reached end of file
