@@ -1,7 +1,5 @@
 # reliable-dp
 Torrey Randolph
-V00818198
-Lab Section B07
 
 
 ### Header
