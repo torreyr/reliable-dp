@@ -13,7 +13,7 @@
 /*----------------------------------------------
  * CODE REFERENCES/HELP:
  * tcp_server.c from Lab 2:
- *		https://connex.csc.uvic.ca/access/.../tcp_server.c
+ *      https://connex.csc.uvic.ca/access/.../tcp_server.c
  * sws.c from the first programming assignment
  * Beej's Guide to Network Programming:
  *      http://beej.us/guide/bgnet
@@ -21,7 +21,7 @@
  *      Eric Buss, a student in this class.
  *---------------------------------------------*/
 
-// Functions
+// Function Prototypes
 void howto();
 void printStats();
 void printLogMessage();
@@ -62,12 +62,12 @@ int init_seq_num;
 int expected_ack_num;
 int expected_fin_ack_num;
 struct Header {
-	char magic[7];
-	char type[4];
-	int seq_num;
-	int ack_num;
-	int data_len;
-	int window_size;
+    char magic[7];
+    char type[4];
+    int seq_num;
+    int ack_num;
+    int data_len;
+    int window_size;
 } header;
 bool sent_entire_file = false;
 bool done_sending_file = false;
@@ -96,7 +96,7 @@ void howto() {
 }
 
 void printStats() {    
-	printf(
+    printf(
         "\ntotal data bytes sent: %d\n"
         "unique data bytes sent: %d\n"
         "total data packets sent: %d\n"
@@ -114,10 +114,10 @@ void printStats() {
 }
 
 /*
- *	Prints the sender's log message.
+ *  Prints the sender's log message.
  */
 void printLogMessage(char* event_type) {
-	char* time = getTime();
+    char* time = getTime();
     printf("%s %s %s:%d %s:%d %s %d %d\n",
         time, 
         event_type,
@@ -127,13 +127,13 @@ void printLogMessage(char* event_type) {
         header.seq_num, 
         window_size
     );
-	free(time);
+    free(time);
 }
 
 
 // ------- PARSING ------- //
 /*
- *	Validates a port number.
+ *  Validates a port number.
  */
 bool isPort(char* str) {
     int portnum = atoi(str);
@@ -142,19 +142,19 @@ bool isPort(char* str) {
 }
 
 /*
- *	Zeros all the header values.
+ *  Zeros all the header values.
  */
 void zeroHeader() {
-	memset(header.magic, 0, 7);
-	memset(header.type, 0, 4);
-	header.seq_num     = 0;
-	header.ack_num     = 0;
-	header.data_len    = 0;
-	header.window_size = 0;
+    memset(header.magic, 0, 7);
+    memset(header.type, 0, 4);
+    header.seq_num     = 0;
+    header.ack_num     = 0;
+    header.data_len    = 0;
+    header.window_size = 0;
 }
 
 /*
- *	Obtains the header values from a string.
+ *  Obtains the header values from a string.
  */
 void setHeader(char* buffer) {
     // Tokenize received packet.
@@ -178,7 +178,7 @@ void setHeader(char* buffer) {
     // Set header values.
     zeroHeader();
     strcpy(header.magic, tokens[0]);
-    strcpy(header.type, tokens[1]);		
+    strcpy(header.type, tokens[1]);        
     header.seq_num     = atoi(tokens[3]);
     header.ack_num     = atoi(tokens[3]);
     header.data_len    = atoi(tokens[4]);
@@ -197,31 +197,29 @@ void setHeader(char* buffer) {
 bool sendSyn (int sock) {
     srand(time(NULL));
     init_seq_num = rand() & 0xffff;
-    // Set the header.
     zeroHeader();
-	header.seq_num = init_seq_num;
-	
-	// String to send.
-	char buffer[MAX_BUFFER_SIZE];
-	memset(buffer, 0, MAX_BUFFER_SIZE);
-	sprintf(buffer, "%s,%s,%d,%d,%d,%d", 
-		"CSC361",
-		"SYN",
-		header.seq_num,
-		0,
-		0,
-		WINDOW_SIZE
-	);
-	
+    header.seq_num = init_seq_num;
+    
+    // String to send.
+    char buffer[MAX_BUFFER_SIZE];
+    memset(buffer, 0, MAX_BUFFER_SIZE);
+    sprintf(buffer, "%s,%s,%d,%d,%d,%d", 
+        "CSC361",
+        "SYN",
+        header.seq_num,
+        0,
+        0,
+        WINDOW_SIZE
+    );
+    
     strcpy(header.type, "SYN");
     printLogMessage("s");
     
-	// Send packet.    
+    // Send packet.    
     if ( sendto(sock, &buffer, MAX_BUFFER_SIZE, 0, (struct sockaddr*) &rcvaddr, rlen) == -1 ) {
-		printf("Problem sending packet.\n");
+        printf("Problem sending packet.\n");
         return false;
     } else {
-        //printf("successfully sent\n");
         syns_sent++;
         return true;
     }
@@ -230,27 +228,27 @@ bool sendSyn (int sock) {
 /*
  *  Simply sends a FIN packet.
  */
-bool sendFin (int sock) {
+bool sendFin(int sock) {
     window_size = WINDOW_SIZE;
 
-	// String to send.
-	char buffer[MAX_BUFFER_SIZE];
-	memset(buffer, 0, MAX_BUFFER_SIZE);
-	sprintf(buffer, "%s,%s,%d,%d,%d,%d", 
-		"CSC361",
-		"FIN",
-		expected_ack_num,
-		0,
-		0,
-		window_size
-	);
-	
+    // String to send.
+    char buffer[MAX_BUFFER_SIZE];
+    memset(buffer, 0, MAX_BUFFER_SIZE);
+    sprintf(buffer, "%s,%s,%d,%d,%d,%d", 
+        "CSC361",
+        "FIN",
+        expected_ack_num,
+        0,
+        0,
+        window_size
+    );
+    
     strcpy(header.type, "FIN");
     printLogMessage("s");
     
-	// Send packet.    
+    // Send packet.    
     if ( sendto(sock, &buffer, MAX_BUFFER_SIZE, 0, (struct sockaddr*) &rcvaddr, rlen) == -1 ) {
-		printf("Problem sending packet.\n");
+        printf("Problem sending packet.\n");
         return false;
     } else {
         //printf("successfully sent\n");
@@ -261,64 +259,62 @@ bool sendFin (int sock) {
 
 // ------- SERVER ------- //
 /*
- *	Returns the formatted time of the request.
+ *  Returns the formatted time of the request.
  */
 char* getTime() {
     char* timebuf = malloc(20);
     time_t curtime;
-	struct tm* times;
-	struct timeval timenow;
-	
-	time(&curtime);
-    times = localtime(&curtime);	
-	gettimeofday(&timenow, NULL);
-	int micro = timenow.tv_usec;
-	
-	strftime(timebuf, 30, "%T", times);
-	strcat(timebuf, ".");
-	sprintf(timebuf, "%s%d", timebuf, micro);
-	return timebuf;
+    struct tm* times;
+    struct timeval timenow;
+    
+    time(&curtime);
+    times = localtime(&curtime);    
+    gettimeofday(&timenow, NULL);
+    int micro = timenow.tv_usec;
+    
+    strftime(timebuf, 30, "%T", times);
+    strcat(timebuf, ".");
+    sprintf(timebuf, "%s%d", timebuf, micro);
+    return timebuf;
 }
 
 bool checkArguments(int argc, char* argv[]) {    
-	//printf("\n");
-	
-	if (argc < 6) {
-		printf("Incorrect syntax.\n");
+    if (argc < 6) {
+        printf("Incorrect syntax.\n");
         howto();
-		return false;
-	}
+        return false;
+    }
 
-	// Check if valid IP address.
-	sdr_ip = argv[1];
-	
-	// Check if valid port number.
+    // Check if valid IP address.
+    sdr_ip = argv[1];
+    
+    // Check if valid port number.
     if (!isPort(argv[2])) {
         printf("\nInvalid port number. Exiting the program.\n");
         howto();
         return false;
     } else sdr_port = atoi(argv[2]);
-	
-	// Check if valid IP address.
-	rcv_ip = argv[3];
-	
-	// Check if valid port number.
-	if (!isPort(argv[4])) {
+    
+    // Check if valid IP address.
+    rcv_ip = argv[3];
+    
+    // Check if valid port number.
+    if (!isPort(argv[4])) {
         printf("\nInvalid port number. Exiting the program.\n");
         howto();
         return false;
     } else rcv_port = atoi(argv[4]);
-	
-	// Last argument is the file to send.
+    
+    // Last argument is the file to send.
     fp = fopen(argv[5], "r");
     
-	if (fp == NULL) {
-		printf("\nCould not open file. Exiting the program.\n");
+    if (fp == NULL) {
+        printf("\nCould not open file. Exiting the program.\n");
         fclose(fp);
         return false;
     }
-	
-	return true;
+    
+    return true;
 }
 
 /*
@@ -359,7 +355,7 @@ bool sendResponse(int sock, int seq) {
         printf("Problem sending packet.\n");
         problem = true;
         return false;
-    }// else printf("successfully sent\n");
+    }
     
     strcpy(header.type, "DAT");
     printLogMessage("s");
@@ -393,22 +389,21 @@ bool sendData(int sock) {
         }
         header.seq_num += 1;
     }
-	
+    
     int timeouts = 0;
-	int select_return;
+    int select_return;
     struct timeval timeout;
     char buffer[MAX_BUFFER_SIZE];
     memset(buffer, 0, MAX_BUFFER_SIZE);
     
     while (1) {
-		// Reset file descriptors.
-		FD_ZERO(&fds);
-		FD_SET(sock, &fds);
-		FD_SET(0, &fds);
-		
-		timeout.tv_sec = TIMEOUT_SEC;
+        // Reset file descriptors.
+        FD_ZERO(&fds);
+        FD_SET(sock, &fds);
+        FD_SET(0, &fds);
+        
+        timeout.tv_sec = TIMEOUT_SEC;
         timeout.tv_usec = TIMEOUT_USEC;
-        //printf("waiting for ACK...\n");
         
         select_return = select(sock + 1, &fds, NULL, NULL, &timeout);
         if (select_return < 0) {   
@@ -437,14 +432,12 @@ bool sendData(int sock) {
                 return false;
             } else {
                 buffer[MAX_BUFFER_SIZE] = '\0';
-                //printf("Received: %s\n", buffer);
                 
                 zeroHeader();
                 setHeader(buffer);
                 timeouts = 0;
                 
                 if (strcmp(header.type, "ACK") == 0) {
-                    //printf("RECEIVED AN ACK!\n");                    
                     printLogMessage("r");
                     acks_recv++;
 
@@ -471,89 +464,85 @@ bool sendData(int sock) {
 }
 
 /*
- *	Makes the initial connection between sender and receiver.
+ *  Makes the initial connection between sender and receiver.
  */
 bool connection(int sock) {
-
     // Send initial SYN packet.
     if ( sendSyn(sock) == false ) {
         return false;
     }
 
     int syn_timeouts = 0;
-	struct timeval timeout;
-	char buffer[MAX_BUFFER_SIZE];
-	memset(buffer, 0, MAX_BUFFER_SIZE);
-	
-	// Wait for ACK response.
-	// NOTE: Can I put this while loop in its own function called waitToReceive()?
-	while (1) {
-		// Reset file descriptors.
-		FD_ZERO(&fds);
-		FD_SET(sock, &fds);
-		FD_SET(0, &fds);
-		
-		timeout.tv_sec = TIMEOUT_SEC;
+    struct timeval timeout;
+    char buffer[MAX_BUFFER_SIZE];
+    memset(buffer, 0, MAX_BUFFER_SIZE);
+    
+    // Wait for ACK response.
+    while (1) {
+        // Reset file descriptors.
+        FD_ZERO(&fds);
+        FD_SET(sock, &fds);
+        FD_SET(0, &fds);
+        
+        timeout.tv_sec = TIMEOUT_SEC;
         timeout.tv_usec = TIMEOUT_USEC;
-		printf("waiting for ACK...\n");
-		
+        printf("waiting for ACK...\n");
+        
         int select_return = select(sock + 1, &fds, NULL, NULL, &timeout);
-		if (select_return < 0) {   
-			printf("Error with select. Closing the socket.\n");
-			close(sock);
-			return false;
-		} else if (select_return == 0) {
+        if (select_return < 0) {   
+            printf("Error with select. Closing the socket.\n");
+            close(sock);
+            return false;
+        } else if (select_return == 0) {
             printf("timeout occurred\n");
             syn_timeouts++;
             if (syn_timeouts == MAX_TIMEOUTS) {
                 printf("ERROR: Connection request timed out too many times.\n");
                 return false;
-            } else if ( sendSyn(sock) == false) {
+            } else if (sendSyn(sock) == false) {
                 return false;
             }
         }
-		
-		if (FD_ISSET(sock, &fds)) {
-			recsize = recvfrom(sock, (void*) buffer, MAX_BUFFER_SIZE, 0, (struct sockaddr*) &sdraddr, &len);
-		
-			if (recsize <= 0) {
-				printf("did not receive any data.\n");
-				close(sock);
-			} else {
-				buffer[MAX_BUFFER_SIZE] = '\0';
-				//printf("Received: %s\n", buffer);
+        
+        if (FD_ISSET(sock, &fds)) {
+            recsize = recvfrom(sock, (void*) buffer, MAX_BUFFER_SIZE, 0, (struct sockaddr*) &sdraddr, &len);
+        
+            if (recsize <= 0) {
+                printf("did not receive any data.\n");
+                close(sock);
+            } else {
+                buffer[MAX_BUFFER_SIZE] = '\0';
                 
                 zeroHeader();
                 setHeader(buffer);
-				
-				if (sdr_ip == NULL) {
-					sdr_port = ntohs(sdraddr.sin_port);
-					sdr_ip   = inet_ntoa(sdraddr.sin_addr);
-				}
-				
-				if (strcmp(header.type, "ACK") == 0) {
-					//printf("RECEIVED AN ACK!\n");
+                
+                if (sdr_ip == NULL) {
+                    sdr_port = ntohs(sdraddr.sin_port);
+                    sdr_ip   = inet_ntoa(sdraddr.sin_addr);
+                }
+                
+                if (strcmp(header.type, "ACK") == 0) {
                     printLogMessage("r");
                     acks_recv++;
-					return true;
-				} else {
-					printf("Received something other than an ACK.\n");
-				}
-				
-				printLogMessage("r");
-			}
-			
-			memset(buffer, 0, MAX_BUFFER_SIZE);
-		}
-		
-		memset(buffer, 0, MAX_BUFFER_SIZE);
-	}
-	
-	return false;
+                    return true;
+                } else {
+                    printf("Received something other than an ACK.\n");
+                }
+                
+                printLogMessage("r");
+            }
+            
+            memset(buffer, 0, MAX_BUFFER_SIZE);
+        }
+        
+        memset(buffer, 0, MAX_BUFFER_SIZE);
+    }
+    
+    return false;
 }
 
 /*
- *	Closes the connection between sender and receiver.
+ *  Closes the connection between sender and receiver.
  */
 bool closing(int sock) {
     // Send initial FIN packet.
@@ -561,124 +550,116 @@ bool closing(int sock) {
         return false;
     }
     
-    //printf("expected_fin_ack_num = %d\n", expected_fin_ack_num);
-
     int timeouts = 0;
-	struct timeval timeout;
-	char buffer[MAX_BUFFER_SIZE];
-	memset(buffer, 0, MAX_BUFFER_SIZE);
-	
-	// Wait for ACK response.
-	// NOTE: Can I put this while loop in its own function called waitToReceive()?
-	while (1) {
-		// Reset file descriptors.
-		FD_ZERO(&fds);
-		FD_SET(sock, &fds);
-		FD_SET(0, &fds);
-		
-		timeout.tv_sec = TIMEOUT_SEC;
+    struct timeval timeout;
+    char buffer[MAX_BUFFER_SIZE];
+    memset(buffer, 0, MAX_BUFFER_SIZE);
+    
+    // Wait for ACK response.
+    while (1) {
+        // Reset file descriptors.
+        FD_ZERO(&fds);
+        FD_SET(sock, &fds);
+        FD_SET(0, &fds);
+        
+        timeout.tv_sec = TIMEOUT_SEC;
         timeout.tv_usec = TIMEOUT_USEC;
-		//printf("waiting for ACK...\n");
-		
+        
         int select_return = select(sock + 1, &fds, NULL, NULL, &timeout);
-		if (select_return < 0) {   
-			printf("Error with select. Closing the socket.\n");
-			close(sock);
-			return false;
-		} else if (select_return == 0) {
+        if (select_return < 0) {   
+            printf("Error with select. Closing the socket.\n");
+            close(sock);
+            return false;
+        } else if (select_return == 0) {
             printf("timeout occurred\n");
             timeouts++;
             if (timeouts == MAX_TIMEOUTS) {
                 printf("ERROR: Connection request timed out too many times.\n");
                 return false;
-            } else if ( sendFin(sock) == false) {
+            } else if (sendFin(sock) == false) {
                 return false;
             }
         }
-		
-		if (FD_ISSET(sock, &fds)) {
-			recsize = recvfrom(sock, (void*) buffer, MAX_BUFFER_SIZE, 0, (struct sockaddr*) &sdraddr, &len);
-		
-			if (recsize <= 0) {
-				printf("did not receive any data.\n");
-				close(sock);
-			} else {
-				buffer[MAX_BUFFER_SIZE] = '\0';
-				//printf("Received: %s\n", buffer);
+        
+        if (FD_ISSET(sock, &fds)) {
+            recsize = recvfrom(sock, (void*) buffer, MAX_BUFFER_SIZE, 0, (struct sockaddr*) &sdraddr, &len);
+        
+            if (recsize <= 0) {
+                printf("did not receive any data.\n");
+                close(sock);
+            } else {
+                buffer[MAX_BUFFER_SIZE] = '\0';
                 
                 zeroHeader();
                 setHeader(buffer);
-				
-				if (strcmp(header.type, "ACK") == 0) {
-					//printf("RECEIVED AN ACK!\n");
+                
+                if (strcmp(header.type, "ACK") == 0) {
                     acks_recv++;
                     if (header.ack_num == expected_fin_ack_num) {
                         printf("Closing the connection.\n");
                         return true;
                     } else sendFin(sock);
-				} else {
-					printf("Received something other than an ACK.\n");
-				}
-				
-				printLogMessage("r");
-			}
-			
-			memset(buffer, 0, MAX_BUFFER_SIZE);
-		}
-		
-		memset(buffer, 0, MAX_BUFFER_SIZE);
-	}
-	
-	return false;
+                } else {
+                    printf("Received something other than an ACK.\n");
+                }
+                
+                printLogMessage("r");
+            }
+            
+            memset(buffer, 0, MAX_BUFFER_SIZE);
+        }
+        
+        memset(buffer, 0, MAX_BUFFER_SIZE);
+    }
+    
+    return false;
 }
 
-bool createServer() {	
-	//printf("creating connection...\n\n");
-	
-	// Create socket.
+bool createServer() {    
+    // Create socket.
     int sock = socket(PF_INET, SOCK_DGRAM, IPPROTO_UDP);
-	if (sock == -1) {
-		printf("Couldn't create socket. Exiting the program.\n");
+    if (sock == -1) {
+        printf("Couldn't create socket. Exiting the program.\n");
         close(sock);
-		return false;
-	}
-	
-	// Set socket options so that the address is reusable.
-	int opt = 1;
+        return false;
+    }
+    
+    // Set socket options so that the address is reusable.
+    int opt = 1;
     if (setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, (char*) &opt, sizeof(opt)) == -1) {
         printf("Problem setting socket options. Closing the socket.");
         return false;
     }
-	
+    
     memset(&sdraddr, 0, len);
-	
-	sdraddr.sin_family      = AF_INET;
+    
+    sdraddr.sin_family      = AF_INET;
     sdraddr.sin_addr.s_addr = inet_addr(sdr_ip);
     sdraddr.sin_port        = htons(sdr_port);
-	
-	// Bind socket.
+    
+    // Bind socket.
     if ((bind(sock, (struct sockaddr *) &sdraddr, len)) != 0) {
         printf("Couldn't bind socket. Closing the socket.\n%s\n", strerror(errno));
         close(sock);
         return false;
     }
-	
-	// Reset file descriptors.
-	FD_ZERO(&fds);
-	FD_SET(sock, &fds);
-	FD_SET(0, &fds);
-	
-	rcvaddr.sin_family 		= AF_INET;
-	rcvaddr.sin_addr.s_addr = inet_addr(rcv_ip);
-	rcvaddr.sin_port 		= htons(rcv_port);
-	
+    
+    // Reset file descriptors.
+    FD_ZERO(&fds);
+    FD_SET(sock, &fds);
+    FD_SET(0, &fds);
+    
+    rcvaddr.sin_family      = AF_INET;
+    rcvaddr.sin_addr.s_addr = inet_addr(rcv_ip);
+    rcvaddr.sin_port        = htons(rcv_port);
+    
     start_time = time(NULL);
     
-	// Create initial connection (SYN/ACK).
-	if ( !connection(sock) ) {
-		printf("ERROR: Could not make initial connection. Exiting program.\n");
-		return false;
-	}
+    // Create initial connection (SYN/ACK).
+    if ( !connection(sock) ) {
+        printf("ERROR: Could not make initial connection. Exiting program.\n");
+        return false;
+    }
     
     // Send the data.
     while (done_sending_file == false) {
@@ -686,14 +667,12 @@ bool createServer() {
         else if (problem == true) return false;
     }
     
-    //printf("sent_entire_file = %d\n", sent_entire_file);
-    
     // Close the connection (FIN/ACK).
     expected_fin_ack_num = expected_ack_num + 1;
     if ( !closing(sock) ) {
-		printf("ERROR: Could not gracefully close the connection. Exiting program.\n");
-		return false;
-	}
+        printf("ERROR: Could not gracefully close the connection. Exiting program.\n");
+        return false;
+    }
     
     end_time = time(NULL);
     return true;
@@ -701,7 +680,7 @@ bool createServer() {
 
 
 // MAIN
-int main(int argc, char* argv[]) {	
+int main(int argc, char* argv[]) {    
     if ( !checkArguments(argc, argv) ) return 0;
     if ( !createServer() ) return 0;
     fclose(fp);

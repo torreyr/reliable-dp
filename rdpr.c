@@ -10,17 +10,16 @@
 #include <string.h>
 #include <stdbool.h>
 
-
 /*----------------------------------------------/
  * CODE REFERENCES/HELP:
  * tcp_client.c from Lab 2:
- *		https://connex.csc.uvic.ca/access/.../tcp_client.c
+ *      https://connex.csc.uvic.ca/access/.../tcp_client.c
  * sws.c from the first programming assignment
  * Beej's Guide to Network Programming:
  *      http://beej.us/guide/bgnet
  *---------------------------------------------*/
 
-// Functions
+// Function Prototypes
 void howto();
 void printLogMessage();
 bool isPort();
@@ -54,12 +53,12 @@ int slen = sizeof sdraddr;
 int ack_num;
 int expected_seq_num;
 struct Header {
-	char magic[7];
-	char type[4];
-	int seq_num;
-	int ack_num;
-	int data_len;
-	int window_size;
+    char magic[7];
+    char type[4];
+    int seq_num;
+    int ack_num;
+    int data_len;
+    int window_size;
 } header;
 int window_size = MAX_WINDOW_SIZE;
 bool connected = false;
@@ -103,10 +102,10 @@ void printStats() {
 }
 
 /*
- *	Prints the sender's log message.
+ *  Prints the sender's log message.
  */
 void printLogMessage(int seq, char* event_type) {
-	char* time = getTime();
+    char* time = getTime();
     int num = seq ? header.seq_num : ack_num;
     printf("%s %s %s:%d %s:%d %s %d %d\n", 
         time,
@@ -117,13 +116,13 @@ void printLogMessage(int seq, char* event_type) {
         num,
         window_size
     );
-	free(time);
+    free(time);
 }
 
 
 // ------- PARSING ------- //
 /*
- *	Validates a port number.
+ *  Validates a port number.
  */
 bool isPort(char* str) {
     int portnum = atoi(str);
@@ -132,19 +131,19 @@ bool isPort(char* str) {
 }
 
 /*
- *	Zeros all the header values.
+ *  Zeros all the header values.
  */
 void zeroHeader() {
-	memset(header.magic, 0, 7);
-	memset(header.type, 0, 4);
-	header.seq_num     = 0;
-	header.ack_num     = 0;
-	header.data_len    = 0;
-	header.window_size = 0;
+    memset(header.magic, 0, 7);
+    memset(header.type, 0, 4);
+    header.seq_num     = 0;
+    header.ack_num     = 0;
+    header.data_len    = 0;
+    header.window_size = 0;
 }
 
 /*
- *    Obtains the header values from a string.
+ *  Obtains the header values from a string.
  */
 void setHeader(char buffer[]) {
     char tmp[MAX_BUFFER_SIZE];
@@ -171,7 +170,6 @@ void setHeader(char buffer[]) {
     strcpy(buffer, tmp);
 }
 
-
 void printToFile(char* buffer) {
     fwrite(buffer, 1, header.data_len, fp);
 }
@@ -179,139 +177,136 @@ void printToFile(char* buffer) {
 
 // ------- RESPONSES ------- //
 /*
- *	Simply sends an ACK packet.
+ *  Simply sends an ACK packet.
  */
 void sendAck(int sock, char* buffer) {
     memset(buffer, 0, MAX_BUFFER_SIZE);
-	sprintf(buffer, "%s,%s,%d,%d,%d,%d",
-		header.magic,
-		"ACK",
-		0,
-		ack_num,
-		0,
-		window_size
-	);
+    sprintf(buffer, "%s,%s,%d,%d,%d,%d",
+        header.magic,
+        "ACK",
+        0,
+        ack_num,
+        0,
+        window_size
+    );
     
     strcpy(header.type, "ACK");
     acks_sent++;
     printLogMessage(0, "s");
     
-	if ( sendto(sock, buffer, MAX_BUFFER_SIZE, 0, (struct sockaddr*) &sdraddr, slen) == -1 ) {
-		printf("problem sending\n");
-	}// else printf("successfully sent\n");
+    if ( sendto(sock, buffer, MAX_BUFFER_SIZE, 0, (struct sockaddr*) &sdraddr, slen) == -1 ) {
+        printf("problem sending\n");
+    }
 }
 
 
 // ------- SERVER ------- //
 /*
- *	Returns the formatted time of the request.
+ *  Returns the formatted time of the request.
  */
 char* getTime() {
     char* timebuf = malloc(20);
     time_t curtime;
-	struct tm* times;
-	struct timeval timenow;
-	
-	time(&curtime);
+    struct tm* times;
+    struct timeval timenow;
+    
+    time(&curtime);
     times = localtime(&curtime);
-	
-	gettimeofday(&timenow, NULL);
-	int micro = timenow.tv_usec;
-	
-	strftime(timebuf, 30, "%T", times);
-	strcat(timebuf, ".");
-	sprintf(timebuf, "%s%d", timebuf, micro);
-	return timebuf;
+    
+    gettimeofday(&timenow, NULL);
+    int micro = timenow.tv_usec;
+    
+    strftime(timebuf, 30, "%T", times);
+    strcat(timebuf, ".");
+    sprintf(timebuf, "%s%d", timebuf, micro);
+    return timebuf;
 }
 
 /*
- *	Checks command line arguments for correct syntax.
+ *  Checks command line arguments for correct syntax.
  */
 bool checkArguments(int argc, char* argv[]) {    
-	//printf("\n");
-	
-	if (argc < 4) {
-		printf("Incorrect syntax.\n");
+    if (argc < 4) {
+        printf("Incorrect syntax.\n");
         howto();
-		return false;
-	}
+        return false;
+    }
 
-	// Check if valid IP address.
-	rcv_ip = argv[1];
+    // Check if valid IP address.
+    rcv_ip = argv[1];
 
-	// Check if valid port number.
+    // Check if valid port number.
     if (!isPort(argv[2])) {
         printf("\nInvalid port number. Exiting the program.\n");
         howto();
         return false;
     } else rcv_port = atoi(argv[2]);
-	
-	// Last argument is the file to be received.
-	fp = fopen(argv[3], "w");
-	
-	return true;
+    
+    // Last argument is the file to be received.
+    fp = fopen(argv[3], "w");
+    
+    return true;
 }
 
 /*
- *	Creates and binds the socket, and waits to receive packets.
+ *  Creates and binds the socket, and waits to receive packets.
  */
 bool createServer() {
     fd_set fds;
-	ssize_t recsize;
+    ssize_t recsize;
     
-	char buffer[MAX_BUFFER_SIZE];
-	memset(buffer, 0, MAX_BUFFER_SIZE);
-	
-	// Create socket.
+    char buffer[MAX_BUFFER_SIZE];
+    memset(buffer, 0, MAX_BUFFER_SIZE);
+    
+    // Create socket.
     int sock = socket(PF_INET, SOCK_DGRAM, IPPROTO_UDP);
-	if (sock == -1) {
-		printf("Couldn't create socket. Exiting the program.");
-		return false;
-	}
-	
-	// Set socket options so that the address is reusable.
-	int opt = 1;
+    if (sock == -1) {
+        printf("Couldn't create socket. Exiting the program.");
+        return false;
+    }
+    
+    // Set socket options so that the address is reusable.
+    int opt = 1;
     if (setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, (char*) &opt, sizeof opt) == -1) {
         printf("Problem setting socket options. Closing the socket.\n%s\n", strerror(errno));
         return false;
     }
-	
+    
     memset(&rcvaddr, 0, len);
     memset(&sdraddr, 0, slen);
-	
-	rcvaddr.sin_family      = AF_INET;
+    
+    rcvaddr.sin_family      = AF_INET;
     rcvaddr.sin_addr.s_addr = inet_addr(rcv_ip);
     rcvaddr.sin_port        = htons(rcv_port);
-	
-	// Bind socket.
+    
+    // Bind socket.
     if ((bind(sock, (struct sockaddr *) &rcvaddr, len)) != 0) {
         printf("Couldn't bind socket. Closing the socket.\n%s\n", strerror(errno));
         close(sock);
         return false;
     }
-	
+    
     int timeouts = 0;
     struct timeval timeout;
     start_time = time(NULL);
-	
+    
     printf("ready...\n");
 
-	while (1) {
-		
+    while (1) {
+        
         // Reset file descriptors and timeout.
         FD_ZERO(&fds);
         FD_SET(sock, &fds);
-		
-		timeout.tv_sec = TIMEOUT_SEC;
+        
+        timeout.tv_sec = TIMEOUT_SEC;
         timeout.tv_usec = TIMEOUT_USEC;
-		
-		int select_return = select(sock + 1, &fds, NULL, NULL, &timeout);
-		if (select_return < 0) {   
-			printf("Error with select. Closing the socket.\n");
-			close(sock);
-			return false;
-		} else if ((select_return == 0) && (connected == true)) {
-            //printf("timeout occurred\n");
+        
+        int select_return = select(sock + 1, &fds, NULL, NULL, &timeout);
+        if (select_return < 0) {   
+            printf("Error with select. Closing the socket.\n");
+            close(sock);
+            return false;
+        } else if ((select_return == 0) && (connected == true)) {
             if (received_fin == false) {
                 sendAck(sock, buffer);
             }
@@ -325,44 +320,40 @@ bool createServer() {
             }
         }
         
-		if (FD_ISSET(sock, &fds)) {
-			recsize = recvfrom(sock, (void*) buffer, MAX_BUFFER_SIZE, 0, (struct sockaddr*) &sdraddr, &slen);
-		
-			if (recsize <= 0) {
-				printf("recvfrom failed. Closing socket. \n");
-				close(sock);
-			} else {
+        if (FD_ISSET(sock, &fds)) {
+            recsize = recvfrom(sock, (void*) buffer, MAX_BUFFER_SIZE, 0, (struct sockaddr*) &sdraddr, &slen);
+        
+            if (recsize <= 0) {
+                printf("recvfrom failed. Closing socket. \n");
+                close(sock);
+            } else {
                 buffer[MAX_BUFFER_SIZE] = '\0';
-				//printf("Received: %s\n", buffer);
-				
-				zeroHeader();
-				setHeader(buffer);
-				
-				if (sdr_ip == NULL) {
-					sdr_port = ntohs(sdraddr.sin_port);
-					sdr_ip   = inet_ntoa(sdraddr.sin_addr);
-				}
-				
-				printLogMessage(1, "r");
+                
+                zeroHeader();
+                setHeader(buffer);
+                
+                if (sdr_ip == NULL) {
+                    sdr_port = ntohs(sdraddr.sin_port);
+                    sdr_ip   = inet_ntoa(sdraddr.sin_addr);
+                }
+                
+                printLogMessage(1, "r");
                 timeouts = 0;
-				
-				// If we received a SYN, send an ACK.
-				if (strcmp(header.type, "SYN") == 0) {
-                    //printf("received a SYN packet\n");
+                
+                // If we received a SYN, send an ACK.
+                if (strcmp(header.type, "SYN") == 0) {
                     ack_num = header.seq_num + 1;
                     expected_seq_num = ack_num;
-					sendAck(sock, buffer);
-					connected = true;
+                    sendAck(sock, buffer);
+                    connected = true;
                     syns_recv++;
-				} else if (strcmp(header.type, "DAT") == 0) {
-                    //printf("received a DAT packet\n");
+                } else if (strcmp(header.type, "DAT") == 0) {
                     t_packs++;
                     t_bytes += strlen(buffer);
                     
+                    // If we received the a data packet with the next 
+                    // expected sequence number, send an ACK.
                     if (header.seq_num == expected_seq_num) {
-                        // packet is the next expected seq_num.
-                        //printf("received the correct SEQ number\n");
-                        
                         ack_num = header.seq_num + 1;
                         expected_seq_num = ack_num;
                         printToFile(buffer);
@@ -377,21 +368,20 @@ bool createServer() {
                         }
                     }
                 } else if (strcmp(header.type, "FIN") == 0) {
-                    //printf("received a FIN packet\n");
                     received_fin = true;
                     ack_num = header.seq_num + 1;
                     expected_seq_num = ack_num;
-					sendAck(sock, buffer);
+                    sendAck(sock, buffer);
                     fins_recv++;
                 }
-				
-			}
-			
-			memset(buffer, 0, MAX_BUFFER_SIZE);
-		}
-		
-		memset(buffer, 0, MAX_BUFFER_SIZE);
-	}
+                
+            }
+            
+            memset(buffer, 0, MAX_BUFFER_SIZE);
+        }
+        
+        memset(buffer, 0, MAX_BUFFER_SIZE);
+    }
 
     end_time = time(NULL);
     return true;
@@ -399,7 +389,7 @@ bool createServer() {
 
 // MAIN
 int main(int argc, char* argv[]) {
-    if ( !checkArguments(argc, argv) ) return 0;	
+    if ( !checkArguments(argc, argv) ) return 0;    
     if ( !createServer(argv) ) return 0;
     fclose(fp);
     printStats();
